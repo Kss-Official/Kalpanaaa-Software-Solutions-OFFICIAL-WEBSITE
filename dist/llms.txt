@@ -1,0 +1,30 @@
+# Kalpanaaaa Software Solutions
+
+> Bespoke engineering partner for government, healthcare, finance, and education. Jaipur, India.
+
+## Services
+- Full-Stack Web Engineering (Next.js, React, Node.js, GraphQL/REST, PostgreSQL, Redis)
+- Omnichannel Mobile Apps (React Native, Swift, Kotlin, offline-first)
+- Cloud DevOps & Infrastructure (AWS, GCP, Docker, Kubernetes, Terraform, CI/CD)
+- Enterprise Quality Assurance (Playwright, Vitest, k6, axe-core, 100% coverage)
+- RAG Systems & AI Engineering (LangChain, LlamaIndex, pgvector, Pinecone, OpenAI, Anthropic)
+- Multi-Agent Automation (LangGraph, CrewAI, LangSmith, human-in-the-loop)
+
+## Industries
+- Government: G2C compliance, digital portals, licensing workflows
+- Healthcare: HIPAA-aligned platforms, EHR integration, telemedicine
+- Finance: Trading systems, settlement, RBI/SEBI compliance, fraud detection
+- Education: LMS, SIS, adaptive learning, campus management
+
+## Case Studies
+- RailTrace: Real-time railway asset tracking (99.97% uptime, 200+ assets, 40% permit reduction)
+- MediChain: HIPAA-aligned patient data platform (50,000+ records)
+- KUCafe: University cafe ordering (12,000+ orders, 96% satisfaction)
+
+## Founders
+- Gaurav Kr Tripathi — Founder, MD & CTO
+- Akshit Ujjain — Co-Founder & CEO
+- Rahul Kr Pathak — Chief Operating Officer
+
+## Contact
+hello@kalpanaaa.com | Response SLA: 24 business hours | Jaipur, Rajasthan, India

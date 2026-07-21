@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://kalpanaaasoftwaresolutions.in/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/services</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/services/web-engineering</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/services/mobile-apps</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/services/cloud-devops</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/services/qa-testing</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/services/rag-systems</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/services/multi-agent-automation</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/industries</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/industries/government</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/industries/healthcare</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/industries/finance</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/industries/education</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/work</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/work/railtrace</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/work/medichain</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/work/kucafe</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/contact</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://kalpanaaasoftwaresolutions.in/terms</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+</urlset>
