@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { ClickSpark } from "./components/effects/ClickSpark";
-import { AmbientGalaxyBackdrop } from "./components/effects/AmbientGalaxyBackdrop";
+import { AntigravityBackdrop } from "./components/effects/AntigravityBackdrop";
 
 const Home = lazy(() => import("./pages/Home").then((m) => ({ default: m.Home })));
 const Services = lazy(() => import("./pages/Services").then((m) => ({ default: m.Services })));
@@ -34,7 +34,7 @@ function AnimatedRoutes() {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
-      <motion.div key={location.pathname} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25, ease: "easeOut" }}>
+      <motion.div key={location.pathname} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25, ease: "easeOut" }}>
         <Suspense fallback={<LoadingRoute />}>
           <Routes location={location}>
             <Route path="/" element={<Home />} />
@@ -61,12 +61,14 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col site-page">
       <ScrollToTop />
-      <Navbar />
-      <AmbientGalaxyBackdrop />
-      <ClickSpark sparkColor="#1769d5" sparkSize={8} sparkRadius={20} sparkCount={7} duration={360} className="flex-1">
-        <main className="min-h-full"><AnimatedRoutes /></main>
-      </ClickSpark>
-      <Footer />
+      <AntigravityBackdrop />
+      <div className="site-shell flex flex-col flex-1">
+        <Navbar />
+        <ClickSpark sparkColor="#1769d5" sparkSize={8} sparkRadius={20} sparkCount={7} duration={360} className="flex-1">
+          <main className="min-h-full"><AnimatedRoutes /></main>
+        </ClickSpark>
+        <Footer />
+      </div>
     </div>
   );
 }
