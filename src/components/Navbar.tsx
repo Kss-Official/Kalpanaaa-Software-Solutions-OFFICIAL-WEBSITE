@@ -26,13 +26,13 @@ export function Navbar() {
 
   return (
     <header className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-md border-line shadow-[0_10px_28px_-26px_rgba(20,35,60,.5)]" : "bg-white/80 backdrop-blur border-transparent"}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 h-16 sm:h-20 lg:h-24 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-3 flex items-center justify-between gap-4">
         {/* Brand Logo - Responsive Sizing */}
-        <Link to="/" aria-label="Kalpanaaa Software Solutions — Home" className="flex-shrink-0 flex items-center py-1">
+        <Link to="/" aria-label="Kalpanaaa Software Solutions — Home" className="flex-shrink-0 flex items-center">
           <img
             src="/logo.webp"
             alt="Kalpanaaa Software Solutions Logo"
-            className="h-10 sm:h-12 md:h-14 lg:h-28 w-auto max-w-[220px] sm:max-w-[300px] md:max-w-[380px] lg:max-w-[460px] object-contain transition-all duration-300"
+            className="h-28 w-auto max-w-[240px] sm:max-w-[300px] md:max-w-[380px] lg:max-w-[460px] object-contain transition-all duration-300"
           />
         </Link>
 
