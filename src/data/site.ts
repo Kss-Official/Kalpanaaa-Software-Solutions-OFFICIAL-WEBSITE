@@ -1,6 +1,6 @@
 export type Statistic = { value: string; label: string };
 export type Technology = { name: string; category: string; why: string; icon: string };
-export type Founder = { name: string; role: string; bio: string; focus: string[] };
+export type Founder = { name: string; role: string; bio: string; focus: string[]; image?: string };
 export type Service = {
   slug: string;
   title: string;
@@ -30,13 +30,16 @@ export type CaseStudy = {
 };
 
 export const NAP = {
-  name: "Kalpanaaaa Software Solutions Pvt. Ltd.",
-  email: "hello@kalpanaaa.com",
-  city: "Jaipur",
-  region: "Rajasthan",
+  name: "Kalpanaaa Software Solutions Pvt. Ltd.",
+  email: "info@kalpanaaasoftwaresolutions.in",
+  phone: "+918050483560",
+  whatsapp: "8050483560",
+  city: "Bengaluru",
+  region: "Karnataka",
   country: "IN",
   founded: "2026",
-  addressLine: "Jaipur, Rajasthan, India",
+  addressLine: "822, 9th Main, 1st C Cross, 1st Block, HRBR Layout, Kalyan Nagar, Banaswadi, Bengaluru – 560043",
+  pincode: "560043",
 };
 
 export const STATISTICS: Statistic[] = [
@@ -67,12 +70,14 @@ export const FOUNDERS: Founder[] = [
     role: "Founder, MD & CTO",
     bio: "Systems engineer turned founder. Architecting bespoke digital transformation for regulated industries. Owns technical delivery across all engagements.",
     focus: ["Distributed systems", "DevOps", "AI engineering", "Architecture review"],
+    image: "/cto-profile.png",
   },
   {
     name: "Akshit Ujjain",
     role: "Co-Founder & CEO",
     bio: "Operator-led growth. Builds the commercial engine, owns client relationships, and runs the delivery playbook for every engagement.",
     focus: ["Go-to-market", "Strategic accounts", "Delivery leadership", "Partner ecosystem"],
+    image: "/ceo-profile.png",
   },
   {
     name: "Rahul Kr Pathak",

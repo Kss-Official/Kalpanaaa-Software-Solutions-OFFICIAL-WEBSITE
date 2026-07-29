@@ -85,23 +85,12 @@ const AntigravityInner = ({
     const mesh = meshRef.current;
     if (!mesh) return;
 
-    const { viewport: v, pointer: m } = state;
+    const { viewport: v } = state;
 
-    const mouseDist = Math.sqrt(Math.pow(m.x - lastMousePos.current.x, 2) + Math.pow(m.y - lastMousePos.current.y, 2));
-
-    if (mouseDist > 0.001) {
-      lastMouseMoveTime.current = Date.now();
-      lastMousePos.current = { x: m.x, y: m.y };
-    }
-
-    let destX = (m.x * v.width) / 2;
-    let destY = (m.y * v.height) / 2;
-
-    if (autoAnimate && Date.now() - lastMouseMoveTime.current > 2000) {
-      const time = state.clock.getElapsedTime();
-      destX = Math.sin(time * 0.5) * (v.width / 4);
-      destY = Math.cos(time * 0.5 * 2) * (v.height / 4);
-    }
+    // Always auto-animate organically, ignoring mouse hover (antigravity style)
+    const time = state.clock.getElapsedTime();
+    let destX = Math.sin(time * 0.5) * (v.width / 4);
+    let destY = Math.cos(time * 0.5 * 2) * (v.height / 4);
 
     const smoothFactor = 0.05;
     virtualMouse.current.x += (destX - virtualMouse.current.x) * smoothFactor;

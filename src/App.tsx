@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { ClickSpark } from "./components/effects/ClickSpark";
-import { AntigravityBackdrop } from "./components/effects/AntigravityBackdrop";
+
 
 const Home = lazy(() => import("./pages/Home").then((m) => ({ default: m.Home })));
 const Services = lazy(() => import("./pages/Services").then((m) => ({ default: m.Services })));
@@ -61,7 +61,6 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col site-page">
       <ScrollToTop />
-      <AntigravityBackdrop />
       <div className="site-shell flex flex-col flex-1">
         <Navbar />
         <ClickSpark sparkColor="#1769d5" sparkSize={8} sparkRadius={20} sparkCount={7} duration={360} className="flex-1">

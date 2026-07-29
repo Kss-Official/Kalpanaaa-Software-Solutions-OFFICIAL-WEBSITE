@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 56" fill="none" role="img" aria-label="Kalpanaaa Software Solutions Logo">
+  <rect x="0" y="4" width="48" height="48" rx="10" fill="#0A1628"/>
+  <rect x="12" y="14" width="5" height="28" rx="2" fill="#3B82F6"/>
+  <polygon points="17,28 32,14 38,14 23,28" fill="#60A5FA"/>
+  <polygon points="17,28 32,42 38,42 23,28" fill="#3B82F6"/>
+  <circle cx="36" cy="14" r="3.5" fill="#60A5FA"/>
+  <text x="60" y="24" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-weight="800" font-size="17" fill="#0A1628" letter-spacing="-0.3">Kalpanaaa</text>
+  <text x="60" y="42" font-family="Inter, Helvetica Neue, Arial, sans-serif" font-weight="500" font-size="11" fill="#3B82F6" letter-spacing="2.5">SOFTWARE SOLUTIONS</text>
+</svg>

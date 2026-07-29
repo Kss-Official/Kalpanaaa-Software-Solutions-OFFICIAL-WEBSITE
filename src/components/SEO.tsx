@@ -8,7 +8,7 @@ type Props = {
   jsonLd?: object | object[];
 };
 
-const SITE_NAME = "Kalpanaaaa Software Solutions";
+const SITE_NAME = "Kalpanaaa Software Solutions";
 const DEFAULT_OG = "https://kalpanaaasoftwaresolutions.in/logo_full.png";
 const DEFAULT_CANONICAL = "https://kalpanaaasoftwaresolutions.in/";
 
@@ -37,7 +37,7 @@ export function SEO({ title, description, canonical, ogImage, jsonLd }: Props) {
     document.title = title;
 
     setMeta("description", description);
-    setMeta("author", "Kalpanaaaa Software Solutions Pvt. Ltd.");
+    setMeta("author", "Kalpanaaa Software Solutions Pvt. Ltd.");
     setMeta("keywords", "software development company India, enterprise software engineering, RAG, multi-agent automation, Next.js, government software, healthcare software, Jaipur software company");
 
     setLink("canonical", canonical ?? DEFAULT_CANONICAL);
