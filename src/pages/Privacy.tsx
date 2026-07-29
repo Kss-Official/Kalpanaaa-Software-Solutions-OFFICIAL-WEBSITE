@@ -8,9 +8,9 @@ export function Privacy() {
   return (
     <div className="min-h-screen">
       <SEO
-        title="Privacy Policy | Kalpanaaaa Software Solutions"
-        description="Privacy policy for Kalpanaaaa Software Solutions Pvt. Ltd. — how we collect, use, share, and protect your data. Effective January 2026."
-        canonical="https://kalpanaaasoftwaresolutions.in/privacy"
+        title="Privacy Policy — Kalpana Software Solutions (kalpanaaasoftwaresolutions.com)"
+        description="Privacy policy for Kalpana Software Solutions (kalpanaaasoftwaresolutions.com) — how we collect, use, share, and protect your data."
+        canonical="https://kalpanaaasoftwaresolutions.com/privacy"
       />
 
       <section className="pt-16 pb-10 md:pt-24">

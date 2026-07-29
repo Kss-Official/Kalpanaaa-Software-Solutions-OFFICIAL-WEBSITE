@@ -1,6 +1,6 @@
-# Kalpanaaaa Software Solutions
+# Kalpana Software Solutions (kalpanaaasoftwaresolutions.com)
 
-> Bespoke engineering partner for government, healthcare, finance, and education. Jaipur, India.
+> Bespoke engineering partner for government, healthcare, finance, and education.
 
 ## Services
 - Full-Stack Web Engineering (Next.js, React, Node.js, GraphQL/REST, PostgreSQL, Redis)
@@ -27,4 +27,4 @@
 - Rahul Kr Pathak — Chief Operating Officer
 
 ## Contact
-hello@kalpanaaa.com | Response SLA: 24 business hours | Jaipur, Rajasthan, India
+info@kalpanaaasoftwaresolutions.com | Response SLA: 24 business hours | https://kalpanaaasoftwaresolutions.com

@@ -31,7 +31,7 @@ export type CaseStudy = {
 
 export const NAP = {
   name: "Kalpanaaa Software Solutions Pvt. Ltd.",
-  email: "info@kalpanaaasoftwaresolutions.in",
+  email: "info@kalpanaaasoftwaresolutions.com",
   phone: "+918050483560",
   whatsapp: "8050483560",
   city: "Bengaluru",
