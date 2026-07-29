@@ -36,7 +36,7 @@ export function Home() {
       <div className="relative max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-16 md:py-24 grid lg:grid-cols-[minmax(0,1fr)_minmax(430px,.9fr)] gap-10 items-center">
         <div>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="pill px-3.5 py-1.5"><Terminal size={13} /><span>Bespoke engineering partner</span></motion.div>
-          <motion.h1 initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08 }} className="mt-7 font-display text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.03] text-ink max-w-4xl">Architecting digital <span className="gradient-text">transformation.</span></motion.h1>
+          <motion.h1 initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08 }} className="mt-7 font-display text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.03] text-ink max-w-4xl pr-4 sm:pr-0">Architecting digital <span className="gradient-text">transformation.</span></motion.h1>
           <motion.p initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .16 }} className="mt-6 text-lg md:text-xl text-muted max-w-3xl leading-relaxed">Bespoke engineering for IT automation, RAG systems, multi-agent workflows, and production software across government, healthcare, finance, and education.</motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .24 }} className="mt-9 flex flex-wrap gap-3">
             <Link to="/contact" className="button-primary px-7 py-4 text-sm font-bold uppercase tracking-widest">Start a project <ArrowRight size={16} /></Link>

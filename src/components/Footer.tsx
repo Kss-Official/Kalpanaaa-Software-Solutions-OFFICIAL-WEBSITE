@@ -14,7 +14,7 @@ export function Footer() {
             <img
               src="/logo.webp"
               alt="Kalpanaaa Software Solutions Logo"
-              className="h-28 w-auto max-w-[240px] sm:max-w-[300px] md:max-w-[380px] object-contain"
+              className="h-20 sm:h-24 lg:h-28 w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[400px] object-contain transition-all duration-300"
             />
           </div>
           <p className="text-sm text-muted leading-relaxed max-w-xs">
