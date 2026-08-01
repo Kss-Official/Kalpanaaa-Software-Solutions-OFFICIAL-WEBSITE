@@ -9,8 +9,8 @@ type Props = {
 };
 
 const SITE_NAME = "Kalpanaaa Software Solutions";
-const DEFAULT_OG = "https://kalpanaaasoftwaresolutions.com/logo_full.png";
-const DEFAULT_CANONICAL = "https://kalpanaaasoftwaresolutions.com/";
+const DEFAULT_OG = "https://kalpanaaasoftwaresolutions.in/logo_full.png";
+const DEFAULT_CANONICAL = "https://kalpanaaasoftwaresolutions.in/";
 
 function setMeta(name: string, content: string, attr: "name" | "property" = "name") {
   let el = document.querySelector<HTMLMetaElement>(`meta[${attr}="${name}"]`);

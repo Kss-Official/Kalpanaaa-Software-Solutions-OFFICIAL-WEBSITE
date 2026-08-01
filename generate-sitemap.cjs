@@ -14,7 +14,7 @@ const servicesSlugs = slugs.slice(0, 6);
 const industrySlugs = slugs.slice(6, 10);
 const caseStudySlugs = slugs.slice(10);
 
-const baseUrl = 'https://kalpanaaasoftwaresolutions.com';
+const baseUrl = 'https://kalpanaaasoftwaresolutions.in';
 const staticRoutes = [
   '',
   '/about',

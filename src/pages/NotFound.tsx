@@ -8,7 +8,7 @@ export function NotFound() {
       <SEO
         title="404 — Page Not Found | Kalpanaaa Software Solutions"
         description="The page you're looking for doesn't exist. Return to Kalpanaaa Software Solutions home page."
-        canonical="https://kalpanaaasoftwaresolutions.com/404"
+        canonical="https://kalpanaaasoftwaresolutions.in/404"
       />
       <div className="max-w-md w-full text-center">
         <p className="font-mono text-xs uppercase tracking-widest text-brand">Error 404</p>

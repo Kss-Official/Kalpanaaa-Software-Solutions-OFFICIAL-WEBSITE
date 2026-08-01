@@ -1,151 +1,309 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/jpeg" href="/logo_full.jpg" />
-    <link rel="apple-touch-icon" href="/logo_full.jpg" />
-    <meta name="theme-color" content="#0066CC" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Primary SEO -->
-    <title>Kalpana Software Solutions — Enterprise Software Engineering & AI Development | kalpanaaasoftwaresolutions.com</title>
-    <meta name="description" content="Official website of Kalpana Software Solutions (kalpanaaasoftwaresolutions.com). Production-grade software engineering, AI RAG systems, multi-agent automation, web, mobile, DevOps & QA." />
-    <meta name="keywords" content="Kalpana Software Solutions, Kalpana Software Solutions Pvt Ltd, Kalpanaaa Software Solutions, kalpana sofftware solutions, kalpana softwre solutions, Kalpana Software Solutions .com, kalpanasoftwaresolutions.com, kalpanaaasoftwaresolutions.com, kalpana software, kalpana software company, kalpana softwaresolutions, software development company India, enterprise software engineering, full-stack development, React Next.js development, cloud infrastructure DevOps, QA automation, government software, healthcare software, RAG, multi-agent automation, AI engineering, bespoke engineering partner" />
-    <meta name="author" content="Kalpanaaa Software Solutions Pvt. Ltd." />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="google-site-verification" content="pNb5EWI3UoqVFchdiCDgV_Xh4CkULR2YRA5qp5cbHk4" />
-    <link rel="canonical" href="https://kalpanaaasoftwaresolutions.com/" />
-    <meta name="theme-color" content="#0A0E1A" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
-    <meta name="color-scheme" content="dark light" />
+<html lang="en-IN" class="dark" prefix="og: https://ogp.me/ns#">
 
-    <!-- Open Graph / Facebook / LinkedIn -->
-    <meta property="og:title" content="Kalpana Software Solutions — Bespoke Engineering Partner | kalpanaaasoftwaresolutions.com" />
-    <meta property="og:description" content="Production-grade software engineering for government, healthcare, finance, education. RAG, multi-agent automation, full-stack, mobile, DevOps, QA. 100+ systems delivered." />
-    <meta property="og:url" content="https://kalpanaaasoftwaresolutions.com/" />
-    <meta property="og:site_name" content="Kalpana Software Solutions" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://kalpanaaasoftwaresolutions.com/logo_full.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:alt" content="Kalpana Software Solutions — Bespoke Engineering Partner" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Kalpana Software Solutions — Bespoke Engineering Partner" />
-    <meta name="twitter:description" content="Production-grade software engineering for government, healthcare, finance, education. RAG, multi-agent automation, full-stack, mobile, DevOps, QA." />
-    <meta name="twitter:image" content="https://kalpanaaasoftwaresolutions.com/logo_full.png" />
+  <!-- ══════════════════════════════════════════════════════
+       FAVICONS & TOUCH ICONS
+  ═══════════════════════════════════════════════════════ -->
+  <link rel="icon" type="image/x-icon" href="/kssfavicon.ico" />
+  <link rel="apple-touch-icon" href="/kssfavicon.ico" />
+  <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Preload -->
-    <link rel="preload" as="image" href="/logo.webp" />
+  <!-- ══════════════════════════════════════════════════════
+       FONTS
+  ═══════════════════════════════════════════════════════ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
 
-    <!-- JSON-LD Organization -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Kalpanaaa Software Solutions Pvt. Ltd.",
-      "legalName": "Kalpanaaa Software Solutions Pvt. Ltd.",
-      "alternateName": [
-        "Kalpana Software Solutions",
-        "Kalpana Software Solutions Pvt. Ltd.",
-        "Kalpanaaa Software Solutions",
-        "Kalpana Software",
-        "KSS",
-        "Kalpana Software Solutions .com",
-        "kalpanasoftwaresolutions.com",
-        "kalpanaaasoftwaresolutions.com"
-      ],
-      "url": "https://kalpanaaasoftwaresolutions.com/",
-      "logo": "https://kalpanaaasoftwaresolutions.com/logo_full.jpg",
-      "description": "Bespoke engineering partner providing full-lifecycle IT automation, RAG systems, multi-agent automation, and software solutions for government, healthcare, finance, and education.",
-      "foundingDate": "2026",
-      "email": "info@kalpanaaasoftwaresolutions.com",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Bengaluru",
-        "addressRegion": "Karnataka",
-        "addressCountry": "IN"
-      },
-      "founders": [
-        { "@type": "Person", "name": "Gaurav Kr Tripathi", "jobTitle": "Founder, MD & CTO" },
-        { "@type": "Person", "name": "Akshit Ujjain", "jobTitle": "Co-Founder & CEO" },
-        { "@type": "Person", "name": "Rahul Kr Pathak", "jobTitle": "Chief Operating Officer" }
-      ],
-      "contactPoint": {
+  <!-- ══════════════════════════════════════════════════════
+       PRIMARY SEO
+       Brand: "Kalpanaaa Software Solutions" (3 a's)
+       Target query: kalpanaaa software solutions
+  ═══════════════════════════════════════════════════════ -->
+
+  <!-- Title: Brand-first, keyword-rich, under 60 chars core -->
+  <title>Kalpanaaa Software Solutions — Enterprise AI & Software Engineering | kalpanaaasoftwaresolutions.in</title>
+
+  <!-- Description: 155 chars, brand in first 11 chars, compelling CTA -->
+  <meta name="description"
+    content="Kalpanaaa Software Solutions — Official site of Kalpanaaa Software Solutions Pvt. Ltd. Enterprise AI, RAG systems, full-stack, DevOps, mobile & QA. Visit kalpanaaasoftwaresolutions.in." />
+
+  <!-- Keywords: exact brand + common misspellings + services -->
+  <meta name="keywords"
+    content="Kalpanaaa Software Solutions, Kalpanaaa Software Solutions Pvt Ltd, kalpanaaasoftwaresolutions.in, Kalpanaaa Software, Kalpanaaa, KSS, Kalpana Software Solutions, kalpanasoftwaresolutions.com, software development company India, enterprise software engineering, AI development India, RAG systems India, multi-agent automation, full-stack development, React Next.js development, cloud DevOps India, QA automation, government software India, healthcare software India, bespoke engineering partner Bengaluru, IT company Bengaluru Karnataka" />
+
+  <!-- Author & Publisher -->
+  <meta name="author" content="Kalpanaaa Software Solutions Pvt. Ltd." />
+  <meta name="publisher" content="Kalpanaaa Software Solutions Pvt. Ltd." />
+  <meta name="copyright" content="© 2026 Kalpanaaa Software Solutions Pvt. Ltd." />
+
+  <!-- ── Robot directives for ALL major search engines ── -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <!-- Google -->
+  <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <!-- Bing / Yahoo (same crawler) -->
+  <meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <!-- Yahoo Slurp (legacy) -->
+  <meta name="slurp" content="index, follow" />
+  <!-- DuckDuckGo (uses Bing index, included for completeness) -->
+  <meta name="duckduckbot" content="index, follow" />
+  <!-- Yandex -->
+  <meta name="yandex" content="index, follow" />
+
+  <!-- Canonical URL — single authoritative URL, prevents duplication -->
+  <link rel="canonical" href="https://kalpanaaasoftwaresolutions.in/" />
+
+  <!-- Site verification — Google .com domain -->
+  <meta name="google-site-verification" content="pNb5EWI3UoqVFchdiCDgV_Xh4CkULR2YRA5qp5cbHk4" />
+  <!-- Site verification — Google .in domain (googled0ae1d0f1b44b230.html) -->
+  <meta name="google-site-verification" content="d0ae1d0f1b44b230" />
+  <!-- Site verification — Bing / Yahoo / DuckDuckGo (BingSiteAuth.xml) -->
+  <meta name="msvalidate.01" content="85666432D75D079BBF84EE78A5E63E73" />
+
+  <!-- ── Geo / Local Search targeting ── -->
+  <meta name="geo.region" content="IN-KA" />
+  <meta name="geo.placename" content="Bengaluru, Karnataka, India" />
+  <meta name="geo.position" content="13.0143043;77.6459944" />
+  <meta name="ICBM" content="13.0143043, 77.6459944" />
+
+  <!-- Language & content signals -->
+  <meta http-equiv="content-language" content="en-IN" />
+  <meta name="language" content="English" />
+  <meta name="rating" content="general" />
+  <meta name="category" content="Software Development, IT Services, AI Engineering" />
+  <meta name="classification" content="Business" />
+
+  <!-- Theme colors -->
+  <meta name="theme-color" content="#0A0E1A" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#0066CC" media="(prefers-color-scheme: light)" />
+  <meta name="color-scheme" content="dark light" />
+
+  <!-- ══════════════════════════════════════════════════════
+       OPEN GRAPH — Facebook, LinkedIn, WhatsApp, Slack, etc.
+  ═══════════════════════════════════════════════════════ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kalpanaaa Software Solutions" />
+  <meta property="og:title"
+    content="Kalpanaaa Software Solutions — Bespoke Engineering Partner | kalpanaaasoftwaresolutions.in" />
+  <meta property="og:description"
+    content="Kalpanaaa Software Solutions (kalpanaaasoftwaresolutions.in) — Production-grade AI, RAG, full-stack, mobile, DevOps & QA for government, healthcare, finance & education." />
+  <meta property="og:url" content="https://kalpanaaasoftwaresolutions.in/" />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:image" content="https://kalpanaaasoftwaresolutions.in/logo_full.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="Kalpanaaa Software Solutions — Bespoke Engineering Partner" />
+
+  <!-- ══════════════════════════════════════════════════════
+       TWITTER / X CARD
+  ═══════════════════════════════════════════════════════ -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Kalpanaaa Software Solutions — Bespoke Engineering Partner" />
+  <meta name="twitter:description"
+    content="Kalpanaaa Software Solutions — enterprise AI, RAG, full-stack, mobile, DevOps & QA. Official site: kalpanaaasoftwaresolutions.in" />
+  <meta name="twitter:image" content="https://kalpanaaasoftwaresolutions.in/logo_full.png" />
+  <meta name="twitter:image:alt" content="Kalpanaaa Software Solutions logo" />
+
+  <!-- ══════════════════════════════════════════════════════
+       PRELOAD CRITICAL ASSETS
+  ═══════════════════════════════════════════════════════ -->
+  <link rel="preload" as="image" href="/logo.webp" />
+
+  <!-- ══════════════════════════════════════════════════════
+       JSON-LD: Organization — PRIMARY BRAND ENTITY
+       Google uses this to build its Knowledge Panel.
+       "name" being "Kalpanaaa Software Solutions" directly
+       maps the brand entity to our domain.
+  ═══════════════════════════════════════════════════════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://kalpanaaasoftwaresolutions.in/#organization",
+    "name": "Kalpanaaa Software Solutions Pvt. Ltd.",
+    "legalName": "Kalpanaaa Software Solutions Pvt. Ltd.",
+    "alternateName": [
+      "Kalpanaaa Software Solutions",
+      "Kalpanaaa Software",
+      "Kalpana Software Solutions",
+      "Kalpana Software Solutions Pvt. Ltd.",
+      "KSS",
+      "kalpanaaasoftwaresolutions.in",
+      "kalpanasoftwaresolutions.com"
+    ],
+    "url": "https://kalpanaaasoftwaresolutions.in/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://kalpanaaasoftwaresolutions.in/logo_full.jpg",
+      "width": 512,
+      "height": 512
+    },
+    "image": "https://kalpanaaasoftwaresolutions.in/logo_full.jpg",
+    "description": "Kalpanaaa Software Solutions Pvt. Ltd. is a bespoke engineering partner providing full-lifecycle IT automation, AI RAG systems, multi-agent automation, and enterprise software solutions for government, healthcare, finance, and education sectors.",
+    "slogan": "Your Bespoke Engineering Partner",
+    "foundingDate": "2026",
+    "email": "info@kalpanaaasoftwaresolutions.in",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bengaluru",
+      "addressRegion": "Karnataka",
+      "postalCode": "560001",
+      "addressCountry": "IN"
+    },
+    "areaServed": ["IN", "US", "GB", "AE"],
+    "founders": [
+      { "@type": "Person", "name": "Gaurav Kr Tripathi", "jobTitle": "Founder, MD & CTO" },
+      { "@type": "Person", "name": "Akshit Ujjain", "jobTitle": "Co-Founder & CEO" },
+      { "@type": "Person", "name": "Rahul Kr Pathak", "jobTitle": "Chief Operating Officer" }
+    ],
+    "contactPoint": [
+      {
         "@type": "ContactPoint",
         "contactType": "customer service",
-        "email": "info@kalpanaaasoftwaresolutions.com",
+        "email": "info@kalpanaaasoftwaresolutions.in",
         "availableLanguage": ["English", "Hindi"]
-      },
-      "knowsAbout": [
-        "Full-Stack Web Engineering",
-        "Omnichannel Mobile Apps",
-        "Cloud DevOps",
-        "Enterprise QA",
-        "RAG (Retrieval-Augmented Generation)",
-        "Multi-Agent Automation",
-        "Next.js", "React", "FastAPI", "PostgreSQL", "AWS", "Docker",
-        "Tailwind CSS", "TypeScript", "Redis", "CI/CD"
+      }
+    ],
+    "sameAs": [
+      "https://kalpanaaasoftwaresolutions.in"
+    ],
+    "knowsAbout": [
+      "Full-Stack Web Engineering",
+      "Omnichannel Mobile Apps",
+      "Cloud DevOps",
+      "Enterprise QA Automation",
+      "RAG (Retrieval-Augmented Generation)",
+      "Multi-Agent Automation",
+      "Artificial Intelligence",
+      "Next.js", "React", "FastAPI", "PostgreSQL", "AWS", "Docker",
+      "TypeScript", "Redis", "CI/CD"
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Kalpanaaa Software Solutions Services",
+      "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Full-Stack Web Development" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile App Development" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "AI & RAG Systems" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "DevOps & Cloud Infrastructure" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Enterprise QA Automation" } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Multi-Agent Automation" } }
       ]
     }
-    </script>
+  }
+  </script>
 
-    <!-- JSON-LD WebSite Search -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Kalpana Software Solutions",
-      "alternateName": ["Kalpanaaa Software Solutions", "Kalpana Software Solutions .com", "kalpanaaasoftwaresolutions.com"],
-      "url": "https://kalpanaaasoftwaresolutions.com/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://kalpanaaasoftwaresolutions.com/?s={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-
-    <!-- JSON-LD LocalBusiness -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "name": "Kalpanaaa Software Solutions Pvt. Ltd.",
-      "alternateName": "Kalpana Software Solutions",
-      "image": "https://kalpanaaasoftwaresolutions.com/logo_full.jpg",
-      "url": "https://kalpanaaasoftwaresolutions.com/",
-      "priceRange": "$$$",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Bengaluru",
-        "addressRegion": "Karnataka",
-        "addressCountry": "IN"
+  <!-- ══════════════════════════════════════════════════════
+       JSON-LD: WebSite — enables Google Sitelinks Search Box
+  ═══════════════════════════════════════════════════════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://kalpanaaasoftwaresolutions.in/#website",
+    "name": "Kalpanaaa Software Solutions",
+    "alternateName": [
+      "Kalpanaaa Software Solutions Pvt. Ltd.",
+      "kalpanaaasoftwaresolutions.in"
+    ],
+    "url": "https://kalpanaaasoftwaresolutions.in/",
+    "description": "Official website of Kalpanaaa Software Solutions — enterprise software engineering, AI, RAG, DevOps and mobile development.",
+    "inLanguage": "en-IN",
+    "publisher": {
+      "@id": "https://kalpanaaasoftwaresolutions.in/#organization"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://kalpanaaasoftwaresolutions.in/?s={search_term_string}"
       },
-      "geo": { "@type": "GeoCoordinates", "latitude": 13.0356, "longitude": 77.6395 },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-        "opens": "09:00",
-        "closes": "18:00"
-      }
+      "query-input": "required name=search_term_string"
     }
-    </script>
-    <script type="module" crossorigin src="/assets/index-D6s56LQ6.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Bv-sutzl.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+  }
+  </script>
+
+  <!-- ══════════════════════════════════════════════════════
+       JSON-LD: WebPage — home page entity with breadcrumb
+  ═══════════════════════════════════════════════════════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": "https://kalpanaaasoftwaresolutions.in/#webpage",
+    "url": "https://kalpanaaasoftwaresolutions.in/",
+    "name": "Kalpanaaa Software Solutions — Enterprise AI & Software Engineering",
+    "isPartOf": { "@id": "https://kalpanaaasoftwaresolutions.in/#website" },
+    "about": { "@id": "https://kalpanaaasoftwaresolutions.in/#organization" },
+    "description": "Official homepage of Kalpanaaa Software Solutions Pvt. Ltd. — enterprise software, AI, RAG, full-stack, DevOps, QA, mobile apps.",
+    "inLanguage": "en-IN",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Kalpanaaa Software Solutions",
+          "item": "https://kalpanaaasoftwaresolutions.in/"
+        }
+      ]
+    }
+  }
+  </script>
+
+  <!-- ══════════════════════════════════════════════════════
+       JSON-LD: LocalBusiness — local / maps search ranking
+  ═══════════════════════════════════════════════════════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://kalpanaaasoftwaresolutions.in/#localbusiness",
+    "name": "Kalpanaaa Software Solutions Pvt. Ltd.",
+    "alternateName": ["Kalpanaaa Software Solutions", "KSS"],
+    "image": "https://kalpanaaasoftwaresolutions.in/logo_full.jpg",
+    "url": "https://kalpanaaasoftwaresolutions.in/",
+    "email": "info@kalpanaaasoftwaresolutions.in",
+    "priceRange": "$$$",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bengaluru",
+      "addressRegion": "Karnataka",
+      "postalCode": "560001",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 13.0143043,
+      "longitude": 77.6459944
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    "sameAs": [
+      "https://kalpanaaasoftwaresolutions.in"
+    ]
+  }
+  </script>
+
+  <script type="module" crossorigin src="/assets/index-BtdPbBYQ.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Bv-sutzl.css">
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
 </html>
 

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kalpanaaasoftwaresolutions.com/sitemap.xml
+Sitemap: https://kalpanaaasoftwaresolutions.in/sitemap.xml
