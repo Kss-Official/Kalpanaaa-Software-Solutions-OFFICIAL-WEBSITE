@@ -37,11 +37,11 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav aria-label="Primary" className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+        <nav aria-label="Primary" itemScope itemType="https://schema.org/SiteNavigationElement" className="hidden lg:flex items-center gap-1 flex-1 justify-center">
           {navLinks.map((item) => (
             <div key={item.label} className="group relative">
-              <Link to={item.to} className="flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md">
-                {item.label}
+              <Link itemProp="url" to={item.to} className="flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md">
+                <span itemProp="name">{item.label}</span>
                 <ChevronDown size={12} className="transition-transform group-hover:rotate-180" />
               </Link>
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200" role="menu">

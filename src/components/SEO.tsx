@@ -8,7 +8,7 @@ type Props = {
   jsonLd?: object | object[];
 };
 
-const SITE_NAME = "Kalpana Software Solutions";
+const SITE_NAME = "Kalpanaaa Software Solutions";
 const DEFAULT_OG = "https://kalpanaaasoftwaresolutions.com/logo_full.png";
 const DEFAULT_CANONICAL = "https://kalpanaaasoftwaresolutions.com/";
 
@@ -38,7 +38,7 @@ export function SEO({ title, description, canonical, ogImage, jsonLd }: Props) {
 
     setMeta("description", description);
     setMeta("author", "Kalpanaaa Software Solutions Pvt. Ltd.");
-    setMeta("keywords", "Kalpana Software Solutions, Kalpana Software Solutions Pvt Ltd, Kalpanaaa Software Solutions, kalpana sofftware solutions, Kalpana Software Solutions .com, kalpana software, kalpana software company, kalpana softwaresolutions, software development company India, enterprise software engineering, RAG, multi-agent automation, Next.js, government software, healthcare software");
+    setMeta("keywords", "Kalpanaaa Software Solutions, Kalpanaaa Software Solutions Pvt Ltd, Kalpanaaa Software Solutions, kalpana sofftware solutions, Kalpanaaa Software Solutions .com, kalpana software, kalpana software company, kalpana softwaresolutions, software development company India, enterprise software engineering, RAG, multi-agent automation, Next.js, government software, healthcare software");
 
     setLink("canonical", canonical ?? DEFAULT_CANONICAL);
 

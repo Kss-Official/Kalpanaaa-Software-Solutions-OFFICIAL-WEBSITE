@@ -33,7 +33,7 @@ export function Contact() {
     const type = (form.querySelector("#type") as HTMLSelectElement)?.value || "";
     const message = (form.querySelector("#message") as HTMLTextAreaElement)?.value || "";
     const text = encodeURIComponent(
-      `*New Project Proposal — Kalpana Software Solutions*\n\n*Name:* ${name}\n*Email:* ${email}\n*Project Type:* ${type}\n\n*Details:*\n${message}`
+      `*New Project Proposal — Kalpanaaa Software Solutions*\n\n*Name:* ${name}\n*Email:* ${email}\n*Project Type:* ${type}\n\n*Details:*\n${message}`
     );
     return `https://wa.me/${NAP.whatsapp}?text=${text}`;
   };
@@ -57,7 +57,7 @@ export function Contact() {
     }, 600);
   };
 
-  return <div className="site-page"><SEO title="Contact Us — Kalpana Software Solutions (kalpanaaasoftwaresolutions.com)" description="Contact Kalpana Software Solutions (kalpanaaasoftwaresolutions.com). Submit a project proposal or book a free 30-minute discovery call." canonical="https://kalpanaaasoftwaresolutions.com/contact" jsonLd={[contactPageJsonLd, faqJsonLd]} />
+  return <div className="site-page"><SEO title="Contact Us — Kalpanaaa Software Solutions (kalpanaaasoftwaresolutions.com)" description="Contact Kalpanaaa Software Solutions (kalpanaaasoftwaresolutions.com). Submit a project proposal or book a free 30-minute discovery call." canonical="https://kalpanaaasoftwaresolutions.com/contact" jsonLd={[contactPageJsonLd, faqJsonLd]} />
     <section className="border-b border-line/70"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-16 md:py-24"><SectionHeading as="h1" eyebrow="Get in touch" title="Let's build something great." description="Share your requirements. We will prepare a bespoke technical proposal tailored to your enterprise goals."/></div></section>
     <section className="py-16 md:py-20"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 grid gap-10 lg:grid-cols-12">
       <div className="lg:col-span-5 space-y-5">

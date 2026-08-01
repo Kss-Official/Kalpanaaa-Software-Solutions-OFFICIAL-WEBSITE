@@ -29,7 +29,7 @@ export function Home() {
     ],
   };
   return <div className="site-page min-h-screen">
-    <SEO title="Kalpana Software Solutions — Bespoke Engineering Partner | kalpanaaasoftwaresolutions.com" description="Official website of Kalpana Software Solutions (kalpanaaasoftwaresolutions.com). Production-grade software engineering for government, healthcare, finance, education. RAG, multi-agent automation, full-stack web, mobile, DevOps, QA." canonical="https://kalpanaaasoftwaresolutions.com/" jsonLd={faqJsonLd} />
+    <SEO title="Kalpanaaa Software Solutions — Bespoke Engineering Partner | kalpanaaasoftwaresolutions.com" description="Official website of Kalpanaaa Software Solutions (kalpanaaasoftwaresolutions.com). Production-grade software engineering for government, healthcare, finance, education. RAG, multi-agent automation, full-stack web, mobile, DevOps, QA." canonical="https://kalpanaaasoftwaresolutions.com/" jsonLd={faqJsonLd} />
 
     <section className="relative overflow-hidden border-b border-line/70">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_74%_22%,rgba(81,155,255,.18),transparent_29%),radial-gradient(circle_at_13%_72%,rgba(23,105,213,.08),transparent_25%)]" />

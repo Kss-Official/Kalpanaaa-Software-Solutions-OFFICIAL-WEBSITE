@@ -8,7 +8,7 @@ export function Terms() {
   return (
     <div className="min-h-screen">
       <SEO
-        title="Terms of Service — Kalpana Software Solutions (kalpanaaasoftwaresolutions.com)"
+        title="Terms of Service — Kalpanaaa Software Solutions (kalpanaaasoftwaresolutions.com)"
         description={`Terms of service governing the use of ${NAP.name} website and engagements.`}
         canonical="https://kalpanaaasoftwaresolutions.com/terms"
       />
