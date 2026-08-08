@@ -8,18 +8,24 @@ import { SectionHeading } from "../components/SectionHeading";
 import { ServiceCard } from "../components/ServiceCard";
 import { IndustryCard } from "../components/IndustryCard";
 import { CaseStudyCard } from "../components/CaseStudyCard";
-import { TechBadge } from "../components/TechBadge";
 import { VisualScene } from "../components/visuals/VisualScene";
 import { LogoLoop } from "../components/effects/LogoLoop";
-import { MetricCounter } from "../components/effects/Counter";
+import { CountUp } from "../components/effects/CountUp";
 import { SERVICES, INDUSTRIES, CASE_STUDIES, STATISTICS, TECHNOLOGIES, NAP } from "../data/site";
+
+function HomeStatCounter({ value }: { value: string }) {
+  const match = value.match(/^(<\s*)?(\d+(?:\.\d+)?)(.*)$/);
+  if (!match) return <span className="metric-counter__static">{value}</span>;
+  const [, prefix = "", numeric, suffix = ""] = match;
+  return <span className="inline-flex items-baseline"><span className="metric-counter__affix">{prefix}</span><CountUp to={Number(numeric)} duration={1.2} className="metric-counter__static" /><span className="metric-counter__affix">{suffix}</span></span>;
+}
 
 export function Home() {
   const [activeIndustry, setActiveIndustry] = useState(0);
   const industry = INDUSTRIES[activeIndustry];
   const technologyLogos = useMemo(() => TECHNOLOGIES.map((technology) => {
     const Icon = (Lucide as any)[technology.icon] ?? Lucide.Code2;
-    return { title: technology.name, node: <><Icon size={22} aria-hidden="true" /><span className="text-sm font-semibold">{technology.name}</span></> };
+    return { title: technology.name, node: <><Icon size={32} aria-hidden="true" /><span className="text-lg font-semibold">{technology.name}</span></> };
   }), []);
   const faqJsonLd = {
     "@context": "https://schema.org", "@type": "FAQPage", mainEntity: [
@@ -47,7 +53,7 @@ export function Home() {
       </div>
     </section>
 
-    <section className="border-b border-line/80 site-surface"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-8 grid grid-cols-2 md:grid-cols-4 gap-5">{STATISTICS.map((statistic) => <div key={statistic.label} className="min-w-0"><MetricCounter value={statistic.value} /><p className="mt-2 text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted">{statistic.label}</p></div>)}</div></section>
+    <section className="border-b border-line/80 site-surface"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-8 grid grid-cols-2 md:grid-cols-4 gap-5">{STATISTICS.map((statistic) => <div key={statistic.label} className="min-w-0"><HomeStatCounter value={statistic.value} /><p className="mt-2 text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted">{statistic.label}</p></div>)}</div></section>
 
     <section className="py-20 md:py-28"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12"><div className="flex items-end justify-between flex-wrap gap-6 mb-12"><SectionHeading eyebrow="What we build" title="Bespoke engineering capabilities" description="Full-lifecycle software engineering across web, mobile, cloud, QA, RAG, and multi-agent systems." /><Link to="/services" className="text-brand text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5 hover:underline">All services <ArrowRight size={14}/></Link></div><div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{SERVICES.map((service, index) => <ServiceCard key={service.slug} service={service} index={index} />)}</div></div></section>
 
@@ -57,7 +63,7 @@ export function Home() {
 
     <section className="py-20 md:py-28 site-surface border-y border-line/70"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12"><div className="flex items-end justify-between flex-wrap gap-6 mb-12"><SectionHeading eyebrow="Selected work" title="Engineering, not templates." description="Three engagements. Three measurable outcomes."/><Link to="/work" className="text-brand text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5 hover:underline">All case studies <ArrowRight size={14}/></Link></div><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{CASE_STUDIES.map((project,index)=><CaseStudyCard key={project.slug} project={project} index={index}/>)}</div></div></section>
 
-    <section className="py-20 md:py-28 overflow-hidden"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12"><SectionHeading eyebrow="Production-grade stack" title="Tools we build with" description="Technology choices selected for stability, scale, and long-term maintainability." align="center"/><div className="mt-8"><LogoLoop logos={technologyLogos} speed={38} gap={44} logoHeight={22} hoverSpeed={0} fadeOut fadeOutColor="var(--canvas)" scaleOnHover /></div></div></section>
+    <section className="py-20 md:py-28 overflow-hidden"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12"><SectionHeading eyebrow="Production-grade stack" title="Tools we build with" description="Technology choices selected for stability, scale, and long-term maintainability." align="center"/><div className="mt-10"><LogoLoop logos={technologyLogos} speed={38} gap={64} logoHeight={36} hoverSpeed={0} fadeOut fadeOutColor="var(--canvas)" scaleOnHover /></div></div></section>
 
     <section className="py-20 md:py-28 site-surface border-y border-line/70"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 grid lg:grid-cols-2 gap-12 items-center"><div><SectionHeading eyebrow="AI engineering" title="RAG & multi-agent systems, in production." description="Guardrails, evals, observability, fallback, and measurable engineering around every AI feature."/><div className="mt-7 flex flex-wrap gap-3"><Link to="/services/rag-systems" className="button-primary px-5 py-3 text-xs font-bold uppercase tracking-widest"><Brain size={15}/>RAG systems</Link><Link to="/services/multi-agent-automation" className="button-secondary px-5 py-3 text-xs font-bold uppercase tracking-widest"><Bot size={15}/>Multi-agent</Link></div></div><div className="grid grid-cols-2 gap-4">{[{icon:Brain,label:"Retrieval",desc:"Hybrid search and re-ranking"},{icon:Bot,label:"Orchestration",desc:"Planning, tools, and memory"},{icon:Shield,label:"Guardrails",desc:"Evals and safe fallback"},{icon:Sparkles,label:"Optimisation",desc:"Fine-tuning pipelines"}].map((item)=><div key={item.label} className="site-card rounded-2xl p-5"><item.icon size={20} className="text-brand mb-3"/><p className="font-bold text-ink">{item.label}</p><p className="text-xs text-muted mt-1">{item.desc}</p></div>)}</div></div></section>
 

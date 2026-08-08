@@ -340,24 +340,24 @@ function Blueprint({ variant, labels, id }: { variant: string; labels: string[];
           <line x1={157} y1={220} x2={240} y2={150} /><line x1={157} y1={220} x2={240} y2={290} />
           <line x1={342} y1={150} x2={450} y2={220} /><line x1={342} y1={290} x2={450} y2={220} />
         </g>
+        <circle className="scene-orbit-ring" cx="320" cy="220" r="78" fill="none" stroke={c.line} strokeDasharray="5 6" strokeOpacity=".7"/>
+        <Pulse cx={290} cy={150} r={10} delay={200}/><Pulse cx={290} cy={290} r={10} delay={600}/>
         <Node x={105} y={220} label="QUERY" active />
         <Node x={290} y={150} label="RETRIEVE" />
         <Node x={290} y={290} label="RERANK" />
         <Node x={510} y={220} label="GROUNDED ANSWER" active wide />
-        <circle className="scene-orbit-ring" cx="320" cy="220" r="78" fill="none" stroke={c.line} strokeDasharray="5 6" strokeOpacity=".7"/>
-        <Pulse cx={290} cy={150} r={10} delay={200}/><Pulse cx={290} cy={290} r={10} delay={600}/>
       </Frame>
     );
     if (service === "multi-agent-automation") return (
       <Frame id={id} title="Multi agent workflow handoff map">
         <path d="M222 125H418M470 177V263M418 315H222M170 263V177" fill="none" stroke={c.line} strokeWidth="2"/>
         <path d="M222 125H418M470 177V263M418 315H222M170 263V177" fill="none" stroke={c.brand} strokeWidth="2" className="scene-flow"/>
+        <Pulse cx={320} cy={220} r={48} slow/>
         <Node x={170} y={125} label="PLAN" active />
         <Node x={470} y={125} label="RESEARCH" />
         <Node x={170} y={315} label="ACT" />
         <Node x={470} y={315} label="REVIEW" />
         <Node x={320} y={220} label="HUMAN APPROVAL" wide />
-        <Pulse cx={320} cy={220} r={48} slow/>
       </Frame>
     );
     return <Frame id={id} title="Web engineering application blueprint"><rect x="120" y="80" width="400" height="270" rx="18" fill="#fff" stroke={c.brand} strokeWidth="2"/><path d="M120 122h400M155 158h150M155 190h84M155 222h134M345 158h140v146H345z" stroke={c.line} strokeWidth="2"/><circle cx="145" cy="101" r="5" fill={c.brand} className="scene-pulse"/><circle cx="165" cy="101" r="5" fill={c.brand} className="scene-pulse scene-pulse--slow"/><Node x={320} y={390} label="RESPONSIVE · SECURE · SCALABLE" active wide /></Frame>;
