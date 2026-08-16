@@ -1,4 +1,7 @@
 import { type ReactNode, useEffect, useId, useRef } from "react";
+import { Code2, Smartphone, Server, ShieldCheck, Brain, Bot, LayoutTemplate } from "lucide-react";
+import { motion } from "framer-motion";
+import OrbitImages from "../effects/OrbitImages";
 
 type Props = { variant: string; labels?: string[]; title?: string; className?: string };
 const c = { ink: "#13213a", brand: "#1769d5", blue: "#6ea9ff", pale: "#eaf3ff", line: "#bdd5f7", muted: "#60708a" };
@@ -27,23 +30,99 @@ function Frame({ children, title, id }: { children: ReactNode; title: string; id
 }
 
 function ServiceConstellation({ labels, id }: { labels: string[]; id: string }) {
-  const points = [[320,85],[500,165],[500,300],[320,365],[140,300],[140,165]] as [number, number][];
+  const serviceIconsMap: Record<string, any> = {
+    "WEB-ENG": Code2,
+    "MOBILE": Smartphone,
+    "DEVOPS": Server,
+    "QA-TEST": ShieldCheck,
+    "QA-VERIFY": ShieldCheck,
+    "RAG-AI": Brain,
+    "AI-RAG": Brain,
+    "AGENTS": Bot,
+  };
+  const fallbackIcons = [Code2, Smartphone, Server, ShieldCheck, Brain, Bot];
+
+  // Structured symmetric 3-left / 3-right position mapping touching 3D cube edges
+  const positionConfigMap: Record<string, { pos: string; floatRange: number[]; duration: number; delay: number }> = {
+    // LEFT COLUMN (Top, Middle, Bottom)
+    "WEB-ENG":   { pos: "top-[16%] left-[9%] sm:left-[11%]",   floatRange: [-8, 8, -8],   duration: 4.8, delay: 0 },
+    "QA-TEST":   { pos: "top-[44%] left-[7%] sm:left-[9%]",    floatRange: [-10, 10, -10], duration: 5.2, delay: 1.8 },
+    "QA-VERIFY": { pos: "top-[44%] left-[7%] sm:left-[9%]",    floatRange: [-10, 10, -10], duration: 5.2, delay: 1.8 },
+    "AGENTS":    { pos: "bottom-[16%] left-[9%] sm:left-[11%]", floatRange: [-9, 9, -9],   duration: 5.4, delay: 2.2 },
+
+    // RIGHT COLUMN (Top, Middle, Bottom)
+    "DEVOPS":    { pos: "top-[16%] right-[9%] sm:right-[11%]",  floatRange: [-7, 7, -7],   duration: 4.4, delay: 1.2 },
+    "MOBILE":    { pos: "top-[44%] right-[7%] sm:right-[9%]",   floatRange: [-9, 9, -9],   duration: 5.0, delay: 0.6 },
+    "RAG-AI":    { pos: "bottom-[16%] right-[9%] sm:right-[11%]", floatRange: [-8, 8, -8],  duration: 4.6, delay: 1.0 },
+    "AI-RAG":    { pos: "bottom-[16%] right-[9%] sm:right-[11%]", floatRange: [-8, 8, -8],  duration: 4.6, delay: 1.0 },
+  };
+
+  const fallbackPositions = [
+    { pos: "top-[16%] left-[9%] sm:left-[11%]", floatRange: [-8, 8, -8], duration: 4.8, delay: 0 },
+    { pos: "top-[16%] right-[9%] sm:right-[11%]", floatRange: [-7, 7, -7], duration: 4.4, delay: 1.2 },
+    { pos: "top-[44%] left-[7%] sm:left-[9%]", floatRange: [-10, 10, -10], duration: 5.2, delay: 1.8 },
+    { pos: "top-[44%] right-[7%] sm:right-[9%]", floatRange: [-9, 9, -9], duration: 5.0, delay: 0.6 },
+    { pos: "bottom-[16%] left-[9%] sm:left-[11%]", floatRange: [-9, 9, -9], duration: 5.4, delay: 2.2 },
+    { pos: "bottom-[16%] right-[9%] sm:right-[11%]", floatRange: [-8, 8, -8], duration: 4.6, delay: 1.0 },
+  ];
+
   return (
-    <Frame id={id} title="Six Kalpanaaaa services connected to one engineering hub">
-      <g className="scene-orbit-ring"><circle cx="320" cy="220" r="126" fill="none" stroke="#d0e2fb" strokeDasharray="5 7"/></g>
-      <g className="scene-orbit-ring scene-orbit-ring--reverse"><circle cx="320" cy="220" r="92" fill="none" stroke="#d0e2fb" /></g>
-      {/* Static base connectors */}
-      <g stroke={c.line} strokeWidth="2" fill="none">
-        {points.map((p, i) => <line key={`base-${i}`} x1={320} y1={220} x2={p[0]} y2={p[1]} />)}
-      </g>
-      {/* Animated dashed connectors */}
-      <g stroke={c.brand} strokeWidth="2" fill="none" className="scene-flow">
-        {points.map((p, i) => <line key={`anim-${i}`} x1={320} y1={220} x2={p[0]} y2={p[1]} />)}
-      </g>
-      <g className="scene-orbit-group"><g filter={`url(#${id}-shadow)`}><path d="M320 144 386 181 386 259 320 297 254 259 254 181Z" fill="#eef6ff" stroke={c.brand} strokeWidth="2"/><path d="M320 144v153M254 181l66 38 66-38M254 259l66-40 66 40" fill="none" stroke={c.brand} strokeWidth="1.4"/><circle className="scene-pulse" cx="320" cy="220" r="25" fill={c.brand} style={{ transformBox: "fill-box" as any }}/></g></g>
-      <text x="320" y="225" fill="#fff" fontSize="10" fontWeight="800" textAnchor="middle" className="scene-tick" style={{ animationDelay: "200ms" }}>KSS</text>
-      {points.map((p, index) => <Node key={labels[index] ?? index} x={p[0]} y={p[1]} label={labels[index] ?? "SERVICE"} active={index === 0} wide />)}
-    </Frame>
+    <div className="relative w-full aspect-[800/540] flex items-center justify-center overflow-hidden rounded-[32px] bg-gradient-to-br from-[#fbfdff] via-[#f4f8fe] to-[#eef6ff] border border-[#d7e6fa] shadow-2xl">
+      {/* Background SVG Grid pattern */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 540" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <pattern id={`${id}-grid`} width="24" height="24" patternUnits="userSpaceOnUse">
+            <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#dce9fa" strokeWidth="1" />
+          </pattern>
+        </defs>
+        <rect x="12" y="12" width="776" height="516" rx="28" fill={`url(#${id}-grid)`} stroke="none" />
+        <rect x="12" y="12" width="776" height="516" rx="28" fill="none" stroke="#d7e6fa" strokeWidth="1.5" />
+        <circle cx="400" cy="270" r="230" fill="rgba(23,105,213,.03)" className="scene-grid-pulse" />
+      </svg>
+
+      {/* Main Central 3D Object - Still width (540px) */}
+      <div className="relative z-10 flex items-center justify-center pointer-events-auto">
+        <div className="absolute inset-0 rounded-full bg-brand/25 blur-3xl animate-pulse" />
+        <img
+          src="/ImageOrbit.png"
+          alt="Kalpanaaaa Engineering Core"
+          style={{ width: '540px', maxWidth: '92%' }}
+          className="relative h-auto object-contain drop-shadow-[0_28px_56px_rgba(23,105,213,0.4)] transition-transform duration-500 hover:scale-105"
+        />
+      </div>
+
+      {/* Floating Service Badges symmetrically structured on Left & Right sides */}
+      {labels.map((label, idx) => {
+        const IconComp = serviceIconsMap[label] || fallbackIcons[idx % fallbackIcons.length] || LayoutTemplate;
+        const config = positionConfigMap[label] || fallbackPositions[idx % fallbackPositions.length];
+        const isFirst = idx === 0;
+
+        return (
+          <motion.div
+            key={label}
+            className={`absolute z-20 ${config.pos}`}
+            animate={{ y: config.floatRange }}
+            transition={{
+              duration: config.duration,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: config.delay,
+            }}
+          >
+            <div
+              className={`group flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-bold tracking-wide transition-all duration-300 shadow-xl hover:scale-110 cursor-pointer whitespace-nowrap select-none backdrop-blur-md ${
+                isFirst
+                  ? 'bg-brand text-white border-brand shadow-blue-500/40 ring-4 ring-brand/20'
+                  : 'bg-white/95 text-ink border-line hover:border-brand hover:text-brand shadow-sky-900/15'
+              }`}
+            >
+              <IconComp size={15} className={isFirst ? 'text-white' : 'text-brand'} />
+              <span>{label}</span>
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
   );
 }
 

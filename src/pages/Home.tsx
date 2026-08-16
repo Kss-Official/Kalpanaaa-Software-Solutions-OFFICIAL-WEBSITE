@@ -5,7 +5,7 @@ import { ArrowRight, Terminal, Shield, Sparkles, Bot, Brain, CheckCircle2 } from
 import * as Lucide from "lucide-react";
 import { SEO } from "../components/SEO";
 import { SectionHeading } from "../components/SectionHeading";
-import { ServiceCard } from "../components/ServiceCard";
+import { ServicesSection } from "../components/ServicesBento";
 import { IndustryCard } from "../components/IndustryCard";
 import { CaseStudyCard } from "../components/CaseStudyCard";
 import { VisualScene } from "../components/visuals/VisualScene";
@@ -39,7 +39,7 @@ export function Home() {
 
     <section className="relative overflow-hidden border-b border-line/70">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_74%_22%,rgba(81,155,255,.18),transparent_29%),radial-gradient(circle_at_13%_72%,rgba(23,105,213,.08),transparent_25%)]" />
-      <div className="relative max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-16 md:py-24 grid lg:grid-cols-[minmax(0,1fr)_minmax(430px,.9fr)] gap-10 items-center">
+      <div className="relative max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-16 md:py-24 grid lg:grid-cols-[minmax(0,1fr)_minmax(480px,1.1fr)] gap-10 items-center">
         <div>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="pill px-3.5 py-1.5"><Terminal size={13} /><span>Bespoke engineering partner</span></motion.div>
           <motion.h1 initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .08 }} className="mt-7 font-display text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.03] text-ink max-w-4xl pr-4 sm:pr-0">Architecting digital <span className="gradient-text">transformation.</span></motion.h1>
@@ -55,7 +55,7 @@ export function Home() {
 
     <section className="border-b border-line/80 site-surface"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 py-8 grid grid-cols-2 md:grid-cols-4 gap-5">{STATISTICS.map((statistic) => <div key={statistic.label} className="min-w-0"><HomeStatCounter value={statistic.value} /><p className="mt-2 text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted">{statistic.label}</p></div>)}</div></section>
 
-    <section className="py-20 md:py-28"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12"><div className="flex items-end justify-between flex-wrap gap-6 mb-12"><SectionHeading eyebrow="What we build" title="Bespoke engineering capabilities" description="Full-lifecycle software engineering across web, mobile, cloud, QA, RAG, and multi-agent systems." /><Link to="/services" className="text-brand text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5 hover:underline">All services <ArrowRight size={14}/></Link></div><div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{SERVICES.map((service, index) => <ServiceCard key={service.slug} service={service} index={index} />)}</div></div></section>
+    <ServicesSection />
 
     <section className="py-20 md:py-28 site-surface border-y border-line/70"><div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12"><div className="flex items-end justify-between flex-wrap gap-6 mb-12"><SectionHeading eyebrow="Industries we serve" title="Regulated. Demanding. Built for." description="Engineering for the constraints that matter: compliance, auditability, latency, scale, and accessibility." /><Link to="/industries" className="text-brand text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5 hover:underline">All industries <ArrowRight size={14}/></Link></div><div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">{INDUSTRIES.map((item, index) => <IndustryCard key={item.slug} industry={item} index={index} />)}</div></div></section>
 

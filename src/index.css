@@ -111,9 +111,9 @@ body { margin: 0; overflow-x: hidden; background: transparent; color: var(--ink)
   .visual-scene .scene-route { stroke-dashoffset: 0 !important; }
   .visual-scene .scene-route--short { stroke-dashoffset: 0 !important; }
 }
-.visual-scene { position: relative; width: min(100%, 640px); margin-inline: auto; border-radius: 28px; background: radial-gradient(circle at 80% 12%, rgba(111,176,255,.18), transparent 32%), linear-gradient(135deg, #fbfdff, #eef6ff); box-shadow: 0 26px 55px -38px rgba(23,105,213,.46); overflow: hidden; }
+.visual-scene { position: relative; width: min(100%, 820px); margin-inline: auto; border-radius: 28px; background: radial-gradient(circle at 80% 12%, rgba(111,176,255,.18), transparent 32%), linear-gradient(135deg, #fbfdff, #eef6ff); box-shadow: 0 26px 55px -38px rgba(23,105,213,.46); overflow: hidden; }
 .visual-scene__svg { display: block; width: 100%; height: auto; }
-.hero-scene { min-width: 0; }
+.hero-scene { min-width: 0; width: 100%; max-width: 820px; }
 .detail-scene { max-width: 560px; }
 .ai-detail-scene { isolation: isolate; overflow: hidden; border-radius: 28px; }
 .ai-detail-scene .ai-galaxy { z-index: 0; opacity: .7; }
