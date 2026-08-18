@@ -1,0 +1,105 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Default Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Test collection used for the connectivity probe
+    match /test/{docId} {
+      allow read: if true;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if true; // Temporarily allow public read
+      allow create, update: if isSignedIn() && isValidId(userId);
+      allow delete: if isSignedIn();
+    }
+
+    // Employees collection
+    match /employees/{employeeId} {
+      allow read: if true; 
+      allow create, update: if isValidId(employeeId);
+      allow delete: if true;
+    }
+
+    // Attendance records collection
+    match /attendance/{recordId} {
+      allow read: if true; 
+      allow create, update: if isValidId(recordId);
+      allow delete: if true;
+    }
+
+    // Leave & Work-From-Home Requests collection (multi-device sync)
+    match /leaveRequests/{requestId} {
+      allow read: if true;
+      allow create, update: if isSignedIn() && isValidId(requestId);
+      allow delete: if isSignedIn();
+    }
+
+    // Salary Disbursement collection (persisted payroll runs)
+    match /salaryDisbursements/{recordId} {
+      allow read: if true;
+      allow create, update: if isSignedIn() && isValidId(recordId);
+      allow delete: if false;
+    }
+
+    // Company & Employee Rules collection
+    match /companyRules/{ruleId} {
+      allow read: if true;
+      allow create, update: if isSignedIn() && isValidId(ruleId);
+      allow delete: if isSignedIn();
+    }
+
+    // Notifications collection
+    match /notifications/{notifId} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if false;
+    }
+
+    // FCM push tokens collection
+    match /fcmTokens/{tokenId} {
+      allow read: if true;
+      allow create, update: if isSignedIn();
+      allow delete: if false;
+    }
+
+    // Audit logs collection
+    match /auditLogs/{logId} {
+      allow read: if true; 
+      allow create: if isValidId(logId);
+      allow update, delete: if false;
+    }
+
+    // Settings collection
+    match /settings/{settingId} {
+      allow read: if true; 
+      allow create, update: if true;
+      allow delete: if false;
+    }
+
+    // WorkZones collection
+    match /workZones/{zoneId} {
+      allow read: if true; 
+      allow create, update: if true;
+      allow delete: if false;
+    }
+  }
+}
