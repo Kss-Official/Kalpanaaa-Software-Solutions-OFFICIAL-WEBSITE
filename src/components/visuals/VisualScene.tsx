@@ -66,6 +66,8 @@ function ServiceConstellation({ labels, id }: { labels: string[]; id: string }) 
     { pos: "bottom-[16%] right-[9%] sm:right-[11%]", floatRange: [-8, 8, -8], duration: 4.6, delay: 1.0 },
   ];
 
+  const displayLabels = labels && labels.length === 6 ? labels : ["WEB-ENG", "DEVOPS", "QA-VERIFY", "MOBILE", "AGENTS", "AI-RAG"];
+
   return (
     <div className="relative w-full aspect-[800/540] flex items-center justify-center overflow-hidden rounded-[32px] bg-gradient-to-br from-[#fbfdff] via-[#f4f8fe] to-[#eef6ff] border border-[#d7e6fa] shadow-2xl">
       {/* Background SVG Grid pattern */}
@@ -92,7 +94,7 @@ function ServiceConstellation({ labels, id }: { labels: string[]; id: string }) 
       </div>
 
       {/* Floating Service Badges symmetrically structured on Left & Right sides */}
-      {labels.map((label, idx) => {
+      {displayLabels.map((label, idx) => {
         const IconComp = serviceIconsMap[label] || fallbackIcons[idx % fallbackIcons.length] || LayoutTemplate;
         const config = positionConfigMap[label] || fallbackPositions[idx % fallbackPositions.length];
         const isFirst = idx === 0;
@@ -385,11 +387,93 @@ function EducationBlueprint({ id }: { id: string }) {
 }
 
 
+type ServiceGraphic = {
+  title: string;
+  badge: string;
+  nodes: [string, string, string, string];
+  chips: [string, string, string];
+};
+
+const serviceGraphics: Record<string, ServiceGraphic> = {
+  "web-engineering": { title: "Web application development blueprint", badge: "WEB", nodes: ["UI", "API", "DATA", "SHIP"], chips: ["SSR", "REAL-TIME", "SECURE"] },
+  "mobile-apps": { title: "Mobile app development blueprint", badge: "APP", nodes: ["IOS", "ANDROID", "SYNC", "STORE"], chips: ["OFFLINE", "PUSH", "NATIVE"] },
+  "ui-ux-design": { title: "UI UX design blueprint", badge: "UX", nodes: ["RESEARCH", "FLOW", "PROTOTYPE", "HANDOFF"], chips: ["SYSTEM", "ACCESS", "MOTION"] },
+  "e-commerce-development": { title: "E-commerce development blueprint", badge: "SHOP", nodes: ["CATALOG", "CART", "PAY", "ORDERS"], chips: ["SEO", "STOCK", "CHECKOUT"] },
+  "custom-software-development": { title: "Custom software development blueprint", badge: "OPS", nodes: ["SCOPE", "BUILD", "INTEGRATE", "OPERATE"], chips: ["ROLES", "PORTAL", "AUDIT"] },
+  "cloud-consulting": { title: "Cloud consulting blueprint", badge: "CLOUD", nodes: ["AUDIT", "ROADMAP", "LANDING", "OPTIMIZE"], chips: ["COST", "DR", "SECURITY"] },
+  "aws-azure-solutions": { title: "AWS and Azure solutions blueprint", badge: "AZ", nodes: ["COMPUTE", "NETWORK", "DATA", "MONITOR"], chips: ["IAM", "SCALE", "BACKUP"] },
+  "devops-ci-cd": { title: "DevOps CI CD blueprint", badge: "CI", nodes: ["COMMIT", "TEST", "BUILD", "DEPLOY"], chips: ["GATES", "ROLLBACK", "ARTIFACT"] },
+  "docker-kubernetes": { title: "Docker and Kubernetes blueprint", badge: "K8S", nodes: ["IMAGE", "PODS", "INGRESS", "SCALE"], chips: ["PROBES", "SECRETS", "ROLLING"] },
+  "infrastructure-as-code": { title: "Infrastructure as code blueprint", badge: "IAC", nodes: ["MODULE", "PLAN", "APPLY", "DRIFT"], chips: ["STATE", "REVIEW", "POLICY"] },
+  "generative-ai-solutions": { title: "Generative AI solutions blueprint", badge: "AI", nodes: ["PROMPT", "CONTEXT", "MODEL", "EVAL"], chips: ["SAFETY", "TOOLS", "FEEDBACK"] },
+  "rag-applications": { title: "RAG application blueprint", badge: "RAG", nodes: ["INGEST", "EMBED", "RETRIEVE", "ANSWER"], chips: ["CITE", "RERANK", "ACCESS"] },
+  "ai-agents": { title: "AI agents blueprint", badge: "BOT", nodes: ["PLAN", "TOOLS", "MEMORY", "APPROVE"], chips: ["TRACE", "RETRY", "HITL"] },
+  "ai-chatbots": { title: "AI chatbot blueprint", badge: "CHAT", nodes: ["INTENT", "KNOWLEDGE", "REPLY", "HANDOFF"], chips: ["WEB", "WHATSAPP", "ANALYTICS"] },
+  "llm-integration": { title: "LLM integration blueprint", badge: "LLM", nodes: ["API", "STREAM", "TOOLS", "FALLBACK"], chips: ["CACHE", "TOKENS", "PRIVACY"] },
+  "application-security": { title: "Application security blueprint", badge: "SEC", nodes: ["AUTH", "SCAN", "HARDEN", "RELEASE"], chips: ["OWASP", "SAST", "SECRETS"] },
+  "cloud-security": { title: "Cloud security blueprint", badge: "LOCK", nodes: ["IAM", "NETWORK", "SECRETS", "ALERTS"], chips: ["BACKUP", "POLICY", "LOGS"] },
+  "security-auditing": { title: "Security auditing blueprint", badge: "AUDIT", nodes: ["SCOPE", "EVIDENCE", "RISK", "VERIFY"], chips: ["REPORT", "FIXES", "CLOSURE"] },
+  "vulnerability-assessment": { title: "Vulnerability assessment blueprint", badge: "VAPT", nodes: ["DISCOVER", "TEST", "PRIORITY", "RETEST"], chips: ["API", "CLOUD", "DEPS"] },
+  "identity-access-management": { title: "Identity and access management blueprint", badge: "IAM", nodes: ["SSO", "ROLES", "TOKENS", "AUDIT"], chips: ["MFA", "POLICY", "LIFECYCLE"] },
+  "quality-assurance": { title: "Quality assurance blueprint", badge: "QA", nodes: ["PLAN", "TEST", "TRIAGE", "SIGN-OFF"], chips: ["MANUAL", "REGRESSION", "ACCESS"] },
+  "automated-testing": { title: "Automated testing blueprint", badge: "AUTO", nodes: ["UNIT", "API", "E2E", "CI GATE"], chips: ["FIXTURES", "MOCKS", "REPORTS"] },
+  "performance-testing": { title: "Performance testing blueprint", badge: "PERF", nodes: ["LOAD", "TRACE", "TUNE", "SCALE"], chips: ["LATENCY", "CACHE", "CAPACITY"] },
+  "it-consulting": { title: "IT consulting blueprint", badge: "PLAN", nodes: ["ASSESS", "ADVISE", "ROADMAP", "GOVERN"], chips: ["COST", "RISK", "STACK"] },
+  "system-integration": { title: "System integration blueprint", badge: "API", nodes: ["CONNECT", "MAP", "SYNC", "MONITOR"], chips: ["WEBHOOKS", "QUEUES", "RETRY"] },
+  "cloud-devops": { title: "Cloud DevOps infrastructure blueprint", badge: "DEV", nodes: ["PIPELINE", "CONTAINER", "CLOUD", "OBSERVE"], chips: ["TERRAFORM", "K8S", "SLA"] },
+  "rag-systems": { title: "RAG systems and AI engineering blueprint", badge: "RAG", nodes: ["SOURCE", "VECTOR", "GROUND", "OBSERVE"], chips: ["EVALS", "GUARDS", "TRACE"] },
+  "multi-agent-automation": { title: "Multi-agent automation blueprint", badge: "BOT", nodes: ["PLAN", "RESEARCH", "ACT", "REVIEW"], chips: ["MEMORY", "TOOLS", "APPROVAL"] },
+  "qa-testing": { title: "Enterprise quality assurance blueprint", badge: "QA", nodes: ["UNIT", "E2E", "LOAD", "RELEASE"], chips: ["A11Y", "SAST", "COVERAGE"] },
+};
+
+function ServiceBlueprint({ service, id }: { service: string; id: string }) {
+  const graphic = serviceGraphics[service] ?? serviceGraphics["web-engineering"];
+  const nodes = [[150, 116], [490, 116], [490, 324], [150, 324]] as [number, number][];
+  const lines = [
+    [[214, 116], [282, 188]],
+    [[426, 116], [358, 188]],
+    [[426, 324], [358, 252]],
+    [[214, 324], [282, 252]],
+  ] as [[number, number], [number, number]][];
+
+  return (
+    <Frame id={id} title={graphic.title}>
+      <defs>
+        <radialGradient id={`${id}-hub`} cx="50%" cy="42%" r="64%">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset=".62" stopColor="#eef6ff" />
+          <stop offset="1" stopColor="#dbeafe" />
+        </radialGradient>
+      </defs>
+      <path d="M94 220H546" stroke="#d7e6fa" strokeWidth="18" strokeLinecap="round" opacity=".42" />
+      <path d="M320 76V364" stroke="#d7e6fa" strokeWidth="18" strokeLinecap="round" opacity=".28" />
+      <g stroke={c.line} strokeWidth="2.5" fill="none">{lines.map(([from, to], index) => <line key={`base-${index}`} x1={from[0]} y1={from[1]} x2={to[0]} y2={to[1]} />)}</g>
+      <g stroke={c.brand} strokeWidth="2.5" fill="none" className="scene-flow">{lines.map(([from, to], index) => <line key={`flow-${index}`} x1={from[0]} y1={from[1]} x2={to[0]} y2={to[1]} />)}</g>
+      <g className="scene-orbit-ring"><circle cx="320" cy="220" r="108" fill="none" stroke="#d0e2fb" strokeDasharray="6 8" /></g>
+      <g className="scene-orbit-ring scene-orbit-ring--reverse"><circle cx="320" cy="220" r="76" fill="none" stroke="#d0e2fb" /></g>
+      <circle cx="320" cy="220" r="88" fill={`url(#${id}-hub)`} stroke={c.brand} strokeWidth="2.5" filter={`url(#${id}-shadow)`} />
+      <Pulse cx={320} cy={220} r={58} slow />
+      <g className="scene-centre">
+        <rect x="270" y="176" width="100" height="88" rx="24" fill="#fff" stroke={c.brand} strokeWidth="3.5" />
+        <path d="M292 244h56M304 194h32M292 213h56" stroke={c.line} strokeWidth="5" strokeLinecap="round" />
+        <text x="320" y="236" fill={c.brand} fontSize={graphic.badge.length > 3 ? 18 : 24} fontWeight="900" textAnchor="middle">{graphic.badge}</text>
+      </g>
+      {nodes.map(([x, y], index) => <Node key={graphic.nodes[index]} x={x} y={y} label={graphic.nodes[index]} active={index === 0} wide grow cardIndex={index} />)}
+      {graphic.chips.map((chip, index) => {
+        const x = 206 + index * 92;
+        return <g key={chip} className="scene-card" style={{ animationDelay: `${420 + index * 120}ms` }} transform={`translate(${x} 374)`}><rect width="82" height="32" rx="10" fill="#fff" stroke={index === 1 ? c.brand : c.line} /><text x="41" y="20" fill={index === 1 ? c.brand : c.ink} fontSize="9" fontWeight="800" letterSpacing=".6" textAnchor="middle">{chip}</text></g>;
+      })}
+    </Frame>
+  );
+}
+
+
 function Blueprint({ variant, labels, id }: { variant: string; labels: string[]; id: string }) {
   const service = variant.replace("service-", "");
   const industry = variant.replace("industry-", "");
   const caseStudy = variant.replace("case-", "");
   if (variant.startsWith("service-")) {
+    return <ServiceBlueprint service={service} id={id} />;
     if (service === "mobile-apps") return <Frame id={id} title="Mobile application device blueprint"><path d="M160 82h120v276H160zM360 82h120v276H360z" fill="#fff" stroke={c.brand} strokeWidth="2"/><path d="M180 118h80M180 146h80M380 118h80M380 146h80" stroke={c.line} strokeWidth="8"/><path className="scene-flow" d="M180 220L460 220" stroke={c.brand} strokeWidth="2"/><Node x={320} y={380} label="OFFLINE · SYNC · NATIVE" active wide />{stops_svg(160,82,120)}</Frame>;
     if (service === "cloud-devops") return (
       <Frame id={id} title="Cloud infrastructure topology blueprint">
