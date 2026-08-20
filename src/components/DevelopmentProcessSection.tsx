@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Check, Search } from "lucide-react";
 
 const steps = [
@@ -32,7 +32,7 @@ const steps = [
     glow: "rgba(109,61,244,.68)",
     description:
       "We turn strategy into intuitive, engaging designs that deliver seamless user experiences and strong visual impact.",
-    image: "/development-step-2.jpeg",
+    image: "/Deve-1.svg",
     points: [
       "User flows & information architecture",
       "Interactive prototypes",
@@ -53,7 +53,7 @@ const steps = [
     glow: "rgba(12,159,194,.68)",
     description:
       "We bring designs to life with clean, scalable code and rigorous testing to ensure performance, security, and reliability at every step.",
-    image: "/development-step-3.jpeg",
+    image: "/Deve-2.svg",
     points: [
       "Frontend development",
       "Database design & optimization",
@@ -74,7 +74,7 @@ const steps = [
     glow: "rgba(255,107,24,.68)",
     description:
       "We ensure a smooth launch to production with rigorous checks, monitoring, and ongoing support for long-term success.",
-    image: "/development-step-4.jpeg",
+    image: "/Deve-3.svg",
     points: [
       "Production deployment",
       "Monitoring & analytics",
@@ -86,19 +86,67 @@ const steps = [
   },
 ];
 
-const SLIDE_MS = 3800;
+const SLIDE_MS = 5200;
 
 export default function DevelopmentProcessSection() {
   const [active, setActive] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [centers, setCenters] = useState<number[]>([]);
+  const navRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const current = steps[active];
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActive((step) => (step + 1) % steps.length);
-    }, SLIDE_MS);
+  useLayoutEffect(() => {
+    const measureCenters = () => {
+      const nav = navRef.current;
+      if (!nav) return;
 
-    return () => window.clearInterval(timer);
+      const navBox = nav.getBoundingClientRect();
+      setCenters(
+        stepRefs.current.map((step) => {
+          if (!step) return 0;
+          const box = step.getBoundingClientRect();
+          return box.left - navBox.left + box.width / 2;
+        }),
+      );
+    };
+
+    measureCenters();
+    window.addEventListener("resize", measureCenters);
+    return () => window.removeEventListener("resize", measureCenters);
   }, []);
+
+  useEffect(() => {
+    if (isHovering) {
+      setProgress(0);
+      return;
+    }
+
+    let start = performance.now();
+    let frame = 0;
+
+    const tick = (now: number) => {
+      let nextProgress = (now - start) / SLIDE_MS;
+
+      if (nextProgress >= 1) {
+        setActive((step) => (step + 1) % steps.length);
+        start = now;
+        nextProgress = 0;
+      }
+
+      setProgress(nextProgress);
+      frame = window.requestAnimationFrame(tick);
+    };
+
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, [isHovering]);
+
+  const from = centers[active] ?? 0;
+  const to = centers[(active + 1) % steps.length] ?? from;
+  const wrapping = active === steps.length - 1;
+  const dotLeft = isHovering || wrapping ? from : from + (to - from) * progress;
 
   return (
     <section className="bg-white py-12 md:py-14">
@@ -108,7 +156,7 @@ export default function DevelopmentProcessSection() {
             OUR DEVELOPMENT PROCESS
           </p>
 
-          <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.04] tracking-tight text-ink sm:text-5xl md:text-[56px]">
+          <h2 className="mt-6 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-ink sm:text-5xl md:text-6xl lg:text-[64px]">
             From idea to impact,{" "}
             <span className="text-brand">we build it right.</span>
           </h2>
@@ -120,26 +168,61 @@ export default function DevelopmentProcessSection() {
         </div>
 
         <div className="relative mx-auto mt-8 max-w-6xl">
-          <div className="relative grid gap-3 md:grid-cols-4">
+          <div ref={navRef} className="relative grid gap-3 md:grid-cols-4">
+            <span
+              className="pointer-events-none absolute top-[25px] z-20 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-brand shadow-[0_0_0_7px_rgba(23,105,213,.14),0_10px_24px_-10px_rgba(23,105,213,.9)] md:block"
+              style={{
+                left: dotLeft,
+                backgroundColor: current.color,
+                boxShadow: `0 0 0 7px ${current.light}, 0 10px 24px -10px ${current.glow}`,
+              }}
+              aria-hidden="true"
+            />
             {steps.map((step, index) => {
               const isActive = index === active;
-              const isCompleted = index < active;
-              const segmentColor = isCompleted ? step.color : "var(--line)";
 
               return (
                 <button
                   key={step.number}
+                  ref={(node) => {
+                    stepRefs.current[index] = node;
+                  }}
                   type="button"
-                  onClick={() => setActive(index)}
-                  className="group relative flex min-w-0 items-center gap-3 rounded-2xl bg-white p-2 text-left transition-all duration-300 hover:-translate-y-0.5 md:flex-col md:items-center md:gap-3 md:bg-transparent md:p-0 md:text-center"
+                  onClick={() => {
+                    setActive(index);
+                    setProgress(0);
+                  }}
+                  onFocus={() => {
+                    setActive(index);
+                    setProgress(0);
+                  }}
+                  onMouseEnter={() => {
+                    setActive(index);
+                    setProgress(0);
+                    setIsHovering(true);
+                  }}
+                  onMouseLeave={() => setIsHovering(false)}
+                  className="group relative z-30 flex min-w-0 items-center gap-3 rounded-2xl bg-white p-2 text-left transition-all duration-300 md:flex-col md:items-center md:gap-3 md:bg-transparent md:p-0 md:text-center"
                   aria-pressed={isActive}
                 >
                   {index < steps.length - 1 && (
                     <span
-                      className="absolute left-[calc(50%+25px)] right-[calc(-50%+25px)] top-[25px] hidden h-[3px] rounded-full transition-colors duration-500 md:block"
-                      style={{ backgroundColor: segmentColor }}
+                      className="absolute left-[calc(50%+25px)] right-[calc(-50%+25px)] top-[25px] hidden h-[3px] overflow-hidden rounded-full bg-[var(--line)] md:block"
                       aria-hidden="true"
-                    />
+                    >
+                      <span
+                        className="absolute inset-y-0 left-0 rounded-full"
+                        style={{
+                          width:
+                            index < active
+                              ? "100%"
+                              : index === active && !isHovering
+                                ? `${progress * 100}%`
+                                : "0%",
+                          backgroundColor: step.color,
+                        }}
+                      />
+                    </span>
                   )}
 
                   <span
@@ -149,7 +232,7 @@ export default function DevelopmentProcessSection() {
                       backgroundColor: isActive ? step.color : "#ffffff",
                       color: isActive ? "#ffffff" : step.color,
                       boxShadow: isActive
-                        ? `0 14px 24px -15px ${step.glow}`
+                        ? `0 14px 24px -15px ${step.glow}, 0 0 0 8px ${step.light}`
                         : "none",
                     }}
                   >

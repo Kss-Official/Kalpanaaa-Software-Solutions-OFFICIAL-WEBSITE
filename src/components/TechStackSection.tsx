@@ -58,7 +58,7 @@ export default function TechStackSection() {
             Production-grade stack
           </p>
 
-          <h2 className="mt-4 font-display text-4xl font-extrabold leading-tight text-ink sm:text-5xl md:text-[56px]">
+          <h2 className="mt-6 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-ink sm:text-5xl md:text-6xl lg:text-[64px]">
             Tools we build with
           </h2>
 

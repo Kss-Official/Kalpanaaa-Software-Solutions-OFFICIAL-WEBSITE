@@ -17,6 +17,7 @@ const navLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [desktopMenu, setDesktopMenu] = useState<"services" | "industries" | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
@@ -34,7 +35,13 @@ export function Navbar() {
 
   useEffect(() => {
     setOpen(false);
+    setDesktopMenu(null);
   }, [location.pathname]);
+
+  const closeMenus = () => {
+    setOpen(false);
+    setDesktopMenu(null);
+  };
 
   return (
     <header
@@ -75,23 +82,44 @@ export function Navbar() {
               SERVICES
               ================================================= */}
 
-          <div className="group relative">
+          <Link
+            to="/"
+            onClick={closeMenus}
+            className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
+          >
+            Home
+          </Link>
+
+          <Link
+            to="/about"
+            onClick={closeMenus}
+            className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
+          >
+            About
+          </Link>
+
+          <div
+            className="relative"
+            onMouseEnter={() => setDesktopMenu("services")}
+            onMouseLeave={() => setDesktopMenu(null)}
+          >
             <Link
               itemProp="url"
               to="/services"
+              onClick={closeMenus}
               className="flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
             >
               <span itemProp="name">Services</span>
 
               <ChevronDown
                 size={12}
-                className="transition-transform group-hover:rotate-180"
+                className={`transition-transform ${desktopMenu === "services" ? "rotate-180" : ""}`}
               />
             </Link>
 
             {/* Services Mega Dropdown */}
             <div
-              className="
+              className={`
                 absolute
                 top-full
                 left-1/2
@@ -99,13 +127,10 @@ export function Navbar() {
                 pt-2
                 w-[778px]
                 max-w-[calc(100vw-32px)]
-                opacity-0
-                invisible
-                group-hover:opacity-100
-                group-hover:visible
                 transition-all
                 duration-200
-              "
+                ${desktopMenu === "services" ? "opacity-100 visible" : "opacity-0 invisible"}
+              `}
               role="menu"
             >
               <div className="bg-white border border-line rounded-xl shadow-xl overflow-hidden">
@@ -146,6 +171,7 @@ export function Navbar() {
                           <Link
                             key={`${category.title}-${item.title}`}
                             to={`/services/${item.slug}`}
+                            onClick={closeMenus}
                             className="
                               block
                               px-2
@@ -172,6 +198,7 @@ export function Navbar() {
                 <div className="border-t border-line px-6 py-3">
                   <Link
                     to="/services"
+                    onClick={closeMenus}
                     className="block text-xs font-mono uppercase tracking-widest text-brand hover:underline"
                   >
                     View all services →
@@ -186,36 +213,39 @@ export function Navbar() {
               ================================================= */}
 
           {navLinks.map((item) => (
-            <div key={item.label} className="group relative">
+            <div
+              key={item.label}
+              className="relative"
+              onMouseEnter={() => setDesktopMenu("industries")}
+              onMouseLeave={() => setDesktopMenu(null)}
+            >
               <Link
                 itemProp="url"
                 to={item.to}
+                onClick={closeMenus}
                 className="flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
               >
                 <span itemProp="name">{item.label}</span>
 
                 <ChevronDown
                   size={12}
-                  className="transition-transform group-hover:rotate-180"
+                  className={`transition-transform ${desktopMenu === "industries" ? "rotate-180" : ""}`}
                 />
               </Link>
 
               {/* Industries Dropdown */}
               <div
-                className="
+                className={`
                   absolute
                   top-full
                   left-1/2
                   -translate-x-1/2
                   pt-2
                   w-72
-                  opacity-0
-                  invisible
-                  group-hover:opacity-100
-                  group-hover:visible
                   transition-all
                   duration-200
-                "
+                  ${desktopMenu === "industries" ? "opacity-100 visible" : "opacity-0 invisible"}
+                `}
                 role="menu"
               >
                 <div className="bg-white border border-line rounded-xl shadow-xl p-2">
@@ -223,6 +253,7 @@ export function Navbar() {
                     <Link
                       key={child.to}
                       to={child.to}
+                      onClick={closeMenus}
                       className="block px-3 py-2 text-sm text-muted hover:text-brand hover:bg-surface rounded-md transition-colors"
                       role="menuitem"
                     >
@@ -233,6 +264,7 @@ export function Navbar() {
                   <div className="border-t border-line mt-1 pt-1">
                     <Link
                       to={item.to}
+                      onClick={closeMenus}
                       className="block px-3 py-2 text-xs font-mono uppercase tracking-widest text-brand hover:underline"
                     >
                       View all {item.label.toLowerCase()} →
@@ -249,20 +281,10 @@ export function Navbar() {
 
           <Link
             to="/blog"
+            onClick={closeMenus}
             className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
           >
             Blog
-          </Link>
-
-          {/* =================================================
-              ABOUT
-              ================================================= */}
-
-          <Link
-            to="/about"
-            className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
-          >
-            About
           </Link>
         </nav>
 
@@ -273,6 +295,7 @@ export function Navbar() {
         <div className="hidden lg:block">
           <Link
             to="/contact"
+            onClick={closeMenus}
             className="button-primary px-5 py-2.5 text-xs font-bold uppercase tracking-widest"
           >
             Contact us
@@ -307,6 +330,20 @@ export function Navbar() {
             className="lg:hidden border-t border-line bg-white overflow-hidden"
           >
             <div className="px-6 py-6 space-y-6 max-h-[calc(100vh-64px)] overflow-y-auto">
+              <Link
+                to="/"
+                className="block py-2 text-sm font-semibold uppercase tracking-widest text-ink"
+              >
+                Home
+              </Link>
+
+              <Link
+                to="/about"
+                className="block py-2 text-sm font-semibold uppercase tracking-widest text-ink"
+              >
+                About
+              </Link>
+
               {/* =================================================
                   MOBILE SERVICES
                   ================================================= */}
@@ -383,17 +420,6 @@ export function Navbar() {
                 className="block py-2 text-sm font-semibold uppercase tracking-widest text-ink"
               >
                 Blog
-              </Link>
-
-              {/* =================================================
-                  MOBILE ABOUT
-                  ================================================= */}
-
-              <Link
-                to="/about"
-                className="block py-2 text-sm font-semibold uppercase tracking-widest text-ink"
-              >
-                About
               </Link>
 
               {/* =================================================

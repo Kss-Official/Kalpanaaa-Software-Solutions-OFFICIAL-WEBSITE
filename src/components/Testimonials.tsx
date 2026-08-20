@@ -91,14 +91,20 @@ export default function Testimonials() {
 
           <div className="max-w-xl">
 
+            <p className="eyebrow mb-5 text-sm font-semibold text-brand tracking-widest before:w-14 after:h-px after:w-14 after:bg-current after:opacity-70">
+              Testimonials
+            </p>
+
             <h2
               className="
                 font-display
                 text-4xl
                 sm:text-5xl
                 md:text-6xl
+                lg:text-[64px]
                 font-extrabold
-                leading-[1.05]
+                leading-[1.08]
+                tracking-tight
                 text-ink
               "
             >

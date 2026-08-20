@@ -109,8 +109,9 @@ export default function FAQ() {
               text-4xl
               sm:text-5xl
               md:text-6xl
+              lg:text-[64px]
               font-extrabold
-              leading-[1.05]
+              leading-[1.08]
               tracking-tight
               text-ink
             "

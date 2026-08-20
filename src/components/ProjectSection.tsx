@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ExternalLink } from "lucide-react";
 
@@ -38,6 +39,8 @@ const projects = [
 ];
 
 export default function ProjectSection() {
+  const [frontCard, setFrontCard] = useState<string | null>(null);
+
   return (
     <section className="relative overflow-x-hidden overflow-y-visible site-surface py-14 md:py-16">
       <div className="pointer-events-none absolute inset-x-0 top-[52%] h-64 bg-[radial-gradient(circle,rgba(23,105,213,.08),transparent_66%)]" />
@@ -49,7 +52,7 @@ export default function ProjectSection() {
             Industries we serve
           </p>
 
-          <h2 className="mt-4 font-display text-4xl sm:text-5xl md:text-6xl lg:text-[58px] font-extrabold leading-[0.98] tracking-tight text-black">
+          <h2 className="mt-6 font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-ink sm:text-5xl md:text-6xl lg:text-[64px]">
             Projects That
             <br />
             <span className="text-brand">Make an Impact</span>
@@ -63,11 +66,13 @@ export default function ProjectSection() {
         </div>
 
         {/* ================= PROJECT SHOWCASE ================= */}
-        <div className="relative mt-9 grid grid-cols-1 gap-7 md:grid-cols-3 lg:block lg:h-[505px] lg:pb-8">
+        <div className="relative z-0 isolate mt-9 grid grid-cols-1 gap-7 md:grid-cols-3 lg:block lg:h-[505px] lg:pb-8">
           {projects.map((project, index) => (
             <Link
               key={project.title}
               to={project.href}
+              onMouseEnter={() => setFrontCard(project.title)}
+              onMouseLeave={() => setFrontCard(null)}
               className={`
                 group relative block overflow-hidden rounded-[24px]
                 border-2 border-[#74aefb] bg-white
@@ -80,6 +85,7 @@ export default function ProjectSection() {
               `}
               style={{
                 animation: `project-card-rise .7s ${index * 120}ms ease-out both`,
+                zIndex: frontCard === project.title ? 50 : undefined,
               }}
             >
               <div className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-[#8ec1ff] bg-white/90 text-brand shadow-[0_10px_22px_-14px_rgba(23,105,213,.7)] backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:bg-brand group-hover:text-white">
