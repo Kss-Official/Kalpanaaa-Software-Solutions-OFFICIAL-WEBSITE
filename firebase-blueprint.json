@@ -1,0 +1,136 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Account",
+      "description": "User authentication and authorization record",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["SUPER_ADMIN", "HR_ADMIN", "EMPLOYEE"] },
+        "fullName": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email", "role", "fullName"]
+    },
+    "Employee": {
+      "title": "Employee Profile",
+      "description": "Full employee record for Kalpanaaa Software Solutions workforce",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "employeeId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "department": { "type": "string" },
+        "designation": { "type": "string" },
+        "role": { "type": "string", "enum": ["SUPER_ADMIN", "HR_ADMIN", "EMPLOYEE"] },
+        "phone": { "type": "string" },
+        "gender": { "type": "string" },
+        "dateOfBirth": { "type": "string" },
+        "joiningDate": { "type": "string" },
+        "employmentType": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "emergencyContact": { "type": "string" },
+        "emergencyRelationship": { "type": "string" },
+        "status": { "type": "string" },
+        "shift": { "type": "string" },
+        "workLocation": { "type": "string" },
+        "reportingManager": { "type": "string" },
+        "qrToken": { "type": "string" },
+        "profilePhotoUrl": { "type": "string" },
+        "bio": { "type": "string" },
+        "skills": { "type": "array" },
+        "preferredShift": { "type": "string" },
+        "linkedinUrl": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "employeeId", "fullName", "email", "department", "designation", "role"]
+    },
+    "AttendanceRecord": {
+      "title": "Attendance Record",
+      "description": "Individual daily attendance log with geolocation and check-in/out timestamps",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "employeeId": { "type": "string" },
+        "employeeCode": { "type": "string" },
+        "employeeName": { "type": "string" },
+        "department": { "type": "string" },
+        "date": { "type": "string" },
+        "checkInAt": { "type": "string" },
+        "checkOutAt": { "type": "string" },
+        "workingMinutes": { "type": "number" },
+        "status": { "type": "string" },
+        "attendanceMethod": { "type": "string" },
+        "locationVerified": { "type": "boolean" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "deviceInfo": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "employeeId", "employeeCode", "date", "status"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "Security and administrative operation audit trail",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "actorId": { "type": "string" },
+        "actorName": { "type": "string" },
+        "actorRole": { "type": "string" },
+        "action": { "type": "string" },
+        "target": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "actorId", "action", "timestamp"]
+    },
+    "CompanySettings": {
+      "title": "Company Settings",
+      "description": "Global enterprise workplace settings and geofencing parameters",
+      "type": "object",
+      "properties": {
+        "companyName": { "type": "string" },
+        "officeName": { "type": "string" },
+        "officeLatitude": { "type": "number" },
+        "officeLongitude": { "type": "number" },
+        "allowedGeofenceRadiusMeters": { "type": "number" },
+        "workStartHour": { "type": "number" },
+        "workEndHour": { "type": "number" },
+        "lateGraceMinutes": { "type": "number" },
+        "allowSelfCheckIn": { "type": "boolean" },
+        "requireGpsForCheckIn": { "type": "boolean" },
+        "qrTokenLifetimeMinutes": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User accounts mapped by Auth UID"
+    },
+    "/employees/{employeeId}": {
+      "schema": "Employee",
+      "description": "Employee directory documents"
+    },
+    "/attendance/{recordId}": {
+      "schema": "AttendanceRecord",
+      "description": "Daily attendance logs"
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Audit activity logs"
+    },
+    "/settings/{settingId}": {
+      "schema": "CompanySettings",
+      "description": "Global company settings document"
+    }
+  }
+}

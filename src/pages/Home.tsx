@@ -5,7 +5,6 @@ import { ArrowRight, Terminal, Shield, Sparkles, Bot, Brain, CheckCircle2 } from
 import * as Lucide from "lucide-react";
 import { SEO } from "../components/SEO";
 import { SectionHeading } from "../components/SectionHeading";
-import { ServiceCard } from "../components/ServiceCard";
 import { IndustryCard } from "../components/IndustryCard";
 import { CaseStudyCard } from "../components/CaseStudyCard";
 import { VisualScene } from "../components/visuals/VisualScene";

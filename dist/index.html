@@ -6,10 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- ══════════════════════════════════════════════════════
-       FAVICONS & TOUCH ICONS
+       FAVICONS & TOUCH ICONS (Cross-Browser & Microsoft Edge / Bing Compliant)
   ═══════════════════════════════════════════════════════ -->
-  <link rel="icon" type="image/x-icon" href="/kssfavicon.ico" />
-  <link rel="apple-touch-icon" href="/kssfavicon.ico" />
+  <!-- Standard Favicon ICO (Root fallback & Edge/Bing crawler discovery) -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="alternate icon" type="image/x-icon" href="/kssfavicon.ico" />
+
+  <!-- High-Definition PNG Favicons (Microsoft Edge, Chrome, Firefox) -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/pwa-512x512.png" />
+
+  <!-- Apple Touch Icon (iOS Safari & Mac Edge/Chrome) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+  <!-- Web App Manifest (PWA & Edge Browser install/sidebar/cards) -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Microsoft Edge & Windows Tiles Metadata -->
+  <meta name="msapplication-TileColor" content="#0A0E1A" />
+  <meta name="msapplication-TileImage" content="/mstile-150x150.png" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
 
   <!-- ══════════════════════════════════════════════════════
        FONTS
@@ -63,6 +83,7 @@
   <!-- Site verification — Google .in domain (googled0ae1d0f1b44b230.html) -->
   <meta name="google-site-verification" content="d0ae1d0f1b44b230" />
   <!-- Site verification — Bing / Yahoo / DuckDuckGo (BingSiteAuth.xml) -->
+  <meta name="msvalidate.01" content="A882D675DD8F2847060253AEC811C11D" />
   <meta name="msvalidate.01" content="85666432D75D079BBF84EE78A5E63E73" />
 
   <!-- ── Geo / Local Search targeting ── -->
@@ -296,9 +317,9 @@
   }
   </script>
 
-  <script type="module" crossorigin src="/assets/index-B1TQ2NrE.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-D70N3brY.css">
-</head>
+  <script type="module" crossorigin src="/assets/index-Da-FszKR.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Cm-dfg22.css">
+<link rel="manifest" href="/manifest.webmanifest"></head>
 
 <body>
   <div id="root"></div>
