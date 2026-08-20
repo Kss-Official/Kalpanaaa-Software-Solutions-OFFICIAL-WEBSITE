@@ -48,6 +48,8 @@ export default function Testimonials() {
       {/* Blue diagonal background */}
       <div
         className="
+          hidden
+          lg:block
           absolute
           inset-0
           pointer-events-none

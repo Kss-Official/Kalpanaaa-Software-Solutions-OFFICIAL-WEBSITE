@@ -109,43 +109,37 @@ export default function WhyChooseUsSection() {
             ))}
           </div>
 
-          <article className="relative flex min-h-[380px] overflow-hidden rounded-[16px] border border-[#DDE8FF] bg-[#F1F6FF] shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
+          <article className="relative flex flex-col justify-between overflow-hidden rounded-[16px] border border-[#DDE8FF] bg-[#F1F6FF] shadow-[0_12px_28px_rgba(15,23,42,0.04)]">
             <div
               className="pointer-events-none absolute -right-6 -top-24 h-[360px] w-[230px] rotate-[32deg] rounded-[110px] bg-[#E4ECFF] opacity-70"
               aria-hidden="true"
             />
-            {/* <div
-              className="pointer-events-none absolute right-14 top-8 grid grid-cols-4 gap-2 opacity-45"
-              aria-hidden="true"
-            >
-              {Array.from({ length: 24 }).map((_, index) => (
-                <span key={index} className="h-2 w-2 rounded-full bg-[#8EA8EE]" />
-              ))}
-            </div> */}
             <div
               className="pointer-events-none absolute right-24 top-32 h-14 w-14 rounded-full bg-[#DDE7FF]"
               aria-hidden="true"
             />
 
-            <div className="relative z-10 flex w-full flex-col px-8 pb-0 pt-8">
+            <div className="relative z-10 flex w-full flex-col p-6 sm:px-8 sm:pt-8">
               <div className="max-w-[320px]">
-                <h3 className="font-display text-[26px] font-extrabold leading-tight text-black md:text-[28px]">
+                <h3 className="font-display text-[24px] font-extrabold leading-tight text-black sm:text-[26px] md:text-[28px]">
                   Your Vision.
                   <br />
                   <span style={{ color: ORANGE }}>Our Commitment.</span>
                 </h3>
                 <div className="mt-3 h-[3px] w-12 rounded-full" style={{ backgroundColor: ORANGE }} />
-                <p className="mt-5 text-[16px] font-medium leading-[1.55] text-[#12215D]">
+                <p className="mt-4 text-[15px] sm:text-[16px] font-medium leading-[1.55] text-[#12215D]">
                   At Kalpanaaa Software Solutions, we don&apos;t just develop
                   software, we build trusted partnerships that create value and drive
                   long-term business growth.
                 </p>
               </div>
+            </div>
 
+            <div className="relative z-0 mt-4 sm:mt-0 px-4 sm:px-0">
               <img
                 src="/At the office-pana 1.png"
                 alt="Team working together in an office"
-                className="pointer-events-none absolute bottom-0 right-[-10px] z-0 w-[88%] max-w-[610px] object-contain object-bottom"
+                className="pointer-events-none relative sm:absolute sm:bottom-0 sm:right-[-10px] h-[160px] sm:h-[230px] w-full sm:w-[88%] max-w-[610px] object-contain object-bottom"
               />
             </div>
           </article>

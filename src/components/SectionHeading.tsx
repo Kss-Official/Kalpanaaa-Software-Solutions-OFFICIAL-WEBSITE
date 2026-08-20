@@ -35,7 +35,7 @@ export function SectionHeading({
         </p>
       )}
 
-      <Heading className="font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-ink sm:text-5xl md:text-6xl lg:text-[64px]">
+      <Heading className="font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-ink sm:text-5xl md:text-6xl lg:text-[64px]">
         {title}
       </Heading>
 
