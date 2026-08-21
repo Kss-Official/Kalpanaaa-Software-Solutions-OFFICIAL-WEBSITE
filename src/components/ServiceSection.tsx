@@ -29,7 +29,7 @@ const services: Array<{
     title: "Website Development",
     description:
       "We build fast, responsive and SEO-friendly websites that help your business stand out online.",
-    href: "/services/website-development",
+    href: "/services/web-engineering",
     image: "/service-website.svg",
     Icon: LayoutPanelTop,
     variant: "tall",
@@ -40,7 +40,7 @@ const services: Array<{
     title: "Mobile App Development",
     description:
       "Powerful mobile applications for Android & iOS that deliver seamless user experiences.",
-    href: "/services/mobile-app-development",
+    href: "/services/mobile-apps",
     image: "/service-mobile-app.svg",
     Icon: Smartphone,
     variant: "square",
@@ -61,7 +61,7 @@ const services: Array<{
     title: "AI Chatbox & Automation",
     description:
       "Automate conversations, reduce manual work, and improve customer support with AI.",
-    href: "/services/ai-chatbot-automation",
+    href: "/services/ai-chatbots",
     image: "/service-ai-chatbot.svg",
     Icon: Bot,
     variant: "wide",
@@ -92,7 +92,7 @@ const services: Array<{
     title: "Cyber Security",
     description:
       "Protect your data and systems with our robust security solutions and best practices.",
-    href: "/services/cybersecurity",
+    href: "/services/application-security",
     image: "/service-cybersecurity.svg",
     Icon: ShieldCheck,
     variant: "square",
@@ -103,7 +103,7 @@ const services: Array<{
     title: "Software Maintenance & Support",
     description:
       "We keep your software running smoothly with continuous support and maintenance.",
-    href: "/services/software-maintenance",
+    href: "/services/it-consulting",
     image: "/service-maintenance.svg",
     Icon: Headphones,
     variant: "square",

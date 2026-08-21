@@ -86,7 +86,7 @@ function ServiceConstellation({ labels, id }: { labels: string[]; id: string }) 
       <div className="relative z-10 flex items-center justify-center pointer-events-auto">
         <div className="absolute inset-0 rounded-full bg-brand/25 blur-3xl animate-pulse" />
         <img
-          src="/ImageOrbit.png"
+          src="/Hero.svg"
           alt="Kalpanaaaa Engineering Core"
           style={{ width: '540px', maxWidth: '92%' }}
           className="relative h-auto object-contain drop-shadow-[0_28px_56px_rgba(23,105,213,0.4)] transition-transform duration-500 hover:scale-105"

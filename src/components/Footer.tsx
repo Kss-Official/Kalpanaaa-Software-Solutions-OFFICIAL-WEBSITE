@@ -449,13 +449,6 @@ export function Footer() {
             <Link to="/terms" className="hover:text-brand transition-colors">
               Terms of Service
             </Link>
-
-            <a
-              href={`mailto:${NAP.email}`}
-              className="hover:text-brand transition-colors"
-            >
-              {NAP.email}
-            </a>
           </div>
         </div>
       </div>

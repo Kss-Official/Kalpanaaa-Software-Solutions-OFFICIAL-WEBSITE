@@ -8,7 +8,7 @@ const projects = [
     category: "Education Platform",
     description:
       "A full-stack e-learning platform designed for students, instructors and administrators with dedicated dashboards and learning management capabilities.",
-    image: "/Learnova.png",
+    image: "/LearnoveImg-1.webp",
     href: "/projects/learnova",
     tags: ["React", "Node.js", "Express", "Prisma", "PostgreSQL"],
     position:
@@ -19,7 +19,7 @@ const projects = [
     category: "Recruitment Platform",
     description:
       "A role-based job scraping and recruitment platform that connects students with job opportunities and provides hiring managers with recruitment tools.",
-    image: "/Hirebridge.png",
+    image: "/HirebridgeImg-1.webp",
     href: "/projects/hirebridge",
     tags: ["React", "Vite", "Node.js", "Express", "Prisma", "PostgreSQL"],
     position:
@@ -30,7 +30,7 @@ const projects = [
     category: "Travel Discovery",
     description:
       "A travel discovery platform that helps users discover, explore, post stories, chat with people and connect with travel destinations and experiences.",
-    image: "/Bondly.png",
+    image: "/BondlyImg-1.webp",
     href: "/projects/bondly",
     tags: ["React", "Node.js", "Hono", "PostgreSQL", "Redis"],
     position:

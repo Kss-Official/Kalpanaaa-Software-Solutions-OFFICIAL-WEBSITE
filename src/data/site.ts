@@ -71,6 +71,10 @@ export type Industry = {
   description: string;
   features: string[];
   icon: string;
+  overview: [string, string];
+  keyFeatureCards: { title: string; description: string; icon: string }[];
+  challenge: { intro: string; points: string[] };
+  solution: { intro: string; points: string[] };
 };
 
 export type CaseStudy = {
@@ -79,6 +83,7 @@ export type CaseStudy = {
   title: string;
   industry: string;
   description: string;
+  image: string;
   metrics: { label: string; value: string }[];
   tags: string[];
   icon: string;
@@ -509,8 +514,39 @@ export const INDUSTRIES: Industry[] = [
       "Federal data sovereignty",
       "Accessibility WCAG 2.1 AA",
       "Multi-language support",
+      "Citizen service portals",
     ],
     icon: "Landmark",
+    overview: [
+      "Public-sector platforms must stay transparent, auditable, and available under peak citizen load. We engineer digital portals, licensing workflows, and municipal automation that keep regulatory process visible without slowing service delivery.",
+      "Every engagement is built around G2C standards, data sovereignty, and accessibility so agencies can modernize operations while remaining accountable to citizens, auditors, and policy teams.",
+    ],
+    keyFeatureCards: [
+      { title: "G2C standards compliance", description: "Citizen-facing services designed to meet government-to-citizen standards and policy controls from day one.", icon: "ShieldCheck" },
+      { title: "Automated permit workflows", description: "Licensing and permit journeys with approvals, status tracking, and fewer manual hand-offs.", icon: "Workflow" },
+      { title: "Federal data sovereignty", description: "Hosting, access, and retention patterns that keep sensitive public data inside required jurisdictions.", icon: "Database" },
+      { title: "Accessibility WCAG 2.1 AA", description: "Interfaces built for inclusive access across devices, assistive tech, and diverse citizen needs.", icon: "Accessibility" },
+      { title: "Multi-language support", description: "Localized experiences so residents can complete services in the language they use every day.", icon: "Languages" },
+      { title: "Citizen service portals", description: "High-volume digital counters for applications, payments, and case status in one place.", icon: "Landmark" },
+    ],
+    challenge: {
+      intro: "Agencies still run fragmented portals, paper-heavy permits, and systems that struggle at scale — which slows citizens and weakens audit readiness.",
+      points: [
+        "Manual licensing and permit routing across departments",
+        "Limited transparency for citizens tracking applications",
+        "Accessibility and language gaps in public digital services",
+        "Data residency and compliance constraints that block modernization",
+      ],
+    },
+    solution: {
+      intro: "We deliver compliance-first citizen platforms with automated workflows, WCAG-ready access, and sovereignty-aware architecture for high-volume public use.",
+      points: [
+        "End-to-end digital portals for licensing and municipal services",
+        "Automated approvals with complete audit trails",
+        "Multi-language, WCAG 2.1 AA citizen experiences",
+        "Sovereign data patterns built for regulatory review",
+      ],
+    },
   },
 
   {
@@ -525,8 +561,39 @@ export const INDUSTRIES: Industry[] = [
       "Audit logging",
       "End-to-end encryption",
       "Clinical workflow automation",
+      "Appointment scheduling",
     ],
     icon: "Stethoscope",
+    overview: [
+      "Clinical teams need software that protects patient data without adding friction to care. We build HIPAA-aligned platforms for EHR integration, patient data management, and telemedicine with clinical safety as a first-order requirement.",
+      "The goal is simpler operations and clearer communication between clinicians and patients — from scheduling and records to encrypted exchange and role-aware access across the care journey.",
+    ],
+    keyFeatureCards: [
+      { title: "Appointment Scheduling", description: "Let patients book, reschedule, and track visits while clinics keep calendars and capacity in sync.", icon: "Calendar" },
+      { title: "EHR/EMR integration", description: "Connect clinical systems so patient history, orders, and updates stay consistent across care teams.", icon: "UserRound" },
+      { title: "Smart Notifications", description: "Timely alerts for appointments, results, and care tasks without flooding staff or patients.", icon: "Bell" },
+      { title: "Audit logging", description: "Complete activity trails so access, changes, and clinical actions are reviewable when it matters.", icon: "BarChart3" },
+      { title: "End-to-end encryption", description: "Protect patient data in transit and at rest across portals, records, and messaging flows.", icon: "Lock" },
+      { title: "HIPAA-aligned architecture", description: "Role-based access and clinical workflow automation designed around privacy and safety controls.", icon: "Shield" },
+    ],
+    challenge: {
+      intro: "Care delivery is slowed by disconnected records, fragile scheduling, and platforms that were never designed for clinical privacy or audit.",
+      points: [
+        "Fragmented EHR/EMR data across clinics and departments",
+        "Manual scheduling and follow-up that miss patients",
+        "Limited visibility into who accessed sensitive records",
+        "Communication gaps between clinicians and patients",
+      ],
+    },
+    solution: {
+      intro: "We engineer HIPAA-aligned healthcare systems with encrypted records, EHR connectivity, and automated clinical workflows that keep care teams coordinated.",
+      points: [
+        "Patient platforms with end-to-end encryption and role-based access",
+        "EHR/EMR integration for a consistent clinical record",
+        "Scheduling, notifications, and workflow automation",
+        "Audit logging built for clinical and compliance review",
+      ],
+    },
   },
 
   {
@@ -541,8 +608,39 @@ export const INDUSTRIES: Industry[] = [
       "Regulatory reporting (RBI/SEBI)",
       "Fraud detection pipelines",
       "Audit trails",
+      "Real-time risk dashboards",
     ],
     icon: "TrendingUp",
+    overview: [
+      "Financial platforms cannot trade accuracy for speed. We engineer trading systems, settlement, compliance reporting, and fraud detection with millisecond-grade precision and controls that stand up to audit.",
+      "From execution paths to reconciliation and RBI/SEBI reporting, each layer is designed so operations, risk, and compliance teams share one reliable source of truth.",
+    ],
+    keyFeatureCards: [
+      { title: "Low-latency trade execution", description: "Execution paths engineered for speed and consistency when market conditions leave no room for delay.", icon: "Zap" },
+      { title: "Settlement reconciliation", description: "Match trades, positions, and cash movements so breaks surface early instead of after close.", icon: "Scale" },
+      { title: "Regulatory reporting (RBI/SEBI)", description: "Structured reporting pipelines that keep filings accurate, timely, and reviewable.", icon: "FileCheck" },
+      { title: "Fraud detection pipelines", description: "Streaming checks and scoring to flag suspicious activity before it becomes a loss event.", icon: "ScanSearch" },
+      { title: "Audit trails", description: "Immutable event history across orders, settlements, and access for investigation and oversight.", icon: "ScrollText" },
+      { title: "Real-time risk dashboards", description: "Live operational views so desks and compliance teams can act on exposure as it changes.", icon: "TrendingUp" },
+    ],
+    challenge: {
+      intro: "Legacy stacks struggle with latency, reconciliation gaps, and reporting that cannot keep pace with market and regulatory pressure.",
+      points: [
+        "Slow or inconsistent trade execution under load",
+        "Settlement breaks that take too long to isolate",
+        "Manual RBI/SEBI reporting with weak auditability",
+        "Fraud signals arriving after the damage is done",
+      ],
+    },
+    solution: {
+      intro: "We build precision financial systems with low-latency execution, automated reconciliation, fraud pipelines, and audit-ready reporting.",
+      points: [
+        "Millisecond-aware trading and operational paths",
+        "Settlement reconciliation with clear exception handling",
+        "Regulatory reporting designed for RBI/SEBI review",
+        "Fraud detection and complete audit trails",
+      ],
+    },
   },
 
   {
@@ -557,19 +655,51 @@ export const INDUSTRIES: Industry[] = [
       "Campus management",
       "Online assessment",
       "Parent + student portals",
+      "Institution-scale delivery",
     ],
     icon: "GraduationCap",
+    overview: [
+      "Institutions need learning systems that scale with enrollment, not workarounds. We build LMS, student information systems, adaptive learning, and campus management platforms for universities and schools operating at volume.",
+      "Students, faculty, and families get connected experiences — from assessment and attendance to portals — while administrators keep academic operations in one coherent system.",
+    ],
+    keyFeatureCards: [
+      { title: "LMS + SIS", description: "Unify learning delivery and student records so academic operations run from a single connected platform.", icon: "BookOpen" },
+      { title: "Adaptive learning paths", description: "Personalize coursework based on progress so learners get the next right module, not a one-size path.", icon: "Route" },
+      { title: "Campus management", description: "Coordinate scheduling, facilities, and day-to-day campus operations alongside academic systems.", icon: "Building2" },
+      { title: "Online assessment", description: "Secure digital exams and assignments with clearer grading workflows for faculty and students.", icon: "ClipboardCheck" },
+      { title: "Parent + student portals", description: "Give families and learners a simple place for results, schedules, fees, and campus updates.", icon: "Users" },
+      { title: "Institution-scale delivery", description: "Architecture ready for peak enrollment, concurrent classes, and multi-campus growth.", icon: "GraduationCap" },
+    ],
+    challenge: {
+      intro: "Campuses often run disconnected LMS, records, and portals — which fragments the student journey and overloads staff at peak term.",
+      points: [
+        "Separate systems for learning, records, and campus ops",
+        "Generic coursework that cannot adapt to learner progress",
+        "Assessment and grading still tied to manual processes",
+        "Parents and students lacking a single source of updates",
+      ],
+    },
+    solution: {
+      intro: "We deliver education platforms that combine LMS, SIS, adaptive learning, and campus management so institutions can operate at scale.",
+      points: [
+        "Connected LMS + SIS for academic operations",
+        "Adaptive learning paths and online assessment",
+        "Campus management alongside teaching workflows",
+        "Parent and student portals built for high enrollment",
+      ],
+    },
   },
 ];
 
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "railtrace",
-    client: "RailTrace",
-    title: "Real-time Railway Asset Tracking",
+    client: "KALPANAAA BBMP",
+    title: "Municipal Corporation Automation & Digital E-Governance Portal",
     industry: "Government Infrastructure",
     description:
-      "Real-time railway asset management system with live GPS tracking, automated alert routing, 40% reduction in permit processing time.",
+      "Digital e-governance platform enabling citizens to submit civic requests, upload photo evidence, track live resolution progress, and access essential municipal services and public information online.",
+    image: "/project-images/GovernmentProjectImage.svg",
     metrics: [
       { label: "Permit Processing Time Reduced", value: "40%" },
       { label: "Assets Tracked in Real-time", value: "200+" },
@@ -577,23 +707,24 @@ export const CASE_STUDIES: CaseStudy[] = [
       { label: "Deployment Time", value: "8 months" },
     ],
     tags: [
-      "Next.js",
-      "FastAPI",
+      "Python",
+      "Django",
+      "JavaScript",
+      "ReactJS",
       "PostgreSQL",
-      "Redis",
-      "AWS",
-      "WebSocket",
+      "CSS3",
     ],
     icon: "Train",
   },
 
   {
     slug: "medichain",
-    client: "MediChain",
-    title: "HIPAA-Aligned Patient Data Platform",
+    client: "KALPANAAA MEDICAL",
+    title: "Smart Next-Gen Digital Healthcare & Unified EHR Management System",
     industry: "Healthcare Data Platform",
     description:
-      "Patient data management platform with end-to-end encryption, role-based access control, 99.97% uptime over 8 months.",
+      "Full-stack healthcare platform with multi-role appointments, e-prescriptions, diagnostic tracking, secure lifetime EHRs, passwordless OTP login, and real-time bed and emergency capacity monitoring.",
+    image: "/project-images/HealthcareProjectImage.svg",
     metrics: [
       { label: "Uptime over 8 months", value: "99.97%" },
       { label: "Patient records managed", value: "50,000+" },
@@ -601,23 +732,49 @@ export const CASE_STUDIES: CaseStudy[] = [
       { label: "Deployment", value: "8 months" },
     ],
     tags: [
-      "Next.js",
-      "FastAPI",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "Django",
+      "REST",
       "PostgreSQL",
-      "Redis",
-      "HIPAA",
-      "AWS RDS",
     ],
     icon: "Stethoscope",
   },
 
   {
+    slug: "finledger",
+    client: "Kalpanaaa Finance",
+    title: "Enterprise Digital Banking & Wealth Platform",
+    industry: "Finance Operations",
+    description:
+      "An end-to-end enterprise financial platform powering digital wallet transactions, automated loan EMI approvals, fixed-return investment portfolios, live expert consultation booking, and real-time administrative KYC audit workflows.",
+    image: "/project-images/FinanceProjectImage.svg",
+    metrics: [
+      { label: "Reconciliation Accuracy", value: "99.9%" },
+      { label: "Transactions Monitored", value: "1M+" },
+      { label: "Alert Latency", value: "< 2s" },
+      { label: "Manual Review Reduced", value: "35%" },
+    ],
+    tags: [
+      "Java 21",
+      "Spring Boot 3",
+      "React.js",
+      "Tailwind CSS",
+      "MySQL",
+      "REST API",
+    ],
+    icon: "Finance",
+  },
+
+  {
     slug: "kucafe",
-    client: "KUCafe",
-    title: "University Cafe Ordering System",
+    client: "KALPANAAA EDUCATION",
+    title: "Real-Time Academic & Administration Portal",
     industry: "Education",
     description:
-      "University cafe ordering system with real-time menu, payment integration, and live order tracking.",
+      "Full-stack institutional portal featuring real-time SSE updates, dynamic course rosters, automated attendance, examinations, fee processing, and bcrypt-hashed security.",
+    image: "/project-images/EducationProjectImage.svg",
     metrics: [
       { label: "Orders Processed", value: "12,000+" },
       { label: "Average Order Time", value: "90s" },
@@ -625,11 +782,12 @@ export const CASE_STUDIES: CaseStudy[] = [
       { label: "Mobile", value: "100%" },
     ],
     tags: [
-      "React Native",
-      "FastAPI",
-      "PostgreSQL",
-      "Stripe",
-      "WebSocket",
+      "React",
+      "Vite",
+      "Node.js",
+      "Express",
+      "MySQL",
+      "Tailwind CSS",
     ],
     icon: "UtensilsCrossed",
   },

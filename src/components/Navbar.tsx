@@ -134,6 +134,13 @@ export function Navbar() {
               role="menu"
             >
               <div className="bg-white border border-line rounded-xl shadow-xl overflow-hidden">
+                <Link
+                  to="/services"
+                  onClick={closeMenus}
+                  className="hidden"
+                >
+                  View all services →
+                </Link>
                 {/* =================================================
                     FIVE SERVICE CATEGORIES
                     ================================================= */}
@@ -199,7 +206,7 @@ export function Navbar() {
                   <Link
                     to="/services"
                     onClick={closeMenus}
-                    className="block text-xs font-mono uppercase tracking-widest text-brand hover:underline"
+                    className="block text-right text-xs font-mono uppercase tracking-widest text-brand hover:underline"
                   >
                     View all services →
                   </Link>
@@ -261,11 +268,11 @@ export function Navbar() {
                     </Link>
                   ))}
 
-                  <div className="border-t border-line mt-1 pt-1">
+                  <div className="border-t border-line mt-1 pt-2">
                     <Link
                       to={item.to}
                       onClick={closeMenus}
-                      className="block px-3 py-2 text-xs font-mono uppercase tracking-widest text-brand hover:underline"
+                      className="block px-3 py-2 text-right text-xs font-mono uppercase tracking-widest text-brand hover:underline"
                     >
                       View all {item.label.toLowerCase()} →
                     </Link>
