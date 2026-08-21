@@ -106,12 +106,12 @@ export default function FAQ() {
             className="
               mt-7
               font-display
-              text-4xl
+              text-3xl
               sm:text-5xl
               md:text-6xl
               lg:text-[64px]
               font-extrabold
-              leading-[1.08]
+              leading-[1.1]
               tracking-tight
               text-ink
             "
@@ -296,7 +296,8 @@ export default function FAQ() {
               items-center
               gap-5
               sm:gap-7
-              rounded-full
+              rounded-2xl
+              sm:rounded-full
               bg-white
               border
               border-[#e5e8ec]

@@ -34,7 +34,7 @@ const services: Array<{
     Icon: LayoutPanelTop,
     variant: "tall",
     className: "lg:col-start-1 lg:row-start-1 lg:row-end-3",
-    imageClassName: "!w-[100%] !max-w-[400px] -translate-y-12 scale-[1.12] origin-bottom",
+    imageClassName: "!w-[100%] !max-w-[400px] lg:-translate-y-12 lg:scale-[1.12] origin-bottom",
   },
   {
     title: "Mobile App Development",
@@ -55,7 +55,7 @@ const services: Array<{
     Icon: Code2,
     variant: "square",
     className: "lg:col-start-3 lg:row-start-1",
-    imageClassName: "sm:!h-[140%] sm:!w-[140%] scale-[1.35] origin-bottom-right",
+    imageClassName: "lg:!h-[140%] lg:!w-[140%] lg:scale-[1.35] origin-bottom-right",
   },
   {
     title: "AI Chatbox & Automation",
@@ -86,7 +86,7 @@ const services: Array<{
     Icon: CloudUpload,
     variant: "tall",
     className: "lg:col-start-3 lg:row-start-3 lg:row-end-5",
-    imageClassName: "!w-[100%] !max-w-[400px] -translate-y-12 scale-[1.12] origin-bottom",
+    imageClassName: "!w-[100%] !max-w-[400px] lg:-translate-y-12 lg:scale-[1.12] origin-bottom",
   },
   {
     title: "Cyber Security",
@@ -97,7 +97,7 @@ const services: Array<{
     Icon: ShieldCheck,
     variant: "square",
     className: "lg:col-start-1 lg:row-start-4",
-    imageClassName: "sm:!h-[140%] sm:!w-[140%] scale-[1.35] origin-bottom-right",
+    imageClassName: "lg:!h-[140%] lg:!w-[140%] lg:scale-[1.35] origin-bottom-right",
   },
   {
     title: "Software Maintenance & Support",
@@ -108,7 +108,7 @@ const services: Array<{
     Icon: Headphones,
     variant: "square",
     className: "lg:col-start-2 lg:row-start-4",
-    imageClassName: "sm:!h-[140%] sm:!w-[140%] scale-[1.35] origin-bottom-right",
+    imageClassName: "lg:!h-[140%] lg:!w-[140%] lg:scale-[1.35] origin-bottom-right",
   },
 ];
 
@@ -143,17 +143,19 @@ function ServiceMosaicCard({
       />
 
       <div
-        className={`relative z-10 flex min-w-0 flex-col p-5 md:p-6 ${
+        className={`relative z-10 flex min-w-0 flex-col p-4 sm:p-5 md:p-6 ${
           isTall ? "shrink-0" : "w-full sm:w-[62%] sm:pr-3 lg:w-[60%]"
         }`}
       >
-        <Icon size={22} strokeWidth={2.25} className="mb-3 text-brand" />
+        <div className="mb-3 flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-[#EEF5FF] border border-[#D0E2FB] text-brand shadow-sm">
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={2.25} />
+        </div>
 
-        <h3 className="font-display text-[30px] font-extrabold leading-[0.98] tracking-tight text-brand md:text-[34px]">
+        <h3 className="font-display text-xl sm:text-[26px] md:text-[32px] font-extrabold leading-[1.08] sm:leading-[0.98] tracking-tight text-brand">
           {title}
         </h3>
 
-        <p className="mt-3 text-[20px] font-semibold leading-[1.08] text-[#344052]">
+        <p className="mt-2 sm:mt-3 text-sm sm:text-base md:text-[18px] font-semibold leading-[1.3] sm:leading-[1.1] text-[#344052]">
           {description}
         </p>
 
@@ -163,9 +165,9 @@ function ServiceMosaicCard({
       </div>
 
       <div
-        className={`relative z-0 flex min-h-[120px] items-end justify-center overflow-hidden ${
+        className={`relative z-0 flex min-h-[140px] items-end justify-center overflow-hidden ${
           isTall
-            ? "min-h-[140px] flex-1 px-2 pb-0 pt-1"
+            ? "min-h-[160px] flex-1 px-2 pb-0 pt-1"
             : "w-full flex-1 sm:w-[38%] sm:min-h-0 lg:w-[40%] lg:self-stretch"
         }`}
       >
@@ -175,7 +177,7 @@ function ServiceMosaicCard({
           className={`pointer-events-none object-contain object-bottom transition-transform duration-500 group-hover:scale-[1.04] ${
             isTall
               ? "h-full w-[86%] max-w-[320px]"
-              : "h-[82%] w-[88%] max-h-[170px] object-right-bottom sm:absolute sm:bottom-0 sm:right-0 sm:h-[86%] sm:w-[92%] sm:max-h-none"
+              : "h-[85%] w-[88%] max-h-[170px] object-right-bottom sm:absolute sm:bottom-0 sm:right-0 sm:h-[86%] sm:w-[92%] sm:max-h-none"
           } ${imageClassName}`}
         />
       </div>

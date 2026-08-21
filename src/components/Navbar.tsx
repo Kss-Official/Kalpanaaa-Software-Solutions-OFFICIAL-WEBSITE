@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Plus, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SERVICE_MENU, INDUSTRIES } from "../data/site";
 
@@ -18,8 +18,16 @@ const navLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [desktopMenu, setDesktopMenu] = useState<"services" | "industries" | null>(null);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [mobileIndustriesOpen, setMobileIndustriesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  const isHomeActive = location.pathname === "/";
+  const isAboutActive = location.pathname === "/about";
+  const isServicesActive = location.pathname.startsWith("/services");
+  const isIndustriesActive = location.pathname.startsWith("/industries");
+  const isBlogActive = location.pathname.startsWith("/blog");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -36,11 +44,42 @@ export function Navbar() {
   useEffect(() => {
     setOpen(false);
     setDesktopMenu(null);
+    setMobileServicesOpen(false);
+    setMobileIndustriesOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   const closeMenus = () => {
     setOpen(false);
     setDesktopMenu(null);
+    setMobileServicesOpen(false);
+    setMobileIndustriesOpen(false);
+  };
+
+  const toggleMobileServices = () => {
+    setMobileServicesOpen((prev) => {
+      const next = !prev;
+      if (next) setMobileIndustriesOpen(false);
+      return next;
+    });
+  };
+
+  const toggleMobileIndustries = () => {
+    setMobileIndustriesOpen((prev) => {
+      const next = !prev;
+      if (next) setMobileServicesOpen(false);
+      return next;
+    });
   };
 
   return (
@@ -336,109 +375,161 @@ export function Navbar() {
             transition={{ duration: 0.2 }}
             className="lg:hidden border-t border-line bg-white overflow-hidden"
           >
-            <div className="px-6 py-6 space-y-6 max-h-[calc(100vh-64px)] overflow-y-auto">
-              <Link
-                to="/"
-                className="block py-2 text-sm font-semibold uppercase tracking-widest text-ink"
-              >
-                Home
-              </Link>
-
-              <Link
-                to="/about"
-                className="block py-2 text-sm font-semibold uppercase tracking-widest text-ink"
-              >
-                About
-              </Link>
-
-              {/* =================================================
-                  MOBILE SERVICES
-                  ================================================= */}
-
+            <div className="px-6 py-5 space-y-3 max-h-[calc(100vh-64px)] overflow-y-auto">
+              {/* Home Link */}
               <div>
                 <Link
-                  to="/services"
-                  className="eyebrow mb-4 block"
+                  to="/"
+                  onClick={closeMenus}
+                  className="block py-2 px-2.5 rounded-lg text-sm font-bold uppercase tracking-widest text-ink hover:bg-[#e5e7eb] hover:text-brand transition-all duration-200"
                 >
-                  Services
-                </Link>
-
-                <div className="space-y-5 ml-2">
-                  {SERVICE_MENU.map((category) => (
-                    <div key={category.title}>
-                      {/* Category */}
-                      <p className="text-xs font-bold uppercase tracking-wider text-ink mb-2">
-                        {category.title}
-                      </p>
-
-                      {/* Items */}
-                      <div className="space-y-1 ml-2">
-                        {category.items.map((item) => (
-                          <Link
-                            key={`${category.title}-${item.title}`}
-                            to={`/services/${item.slug}`}
-                            className="block py-1.5 text-sm text-muted hover:text-brand"
-                          >
-                            {item.title}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* View All */}
-                <Link
-                  to="/services"
-                  className="block mt-4 text-xs font-mono uppercase tracking-widest text-brand"
-                >
-                  View all services →
+                  Home
                 </Link>
               </div>
 
-              {/* =================================================
-                  MOBILE INDUSTRIES
-                  ================================================= */}
+              {/* About Link */}
+              <div className="border-t border-[#e5e7eb] pt-3">
+                <Link
+                  to="/about"
+                  onClick={closeMenus}
+                  className="block py-2 px-2.5 rounded-lg text-sm font-bold uppercase tracking-widest text-ink hover:bg-[#e5e7eb] hover:text-brand transition-all duration-200"
+                >
+                  About
+                </Link>
+              </div>
 
-              {navLinks.map((item) => (
-                <div key={item.label}>
-                  <p className="eyebrow mb-2">{item.label}</p>
+              {/* Services Accordion */}
+              <div className="border-t border-[#e5e7eb] pt-3">
+                <button
+                  type="button"
+                  aria-expanded={mobileServicesOpen}
+                  aria-controls="mobile-services-menu"
+                  aria-label="Toggle Services sub-menu"
+                  onClick={toggleMobileServices}
+                  className="w-full flex items-center justify-between py-2 px-2.5 rounded-lg hover:bg-[#e5e7eb] transition-all duration-200 text-left group"
+                >
+                  <span className="text-sm font-bold uppercase tracking-widest text-ink group-hover:text-brand transition-colors duration-200">
+                    Services
+                  </span>
+                  <span className="p-1.5 rounded-lg text-brand bg-brand/10 group-hover:bg-brand/20 transition-colors">
+                    {mobileServicesOpen ? <Minus size={18} /> : <Plus size={18} />}
+                  </span>
+                </button>
 
-                  <div className="space-y-1 ml-2">
-                    {item.children.map((child) => (
+                <AnimatePresence>
+                  {mobileServicesOpen && (
+                    <motion.div
+                      id="mobile-services-menu"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden space-y-4 pt-3 pl-3 border-l-2 border-brand/20 ml-3"
+                    >
+                      {SERVICE_MENU.map((category) => (
+                        <div key={category.title}>
+                          <p className="text-xs font-extrabold uppercase tracking-wider text-brand mb-1.5">
+                            {category.title}
+                          </p>
+                          <div className="space-y-1 ml-2">
+                            {category.items.map((item) => (
+                              <Link
+                                key={`${category.title}-${item.title}`}
+                                to={`/services/${item.slug}`}
+                                onClick={closeMenus}
+                                className="block py-1 px-2 rounded-md text-xs font-semibold text-muted hover:bg-[#e5e7eb] hover:text-brand transition-colors duration-200"
+                              >
+                                {item.title}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+
                       <Link
-                        key={child.to}
-                        to={child.to}
-                        className="block py-1.5 text-sm text-muted hover:text-brand"
+                        to="/services"
+                        onClick={closeMenus}
+                        className="block pt-1 text-xs font-mono uppercase tracking-widest text-brand font-bold hover:underline"
                       >
-                        {child.label}
+                        View all services →
                       </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-              {/* =================================================
-                  MOBILE BLOG
-                  ================================================= */}
+              {/* Industries Accordion */}
+              <div className="border-t border-[#e5e7eb] pt-3">
+                <button
+                  type="button"
+                  aria-expanded={mobileIndustriesOpen}
+                  aria-controls="mobile-industries-menu"
+                  aria-label="Toggle Industries sub-menu"
+                  onClick={toggleMobileIndustries}
+                  className="w-full flex items-center justify-between py-2 px-2.5 rounded-lg hover:bg-[#e5e7eb] transition-all duration-200 text-left group"
+                >
+                  <span className="text-sm font-bold uppercase tracking-widest text-ink group-hover:text-brand transition-colors duration-200">
+                    Industries
+                  </span>
+                  <span className="p-1.5 rounded-lg text-brand bg-brand/10 group-hover:bg-brand/20 transition-colors">
+                    {mobileIndustriesOpen ? <Minus size={18} /> : <Plus size={18} />}
+                  </span>
+                </button>
 
-              <Link
-                to="/blog"
-                className="block py-2 text-sm font-semibold uppercase tracking-widest text-ink"
-              >
-                Blog
-              </Link>
+                <AnimatePresence>
+                  {mobileIndustriesOpen && (
+                    <motion.div
+                      id="mobile-industries-menu"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden space-y-2 pt-3 pl-3 border-l-2 border-brand/20 ml-3"
+                    >
+                      {INDUSTRIES.map((industry) => (
+                        <Link
+                          key={industry.slug}
+                          to={`/industries/${industry.slug}`}
+                          onClick={closeMenus}
+                          className="block py-1 px-2 rounded-md text-xs font-semibold text-muted hover:bg-[#e5e7eb] hover:text-brand transition-colors duration-200"
+                        >
+                          {industry.title}
+                        </Link>
+                      ))}
 
-              {/* =================================================
-                  MOBILE CONTACT
-                  ================================================= */}
+                      <Link
+                        to="/industries"
+                        onClick={closeMenus}
+                        className="block pt-1 text-xs font-mono uppercase tracking-widest text-brand font-bold hover:underline"
+                      >
+                        View all industries →
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-              <Link
-                to="/contact"
-                className="button-primary w-full px-5 py-3 text-xs font-bold uppercase tracking-widest mt-2"
-              >
-                Contact us
-              </Link>
+              {/* Blog Link */}
+              <div className="border-t border-[#e5e7eb] pt-3">
+                <Link
+                  to="/blog"
+                  onClick={closeMenus}
+                  className="block py-2 px-2.5 rounded-lg text-sm font-bold uppercase tracking-widest text-ink hover:bg-[#e5e7eb] hover:text-brand transition-all duration-200"
+                >
+                  Blog
+                </Link>
+              </div>
+
+              {/* Contact Us CTA Button */}
+              <div className="pt-2">
+                <Link
+                  to="/contact"
+                  onClick={closeMenus}
+                  className="button-primary w-full px-5 py-3 text-xs font-bold uppercase tracking-widest"
+                >
+                  Contact us
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}

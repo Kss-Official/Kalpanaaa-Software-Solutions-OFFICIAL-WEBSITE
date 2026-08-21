@@ -48,6 +48,8 @@ export default function Testimonials() {
       {/* Blue diagonal background */}
       <div
         className="
+          hidden
+          lg:block
           absolute
           inset-0
           pointer-events-none
@@ -368,8 +370,8 @@ export default function Testimonials() {
                     duration-300
                     ${
                       activeIndex === index
-                        ? "w-10 bg-white"
-                        : "w-2.5 bg-white/50"
+                        ? "w-10 bg-brand lg:bg-white"
+                        : "w-2.5 bg-brand/30 lg:bg-white/50"
                     }
                   `}
                 />
