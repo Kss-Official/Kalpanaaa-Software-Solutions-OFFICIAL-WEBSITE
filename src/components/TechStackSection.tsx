@@ -29,15 +29,15 @@ function StackMarqueeRow({
         {repeated.map((stack, index) => (
           <div
             key={`${stack.name}-${index}-${reverse ? "reverse" : "forward"}`}
-            className="flex h-[132px] w-[170px] shrink-0 flex-col items-center justify-center gap-4 transition-all duration-300 hover:-translate-y-1 md:h-[150px] md:w-[210px]"
+            className="flex h-[100px] w-[120px] sm:h-[132px] sm:w-[170px] shrink-0 flex-col items-center justify-center gap-2 sm:gap-4 transition-all duration-300 hover:-translate-y-1 md:h-[150px] md:w-[210px]"
           >
             <img
               src={stack.image}
               alt={stack.name}
-              className="h-[72px] w-[96px] object-contain transition-transform duration-300 hover:scale-110 md:h-[86px] md:w-[116px]"
+              className="h-[52px] w-[70px] sm:h-[72px] sm:w-[96px] object-contain transition-transform duration-300 hover:scale-110 md:h-[86px] md:w-[116px]"
               loading="lazy"
             />
-            <span className="text-center text-base font-semibold leading-none text-ink/80 md:text-lg">
+            <span className="text-center text-xs sm:text-base font-semibold leading-none text-ink/80 md:text-lg">
               {stack.name}
             </span>
           </div>

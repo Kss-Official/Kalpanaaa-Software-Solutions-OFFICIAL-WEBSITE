@@ -73,10 +73,10 @@ function LeaderCard({
   shortQuote: string;
 }) {
   return (
-    <article className="group flex h-full min-h-[438px] flex-col overflow-hidden rounded-[20px] border border-[#E9EDF5] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.075)]">
-      <div className="relative isolate h-[264px] overflow-hidden bg-white">
+    <article className="group flex h-full min-h-0 sm:min-h-[420px] flex-col overflow-hidden rounded-[20px] border border-[#E9EDF5] bg-white shadow-[0_14px_34px_rgba(15,23,42,0.075)]">
+      <div className="relative isolate h-[240px] sm:h-[264px] overflow-hidden bg-white">
         <div
-          className="absolute left-0 top-0 z-0 flex h-full w-[70px] items-center justify-center"
+          className="absolute left-0 top-0 z-0 flex h-full w-[60px] sm:w-[70px] items-center justify-center"
           style={{
             background: "linear-gradient(180deg, #FF4B08 0%, #FF6500 100%)",
           }}
@@ -86,7 +86,7 @@ function LeaderCard({
             style={{
               writingMode: "vertical-rl",
               transform: "rotate(180deg)",
-              fontSize: banner.length > 8 ? 27 : 34,
+              fontSize: banner.length > 8 ? 24 : 30,
               letterSpacing: "0",
               color: "transparent",
               WebkitTextStroke: "1.4px #ffffff",
@@ -99,26 +99,26 @@ function LeaderCard({
         <img
           src={image}
           alt={name}
-          className="absolute left-0 right-0 top-0 z-10 mx-auto h-[264px] w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.025]"
+          className="absolute left-0 right-0 top-0 z-10 mx-auto h-full w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.025]"
         />
       </div>
 
-      <div className="flex flex-1 flex-col px-5 pb-5 pt-5">
-        <h3 className="font-display text-[23px] font-extrabold leading-tight text-black md:text-[25px]">
+      <div className="flex flex-1 flex-col p-4 sm:p-5">
+        <h3 className="font-display text-[21px] sm:text-[23px] font-extrabold leading-tight text-black md:text-[25px]">
           {name}
         </h3>
-        <p className="mt-2 text-[15px] font-bold leading-none text-[#65647F]">{role}</p>
+        <p className="mt-1.5 sm:mt-2 text-[14px] sm:text-[15px] font-bold leading-none text-[#65647F]">{role}</p>
 
-        <div className="mt-4 flex min-h-[70px] items-center gap-3 rounded-[16px] border border-[#E8EBF2] bg-white px-3.5 py-3 shadow-[0_8px_18px_rgba(15,23,42,0.035)]">
+        <div className="mt-3 sm:mt-4 flex min-h-0 items-center gap-3 rounded-[16px] border border-[#E8EBF2] bg-white px-3 py-2.5 sm:px-3.5 sm:py-3 shadow-[0_8px_18px_rgba(15,23,42,0.035)]">
           <span
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full shadow-[0_8px_18px_rgba(255,79,10,0.22)]"
+            className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full shadow-[0_8px_18px_rgba(255,79,10,0.22)]"
             style={{
               background: "linear-gradient(135deg, #FF4B08 0%, #FF6500 100%)",
             }}
           >
-            <Icon size={21} className="text-white" strokeWidth={2.7} />
+            <Icon size={18} className="text-white" strokeWidth={2.7} />
           </span>
-          <p className="text-[14px] font-medium leading-[1.55] text-black">{shortQuote}</p>
+          <p className="text-[13px] sm:text-[14px] font-medium leading-[1.45] text-black">{shortQuote}</p>
         </div>
       </div>
     </article>
