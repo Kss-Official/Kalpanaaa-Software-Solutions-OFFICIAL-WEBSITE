@@ -48,11 +48,38 @@ export function Navbar() {
     setMobileIndustriesOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   const closeMenus = () => {
     setOpen(false);
     setDesktopMenu(null);
     setMobileServicesOpen(false);
     setMobileIndustriesOpen(false);
+  };
+
+  const toggleMobileServices = () => {
+    setMobileServicesOpen((prev) => {
+      const next = !prev;
+      if (next) setMobileIndustriesOpen(false);
+      return next;
+    });
+  };
+
+  const toggleMobileIndustries = () => {
+    setMobileIndustriesOpen((prev) => {
+      const next = !prev;
+      if (next) setMobileServicesOpen(false);
+      return next;
+    });
   };
 
   return (
@@ -366,27 +393,26 @@ export function Navbar() {
 
               {/* Services Accordion */}
               <div className="border-t border-[#e5e7eb] pt-3">
-                <div className="flex items-center justify-between py-1 px-2.5 rounded-lg hover:bg-[#e5e7eb] transition-all duration-200 group">
-                  <Link
-                    to="/services"
-                    onClick={closeMenus}
-                    className="text-sm font-bold uppercase tracking-widest text-ink group-hover:text-brand transition-colors duration-200"
-                  >
+                <button
+                  type="button"
+                  aria-expanded={mobileServicesOpen}
+                  aria-controls="mobile-services-menu"
+                  aria-label="Toggle Services sub-menu"
+                  onClick={toggleMobileServices}
+                  className="w-full flex items-center justify-between py-2 px-2.5 rounded-lg hover:bg-[#e5e7eb] transition-all duration-200 text-left group"
+                >
+                  <span className="text-sm font-bold uppercase tracking-widest text-ink group-hover:text-brand transition-colors duration-200">
                     Services
-                  </Link>
-                  <button
-                    type="button"
-                    aria-label="Toggle Services sub-menu"
-                    onClick={() => setMobileServicesOpen((prev) => !prev)}
-                    className="p-1.5 rounded-lg text-brand bg-brand/10 hover:bg-brand/20 transition-colors"
-                  >
+                  </span>
+                  <span className="p-1.5 rounded-lg text-brand bg-brand/10 group-hover:bg-brand/20 transition-colors">
                     {mobileServicesOpen ? <Minus size={18} /> : <Plus size={18} />}
-                  </button>
-                </div>
+                  </span>
+                </button>
 
                 <AnimatePresence>
                   {mobileServicesOpen && (
                     <motion.div
+                      id="mobile-services-menu"
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
@@ -427,27 +453,26 @@ export function Navbar() {
 
               {/* Industries Accordion */}
               <div className="border-t border-[#e5e7eb] pt-3">
-                <div className="flex items-center justify-between py-1 px-2.5 rounded-lg hover:bg-[#e5e7eb] transition-all duration-200 group">
-                  <Link
-                    to="/industries"
-                    onClick={closeMenus}
-                    className="text-sm font-bold uppercase tracking-widest text-ink group-hover:text-brand transition-colors duration-200"
-                  >
+                <button
+                  type="button"
+                  aria-expanded={mobileIndustriesOpen}
+                  aria-controls="mobile-industries-menu"
+                  aria-label="Toggle Industries sub-menu"
+                  onClick={toggleMobileIndustries}
+                  className="w-full flex items-center justify-between py-2 px-2.5 rounded-lg hover:bg-[#e5e7eb] transition-all duration-200 text-left group"
+                >
+                  <span className="text-sm font-bold uppercase tracking-widest text-ink group-hover:text-brand transition-colors duration-200">
                     Industries
-                  </Link>
-                  <button
-                    type="button"
-                    aria-label="Toggle Industries sub-menu"
-                    onClick={() => setMobileIndustriesOpen((prev) => !prev)}
-                    className="p-1.5 rounded-lg text-brand bg-brand/10 hover:bg-brand/20 transition-colors"
-                  >
+                  </span>
+                  <span className="p-1.5 rounded-lg text-brand bg-brand/10 group-hover:bg-brand/20 transition-colors">
                     {mobileIndustriesOpen ? <Minus size={18} /> : <Plus size={18} />}
-                  </button>
-                </div>
+                  </span>
+                </button>
 
                 <AnimatePresence>
                   {mobileIndustriesOpen && (
                     <motion.div
+                      id="mobile-industries-menu"
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}

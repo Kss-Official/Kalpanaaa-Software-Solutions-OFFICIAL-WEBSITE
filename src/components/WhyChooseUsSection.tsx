@@ -135,7 +135,7 @@ export default function WhyChooseUsSection() {
               </div>
             </div>
 
-            <div className="relative z-0 mt-4 sm:mt-0 px-4 sm:px-0">
+            <div className="relative z-0 mt-4 sm:mt-0 px-4 sm:px-0 sm:min-h-[230px]">
               <img
                 src="/At the office-pana 1.png"
                 alt="Team working together in an office"
