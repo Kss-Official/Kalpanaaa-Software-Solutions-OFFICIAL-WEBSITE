@@ -18,6 +18,8 @@ const Contact      = lazy(() => import("./pages/Contact").then((m) => ({ default
 const Privacy      = lazy(() => import("./pages/Privacy").then((m) => ({ default: m.Privacy })));
 const Terms        = lazy(() => import("./pages/Terms").then((m) => ({ default: m.Terms })));
 const Blog         = lazy(() => import("./pages/Blog").then((m) => ({ default: m.Blog })));
+const BlogDetail   = lazy(() => import("./pages/BlogDetail").then((m) => ({ default: m.BlogDetail })));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard").then((m) => ({ default: m.AdminDashboard })));
 const NotFound     = lazy(() => import("./pages/NotFound").then((m) => ({ default: m.NotFound })));
 
 // ── Employee Management Platform (lazy-loaded sub-app) ──
@@ -61,6 +63,7 @@ function AnimatedMarketingRoutes() {
             <Route path="/work"             element={<Work />} />
             <Route path="/work/:id"         element={<CaseStudyDetail />} />
             <Route path="/blog"             element={<Blog />} />
+            <Route path="/blog/:slug"       element={<BlogDetail />} />
             <Route path="/about"            element={<About />} />
             <Route path="/contact"          element={<Contact />} />
             <Route path="/privacy"          element={<Privacy />} />
@@ -76,19 +79,20 @@ function AnimatedMarketingRoutes() {
 export default function App() {
   const location = useLocation();
 
-  // Hide marketing chrome (Navbar / Footer) on portal and verify routes
-  const isPortalRoute = location.pathname.startsWith("/portal") || location.pathname.startsWith("/verify");
+  // Hide marketing chrome (Navbar / Footer) on portal, verify, and admin routes
+  const isPortalRoute = location.pathname.startsWith("/portal") || location.pathname.startsWith("/verify") || location.pathname.startsWith("/admin");
 
   return (
     <div className="min-h-screen flex flex-col site-page">
       <ScrollToTop />
 
       {isPortalRoute ? (
-        // ── Employee Management Platform (full-screen, no Navbar/Footer) ──
+        // ── Sub-App / Admin Portal (full-screen, custom navigation) ──
         <Suspense fallback={<LoadingRoute />}>
           <Routes>
             <Route path="/portal/*" element={<PortalApp />} />
             <Route path="/verify/:id" element={<VerificationView />} />
+            <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </Suspense>
       ) : (
