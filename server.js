@@ -511,6 +511,16 @@ app.get('/api/blogs/:slug', async (req, res) => {
   }
 });
 
+function sanitizeHtml(str) {
+  if (!str || typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 // POST /api/blogs — Submit new blog (pending approval)
 app.post('/api/blogs', async (req, res) => {
   try {
@@ -519,16 +529,20 @@ app.post('/api/blogs', async (req, res) => {
       return res.status(400).json({ error: 'Title, summary, and content are required' });
     }
 
-    const baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const safeTitle = sanitizeHtml(title.trim());
+    const safeSummary = sanitizeHtml(summary.trim());
+    const safeContent = sanitizeHtml(content.trim());
+
+    const baseSlug = safeTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     const slug = `${baseSlug}-${Math.floor(Math.random() * 1000)}`;
-    const wordCount = content.split(/\s+/).length;
+    const wordCount = safeContent.split(/\s+/).length;
     const readTime = `${Math.max(3, Math.ceil(wordCount / 200))} min read`;
 
     const result = await pool.query(
       `INSERT INTO blogs (slug, title, summary, content, category, tags, author_name, author_email, status, read_time, cover_image)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'PENDING_APPROVAL', $9, $10)
        RETURNING *`,
-      [slug, title, summary, content, category || 'Web Development', tags || [], authorName || 'SB Akash', authorEmail, readTime, coverImage || null]
+      [slug, safeTitle, safeSummary, safeContent, category || 'Web Development', tags || [], authorName || 'SB Akash', authorEmail, readTime, coverImage || null]
     );
 
     const row = result.rows[0];
