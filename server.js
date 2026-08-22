@@ -17,7 +17,7 @@ app.use(express.json({ limit: '10mb' }));
 const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 const pool = new Pool(
   connectionString
-    ? { connectionString, ssl: { rejectUnauthorized: false } }
+    ? { connectionString, ssl: { rejectUnauthorized: true } }
     : {
         user: process.env.PGUSER || 'postgres',
         host: process.env.PGHOST || 'localhost',
@@ -344,101 +344,96 @@ Enforce strict \`ResourceQuota\` rules per team Kubernetes namespace. Tools like
 ];
 
 // Initialize Database Tables and Initial Data
+// NOTE: Does NOT catch internally — errors propagate to dbReady so routes
+// that await dbReady receive the rejection instead of querying a broken DB.
 async function initDb() {
-  try {
-    // 1. Enums & Tables
-    await pool.query(`
-      DO $$ BEGIN CREATE TYPE user_role AS ENUM ('EMPLOYEE', 'ADMIN'); EXCEPTION WHEN duplicate_object THEN null; END $$;
-      DO $$ BEGIN CREATE TYPE blog_status AS ENUM ('DRAFT', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED'); EXCEPTION WHEN duplicate_object THEN null; END $$;
+  // 1. Enums & Tables
+  await pool.query(`
+    DO $$ BEGIN CREATE TYPE user_role AS ENUM ('EMPLOYEE', 'ADMIN'); EXCEPTION WHEN duplicate_object THEN null; END $$;
+    DO $$ BEGIN CREATE TYPE blog_status AS ENUM ('DRAFT', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED'); EXCEPTION WHEN duplicate_object THEN null; END $$;
 
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        role user_role NOT NULL DEFAULT 'EMPLOYEE',
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
+    CREATE TABLE IF NOT EXISTS users (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      role user_role NOT NULL DEFAULT 'EMPLOYEE',
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
 
-      CREATE TABLE IF NOT EXISTS blogs (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        slug VARCHAR(255) UNIQUE NOT NULL,
-        title VARCHAR(255) NOT NULL,
-        summary TEXT NOT NULL,
-        content TEXT NOT NULL,
-        category VARCHAR(100) NOT NULL,
-        tags TEXT[] DEFAULT '{}',
-        author_id UUID REFERENCES users(id) ON DELETE SET NULL,
-        author_name VARCHAR(255) NOT NULL,
-        author_email VARCHAR(255) NOT NULL,
-        status blog_status NOT NULL DEFAULT 'PENDING_APPROVAL',
-        rejection_reason TEXT,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        published_at TIMESTAMP WITH TIME ZONE,
-        read_time VARCHAR(50),
-        cover_image TEXT
-      );
+    CREATE TABLE IF NOT EXISTS blogs (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      slug VARCHAR(255) UNIQUE NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      summary TEXT NOT NULL,
+      content TEXT NOT NULL,
+      category VARCHAR(100) NOT NULL,
+      tags TEXT[] DEFAULT '{}',
+      author_id UUID REFERENCES users(id) ON DELETE SET NULL,
+      author_name VARCHAR(255) NOT NULL,
+      author_email VARCHAR(255) NOT NULL,
+      status blog_status NOT NULL DEFAULT 'PENDING_APPROVAL',
+      rejection_reason TEXT,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      published_at TIMESTAMP WITH TIME ZONE,
+      read_time VARCHAR(50),
+      cover_image TEXT
+    );
 
-      ALTER TABLE blogs ADD COLUMN IF NOT EXISTS read_time VARCHAR(50);
-      ALTER TABLE blogs ADD COLUMN IF NOT EXISTS cover_image TEXT;
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS read_time VARCHAR(50);
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS cover_image TEXT;
 
-      CREATE INDEX IF NOT EXISTS idx_blogs_status ON blogs(status);
-      CREATE INDEX IF NOT EXISTS idx_blogs_slug ON blogs(slug);
-      CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-    `);
+    CREATE INDEX IF NOT EXISTS idx_blogs_status ON blogs(status);
+    CREATE INDEX IF NOT EXISTS idx_blogs_slug ON blogs(slug);
+    CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+  `);
 
-    // 2. Seed Employees & Admins with BCRYPT-HASHED passwords
-    const empHash = await bcrypt.hash('emp123', 12);
-    for (const [email, name] of Object.entries(AUTHORIZED_EMPLOYEES)) {
+  // 2. Seed Employees & Admins with BCRYPT-HASHED passwords
+  const empHash = await bcrypt.hash('emp123', 12);
+  for (const [email, name] of Object.entries(AUTHORIZED_EMPLOYEES)) {
+    await pool.query(
+      `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'EMPLOYEE') ON CONFLICT (email) DO NOTHING`,
+      [email, empHash, name]
+    );
+  }
+  const adminHash = await bcrypt.hash('admin123', 12);
+  for (const [email, name] of Object.entries(AUTHORIZED_ADMINS)) {
+    await pool.query(
+      `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'ADMIN') ON CONFLICT (email) DO NOTHING`,
+      [email, adminHash, name]
+    );
+  }
+
+  // 3. Seed Initial Articles ONLY if table is empty
+  const blogCountRes = await pool.query(`SELECT COUNT(*) FROM blogs`);
+  const blogCount = parseInt(blogCountRes.rows[0]?.count || '0', 10);
+
+  if (blogCount === 0) {
+    console.log('Seeding initial blog articles into empty PostgreSQL table...');
+    for (const blog of INITIAL_SEED_BLOGS) {
       await pool.query(
-        `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'EMPLOYEE') ON CONFLICT (email) DO NOTHING`,
-        [email, empHash, name]
+        `INSERT INTO blogs (slug, title, summary, content, category, tags, author_name, author_email, status, read_time, cover_image, published_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::blog_status, $10, $11, CURRENT_TIMESTAMP)
+         ON CONFLICT (slug) DO NOTHING`,
+        [
+          blog.slug, blog.title, blog.summary, blog.content, blog.category,
+          blog.tags, blog.authorName, blog.authorEmail, blog.status,
+          blog.readTime, blog.coverImage
+        ]
       );
     }
-    const adminHash = await bcrypt.hash('admin123', 12);
-    for (const [email, name] of Object.entries(AUTHORIZED_ADMINS)) {
-      await pool.query(
-        `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'ADMIN') ON CONFLICT (email) DO NOTHING`,
-        [email, adminHash, name]
-      );
-    }
-
-    // 3. Seed Initial Articles ONLY if table is empty (Preserve custom articles in pgAdmin)
-    const blogCountRes = await pool.query(`SELECT COUNT(*) FROM blogs`);
-    const blogCount = parseInt(blogCountRes.rows[0]?.count || '0', 10);
-
-    if (blogCount === 0) {
-      console.log('Seeding initial blog articles into empty PostgreSQL table...');
-      for (const blog of INITIAL_SEED_BLOGS) {
-        await pool.query(
-          `INSERT INTO blogs (slug, title, summary, content, category, tags, author_name, author_email, status, read_time, cover_image, published_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::blog_status, $10, $11, CURRENT_TIMESTAMP)
-           ON CONFLICT (slug) DO NOTHING`,
-          [
-            blog.slug, blog.title, blog.summary, blog.content, blog.category,
-            blog.tags, blog.authorName, blog.authorEmail, blog.status,
-            blog.readTime, blog.coverImage
-          ]
-        );
-      }
-    } else {
-      console.log(`✅ PostgreSQL Database connected with ${blogCount} live blog records.`);
-    }
-  } catch (err) {
-    console.error('❌ Error initializing database:', err.message);
+  } else {
+    console.log(`✅ PostgreSQL Database connected with ${blogCount} live blog records.`);
   }
 }
 
-// Run initDb immediately so Vercel serverless cold-starts initialize the DB
-let dbInitialized = false;
-const dbReady = (async () => {
-  try {
-    await initDb();
-    dbInitialized = true;
-  } catch (e) {
-    console.error('DB init failed on cold start:', e.message);
-  }
-})();
+// Run initDb at module load. dbReady rejects if initDb() throws,
+// so routes that `await dbReady` receive the rejection and return 503.
+// The .catch() here is for logging only — it does NOT suppress the rejection.
+const dbReady = initDb();
+dbReady.catch((err) => {
+  console.error('❌ DB initialization failed — all API routes will reject:', err.message);
+});
 
 // ── REST API ROUTES ──────────────────────────────────────────────────────────
 
