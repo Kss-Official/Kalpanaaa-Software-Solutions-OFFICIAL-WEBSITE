@@ -33,8 +33,18 @@ CREATE TABLE IF NOT EXISTS blogs (
 INSERT INTO users (id, name, email, role, password) VALUES 
 ('usr-admin-1', 'Gaurav Kr Tripathi', 'founder@kalpanaaasoftwaresolutions.in', 'ADMIN', 'admin123'),
 ('usr-admin-2', 'Akshit Ujjain', 'akshitujjain@kalpanaaasoftwaresolutions.in', 'ADMIN', 'admin123'),
-('usr-1', 'SB Akash', 'sb.akash@kalpanaaa.in', 'AUTHOR', 'emp123'),
-('usr-2', 'Priyanka Kushwah', 'priyanka.kushwah@kalpanaaa.in', 'AUTHOR', 'emp123')
+('usr-emp-1', 'SB Akash', 'sb.akash@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-2', 'Priyanka Kushwah', 'priyanka.kushwah@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-3', 'Ritish Krishna Devadiga', 'ritish.krishna.devadiga@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-4', 'Kuruva Mahesh', 'kuruva.mahesh@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-5', 'Asbin T.S.', 'asbin.t.s@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-6', 'Jason Kenneth N', 'jasonkennethn@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-7', 'Pratiksha Harode', 'pratiksha.harode@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-8', 'Satya Ranjan Dash', 'satya.ranjan.dash@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-9', 'I. Thabeethal Asnath', 'i.thabeethal.asnath@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-10', 'Prahlad Sharma', 'prahlad.sharma@kalpanaaa.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-11', 'D. Koushik', 'd.koushik@kalpanaaasoftwaresolutions.in', 'EMPLOYEE', 'emp123'),
+('usr-emp-12', 'Abhinaya V', 'abhinayav1919@kalpanaaa.in', 'EMPLOYEE', 'emp123')
 ON CONFLICT (email) DO NOTHING;
 
 -- 3. INITIAL PUBLISHED BLOG POSTS
