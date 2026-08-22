@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import pg from 'pg';
+import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -386,17 +387,19 @@ async function initDb() {
       CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
     `);
 
-    // 2. Seed Employees & Admins (Preserve custom passwords & names in pgAdmin)
+    // 2. Seed Employees & Admins with BCRYPT-HASHED passwords
+    const empHash = await bcrypt.hash('emp123', 12);
     for (const [email, name] of Object.entries(AUTHORIZED_EMPLOYEES)) {
       await pool.query(
         `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'EMPLOYEE') ON CONFLICT (email) DO NOTHING`,
-        [email, 'emp123', name]
+        [email, empHash, name]
       );
     }
+    const adminHash = await bcrypt.hash('admin123', 12);
     for (const [email, name] of Object.entries(AUTHORIZED_ADMINS)) {
       await pool.query(
         `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'ADMIN') ON CONFLICT (email) DO NOTHING`,
-        [email, 'admin123', name]
+        [email, adminHash, name]
       );
     }
 
@@ -659,7 +662,7 @@ app.post('/api/auth/verify-email', async (req, res) => {
   }
 });
 
-// POST /api/auth/admin-login — Authenticate admin login
+// POST /api/auth/admin-login — Authenticate admin login with bcrypt verification
 app.post('/api/auth/admin-login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -669,31 +672,35 @@ app.post('/api/auth/admin-login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
 
-    // 1. Query PostgreSQL users table (checking password_hash column from database)
-    try {
-      await dbReady;
-      const dbUser = await pool.query(
-        `SELECT * FROM users WHERE LOWER(email) = $1 AND password_hash = $2`,
-        [trimmed, password]
-      );
-      if (dbUser.rows.length > 0) {
-        const u = dbUser.rows[0];
-        return res.json({
-          user: { id: u.id, email: u.email, name: u.name, role: u.role || 'ADMIN' }
-        });
-      }
-    } catch (dbErr) {
-      console.warn('DB query error on admin login:', dbErr.message);
+    await dbReady;
+
+    // 1. Fetch user by email only (never compare plaintext in SQL)
+    const dbResult = await pool.query(
+      `SELECT id, email, name, role, password_hash FROM users WHERE LOWER(email) = $1`,
+      [trimmed]
+    );
+
+    if (dbResult.rows.length === 0) {
+      // Use a generic message to prevent email enumeration
+      return res.status(401).json({ error: 'Invalid admin email or password.' });
     }
 
-    // 2. Fallback check for whitelisted admin accounts
-    if (AUTHORIZED_ADMINS[trimmed] && (password === 'admin123' || password === 'emp123')) {
-      return res.json({
-        user: { id: `admin-${trimmed.split('@')[0]}`, email: trimmed, name: AUTHORIZED_ADMINS[trimmed], role: 'ADMIN' }
-      });
+    const u = dbResult.rows[0];
+
+    // 2. Verify submitted password against bcrypt hash
+    const passwordValid = await bcrypt.compare(password, u.password_hash);
+    if (!passwordValid) {
+      return res.status(401).json({ error: 'Invalid admin email or password.' });
     }
 
-    return res.status(401).json({ error: 'Invalid admin email or password' });
+    // 3. Ensure only ADMIN role users can log in through this endpoint
+    if (u.role !== 'ADMIN') {
+      return res.status(403).json({ error: 'Access denied: admin privileges required.' });
+    }
+
+    return res.json({
+      user: { id: u.id, email: u.email, name: u.name, role: u.role }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
