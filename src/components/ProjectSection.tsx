@@ -4,33 +4,33 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 
 const projects = [
   {
-    title: "Learnova",
-    category: "Education Platform",
+    title: "KALPANAAA FINANCE",
+    category: "Finance Platform",
     description:
       "A full-stack e-learning platform designed for students, instructors and administrators with dedicated dashboards and learning management capabilities.",
-    image: "/LearnoveImg-1.webp",
+    image: "./project-images/FinanceProjectImage.svg",
     href: "/projects/learnova",
     tags: ["React", "Node.js", "Express", "Prisma", "PostgreSQL"],
     position:
       "lg:absolute lg:left-[7%] lg:top-[30px] lg:w-[35%] lg:-rotate-[5deg] lg:z-10",
   },
   {
-    title: "HireBridge",
-    category: "Recruitment Platform",
+    title: "KALPANAAA BBMP",
+    category: "Government Platform",
     description:
       "A role-based job scraping and recruitment platform that connects students with job opportunities and provides hiring managers with recruitment tools.",
-    image: "/HirebridgeImg-1.webp",
+    image: "./project-images/GovernmentProjectImage.svg",
     href: "/projects/hirebridge",
     tags: ["React", "Vite", "Node.js", "Express", "Prisma", "PostgreSQL"],
     position:
       "lg:absolute lg:left-1/2 lg:top-0 lg:w-[35%] lg:-translate-x-1/2 lg:z-30",
   },
   {
-    title: "Bondly",
-    category: "Travel Discovery",
+    title: "KALPANAAA EDUCATION",
+    category: "Education Platform",
     description:
       "A travel discovery platform that helps users discover, explore, post stories, chat with people and connect with travel destinations and experiences.",
-    image: "/BondlyImg-1.webp",
+    image: "/./project-images/EducationProjectImage.svg",
     href: "/projects/bondly",
     tags: ["React", "Node.js", "Hono", "PostgreSQL", "Redis"],
     position:
