@@ -78,4 +78,18 @@ export default defineConfig(({ command }) => ({
   optimizeDeps: {
     include: ["firebase/app", "firebase/auth", "firebase/firestore", "firebase/storage"],
   },
+  build: {
+    chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
+          'vendor-three': ['three', '@react-three/fiber'],
+          'vendor-charts': ['recharts'],
+          'vendor-motion': ['framer-motion', 'motion'],
+        },
+      },
+    },
+  },
 }));
