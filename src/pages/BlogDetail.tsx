@@ -34,6 +34,15 @@ function extractTOC(content: string): { id: string; title: string }[] {
   return headings;
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 // Markdown-to-JSX renderer
 function renderContent(content: string) {
   if (!content) return null;
@@ -47,7 +56,9 @@ function renderContent(content: string) {
     if (currentParagraph.length > 0) {
       const text = currentParagraph.join(' ').trim();
       if (text) {
-        const rendered = text
+        // Escape raw HTML entities to block Stored XSS payloads (e.g. <img onerror=...>)
+        const safeText = escapeHtml(text);
+        const rendered = safeText
           .replace(/\*\*(.+?)\*\*/g, '<strong class="text-ink font-semibold">$1</strong>')
           .replace(/`(.+?)`/g, '<code class="bg-surface px-1.5 py-0.5 rounded text-brand font-mono text-[0.85em] border border-line break-all">$1</code>');
 
