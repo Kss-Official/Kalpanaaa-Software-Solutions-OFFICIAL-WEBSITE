@@ -389,17 +389,26 @@ async function initDb() {
   `);
 
   // 2. Seed Employees & Admins with BCRYPT-HASHED passwords
+  // ON CONFLICT: insert if new, or upgrade plaintext passwords to bcrypt hash
   const empHash = await bcrypt.hash('emp123', 12);
   for (const [email, name] of Object.entries(AUTHORIZED_EMPLOYEES)) {
     await pool.query(
-      `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'EMPLOYEE') ON CONFLICT (email) DO NOTHING`,
+      `INSERT INTO users (email, password_hash, name, role)
+       VALUES ($1, $2, $3, 'EMPLOYEE')
+       ON CONFLICT (email) DO UPDATE
+         SET password_hash = EXCLUDED.password_hash
+         WHERE users.password_hash NOT LIKE '$2b$%'`,
       [email, empHash, name]
     );
   }
   const adminHash = await bcrypt.hash('admin123', 12);
   for (const [email, name] of Object.entries(AUTHORIZED_ADMINS)) {
     await pool.query(
-      `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'ADMIN') ON CONFLICT (email) DO NOTHING`,
+      `INSERT INTO users (email, password_hash, name, role)
+       VALUES ($1, $2, $3, 'ADMIN')
+       ON CONFLICT (email) DO UPDATE
+         SET password_hash = EXCLUDED.password_hash
+         WHERE users.password_hash NOT LIKE '$2b$%'`,
       [email, adminHash, name]
     );
   }
