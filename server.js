@@ -13,9 +13,10 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // PostgreSQL Connection Pool
+const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 const pool = new Pool(
-  process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL }
+  connectionString
+    ? { connectionString, ssl: { rejectUnauthorized: false } }
     : {
         user: process.env.PGUSER || 'postgres',
         host: process.env.PGHOST || 'localhost',
@@ -24,6 +25,7 @@ const pool = new Pool(
         port: parseInt(process.env.PGPORT || '5432', 10),
       }
 );
+
 
 // Whitelisted Authorized Accounts
 const AUTHORIZED_EMPLOYEES = {
@@ -424,11 +426,23 @@ async function initDb() {
   }
 }
 
+// Run initDb immediately so Vercel serverless cold-starts initialize the DB
+let dbInitialized = false;
+const dbReady = (async () => {
+  try {
+    await initDb();
+    dbInitialized = true;
+  } catch (e) {
+    console.error('DB init failed on cold start:', e.message);
+  }
+})();
+
 // ── REST API ROUTES ──────────────────────────────────────────────────────────
 
 // GET /api/blogs — Fetch blogs (filtered by status or category)
 app.get('/api/blogs', async (req, res) => {
   try {
+    await dbReady; // Ensure DB is initialized on Vercel serverless cold start
     const { status, category } = req.query;
     let query = `SELECT * FROM blogs`;
     const params = [];
@@ -657,8 +671,9 @@ app.post('/api/auth/admin-login', async (req, res) => {
 
     // 1. Query PostgreSQL users table (checking password_hash column from database)
     try {
+      await dbReady;
       const dbUser = await pool.query(
-        `SELECT * FROM users WHERE LOWER(email) = $1 AND (password_hash = $2 OR password = $2)`,
+        `SELECT * FROM users WHERE LOWER(email) = $1 AND password_hash = $2`,
         [trimmed, password]
       );
       if (dbUser.rows.length > 0) {
@@ -684,8 +699,11 @@ app.post('/api/auth/admin-login', async (req, res) => {
   }
 });
 
-// Start Server
-app.listen(PORT, async () => {
-  console.log(`🚀 Express API Backend running on http://localhost:${PORT}`);
-  await initDb();
-});
+// Start Server (local dev only — Vercel uses module export below)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Express API Backend running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
