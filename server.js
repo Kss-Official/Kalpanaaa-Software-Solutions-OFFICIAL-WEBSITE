@@ -15,31 +15,18 @@ app.use(express.json({ limit: '10mb' }));
 
 // PostgreSQL Connection Pool
 const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
-let poolConfig;
-
-if (connectionString) {
-  try {
-    const parsedUrl = new URL(connectionString);
-    parsedUrl.searchParams.delete('sslmode');
-    poolConfig = {
-      connectionString: parsedUrl.toString(),
-      ssl: { rejectUnauthorized: true },
-    };
-  } catch (e) {
-    poolConfig = {
+const poolConfig = connectionString
+  ? {
       connectionString,
-      ssl: { rejectUnauthorized: true },
+      ssl: { rejectUnauthorized: false },
+    }
+  : {
+      user: process.env.PGUSER || 'postgres',
+      host: process.env.PGHOST || 'localhost',
+      database: process.env.PGDATABASE || 'kalpana_cms',
+      password: process.env.PGPASSWORD || 'postgres',
+      port: parseInt(process.env.PGPORT || '5432', 10),
     };
-  }
-} else {
-  poolConfig = {
-    user: process.env.PGUSER || 'postgres',
-    host: process.env.PGHOST || 'localhost',
-    database: process.env.PGDATABASE || 'kalpana_cms',
-    password: process.env.PGPASSWORD || 'postgres',
-    port: parseInt(process.env.PGPORT || '5432', 10),
-  };
-}
 
 const pool = new Pool(poolConfig);
 
