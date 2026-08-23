@@ -10,7 +10,7 @@ const LEADERSHIP = [
     name: "Gaurav Kr Tripathi",
     role: "Founder, MD & CTO",
     banner: "FOUNDER",
-    image: "/Gaurav-2.png",
+    image: "/Gaurav-2.webp",
     icon: Code2,
     shortQuote:
       "Hi, I've been leading technology teams and building innovative solutions for years now...",
@@ -20,7 +20,7 @@ const LEADERSHIP = [
     name: "Akshit Ujjain",
     role: "Co-Founder & CEO",
     banner: "CO-FOUNDER",
-    image: "/Akshit-2.png",
+    image: "/Akshit-2.webp",
     icon: User,
     shortQuote:
       "Hi, we have been building, managing and growing innovative technology solutions together...",
@@ -33,7 +33,7 @@ const CUSTOMER_REVIEWS = [
     name: "Ananya Deshmukh",
     role: "Founder & Director",
     location: "Mumbai, India",
-    image: "/Priya_Portraits.png",
+    image: "/Priya_Portraits.webp",
     quote:
       "I must say, Kalpanaaa truly understands what its clients want. Their exceptional problem-solving skills, proactive methods and appealing front-end designs make them a trusted technology partner.",
   },
@@ -42,7 +42,7 @@ const CUSTOMER_REVIEWS = [
     name: "Rahul Verma",
     role: "Technology Director",
     location: "Bengaluru, India",
-    image: "/Anmol_Portraits.png",
+    image: "/Anmol_Portraits.webp",
     quote:
       "The team consistently delivers thoughtful engineering solutions with strong attention to quality, scalability and user experience. Their approach made the entire development process smooth and reliable.",
   },
@@ -51,7 +51,7 @@ const CUSTOMER_REVIEWS = [
     name: "Sneha Iyer",
     role: "Founder & CEO",
     location: "Hyderabad, India",
-    image: "/Priya_Portraits.png",
+    image: "/Priya_Portraits.webp",
     quote:
       "Their ability to understand complex business requirements and turn them into reliable digital products has been exceptional. The team delivered a solution that exceeded our expectations.",
   },
@@ -99,6 +99,10 @@ function LeaderCard({
         <img
           src={image}
           alt={name}
+          width={800}
+          height={800}
+          loading="lazy"
+          decoding="async"
           className="absolute left-0 right-0 top-0 z-10 mx-auto h-full w-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.025]"
         />
       </div>
@@ -215,6 +219,10 @@ export function Leadership() {
                     <img
                       src={featured.image}
                       alt={featured.name}
+                      width={200}
+                      height={250}
+                      loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover"
                     />
                   </div>

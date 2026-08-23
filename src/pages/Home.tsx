@@ -1,15 +1,8 @@
-import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Terminal, Shield, Sparkles, Bot, Brain, CheckCircle2 } from "lucide-react";
-import * as Lucide from "lucide-react";
+import { ArrowRight, Terminal } from "lucide-react";
 import { SEO } from "../components/SEO";
-import { SectionHeading } from "../components/SectionHeading";
-import { IndustryCard } from "../components/IndustryCard";
-import { CaseStudyCard } from "../components/CaseStudyCard";
 import { VisualScene } from "../components/visuals/VisualScene";
-import { CountUp } from "../components/effects/CountUp";
-import { SERVICES, INDUSTRIES, CASE_STUDIES, STATISTICS, TECHNOLOGIES, NAP } from "../data/site";
 import Testimonials from "../components/Testimonials";
 import FAQ from "../components/FAQ";
 import WhyChooseUsSection from "../components/WhyChooseUsSection";
@@ -20,20 +13,15 @@ import DevelopmentProcessSection from "../components/DevelopmentProcessSection";
 import TechStackSection from "../components/TechStackSection";
 import StartConversationSection from "../components/StartConversationSection";
 
-function HomeStatCounter({ value }: { value: string }) {
-  const match = value.match(/^(<\s*)?(\d+(?:\.\d+)?)(.*)$/);
-  if (!match) return <span className="metric-counter__static">{value}</span>;
-  const [, prefix = "", numeric, suffix = ""] = match;
-  return <span className="inline-flex items-baseline"><span className="metric-counter__affix">{prefix}</span><CountUp to={Number(numeric)} duration={1.2} className="metric-counter__static" /><span className="metric-counter__affix">{suffix}</span></span>;
-}
-
+/**
+ * The commented-out sections at the bottom of this file are kept as design reference. Their
+ * imports (SectionHeading, IndustryCard, CaseStudyCard, CountUp, the SERVICES/INDUSTRIES/
+ * CASE_STUDIES/STATISTICS/TECHNOLOGIES/NAP data, and the extra lucide icons) were removed
+ * because nothing rendered them — most notably `import * as Lucide from "lucide-react"`, whose
+ * dynamic member access pinned the entire ~5,000-export icon barrel into this route's chunk.
+ * Re-add the specific imports a block needs if you bring one back.
+ */
 export function Home() {
-  const [activeIndustry, setActiveIndustry] = useState(0);
-  const industry = INDUSTRIES[activeIndustry];
-  const technologyLogos = useMemo(() => TECHNOLOGIES.map((technology) => {
-    const Icon = (Lucide as any)[technology.icon] ?? Lucide.Code2;
-    return { title: technology.name, node: <><Icon size={32} aria-hidden="true" /><span className="text-lg font-semibold">{technology.name}</span></> };
-  }), []);
   const faqJsonLd = {
     "@context": "https://schema.org", "@type": "FAQPage", mainEntity: [
       { "@type": "Question", name: "What is Kalpanaaaa Software Solutions?", acceptedAnswer: { "@type": "Answer", text: "Kalpanaaaa Software Solutions Pvt. Ltd. is a Jaipur-based bespoke engineering partner delivering production-grade full-stack web, mobile, cloud, DevOps, QA, RAG and multi-agent AI systems for government, healthcare, finance, and education." } },

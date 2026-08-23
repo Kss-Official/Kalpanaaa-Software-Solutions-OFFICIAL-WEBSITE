@@ -1,12 +1,14 @@
+// width/height are the intrinsic WebP sizes. The tiles are hard-sized by CSS, so these only
+// serve to give the browser the aspect ratio before the bytes arrive.
 const stacks = [
-  { name: "Redis", image: "/tech-stack/stack-01.svg" },
-  { name: "Typescript", image: "/tech-stack/stack-02.svg" },
-  { name: "React.js", image: "/tech-stack/stack-03.svg" },
-  { name: "Next.js", image: "/tech-stack/stack-04.svg" },
-  { name: "Node.js", image: "/tech-stack/stack-05.svg" },
-  { name: "GraphQL", image: "/tech-stack/stack-06.svg" },
-  { name: "Tailwind css", image: "/tech-stack/stack-07.svg" },
-  { name: "PostgreSQL", image: "/tech-stack/stack-08.svg" },
+  { name: "Redis", image: "/tech-stack/stack-01.webp", width: 240, height: 214 },
+  { name: "Typescript", image: "/tech-stack/stack-02.webp", width: 240, height: 216 },
+  { name: "React.js", image: "/tech-stack/stack-03.webp", width: 240, height: 216 },
+  { name: "Next.js", image: "/tech-stack/stack-04.webp", width: 240, height: 214 },
+  { name: "Node.js", image: "/tech-stack/stack-05.webp", width: 240, height: 214 },
+  { name: "GraphQL", image: "/tech-stack/stack-06.webp", width: 240, height: 216 },
+  { name: "Tailwind css", image: "/tech-stack/stack-07.webp", width: 240, height: 216 },
+  { name: "PostgreSQL", image: "/tech-stack/stack-08.webp", width: 240, height: 214 },
 ];
 
 function StackMarqueeRow({
@@ -34,8 +36,11 @@ function StackMarqueeRow({
             <img
               src={stack.image}
               alt={stack.name}
+              width={stack.width}
+              height={stack.height}
               className="h-[52px] w-[70px] sm:h-[72px] sm:w-[96px] object-contain transition-transform duration-300 hover:scale-110 md:h-[86px] md:w-[116px]"
               loading="lazy"
+              decoding="async"
             />
             <span className="text-center text-xs sm:text-base font-semibold leading-none text-ink/80 md:text-lg">
               {stack.name}

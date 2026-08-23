@@ -35,7 +35,7 @@ export function Services() {
             title="Bespoke engineering capabilities"
             description="A connected delivery system across web, mobile, cloud, QA, RAG, and multi-agent engineering."
           />
-          <img src="/Rectangle.svg" alt="" className="mx-auto w-full max-w-[560px]" aria-hidden="true" />
+          <img src="/Rectangle.webp" alt="" width={1120} height={750} fetchpriority="high" decoding="async" className="mx-auto w-full max-w-[560px]" aria-hidden="true" />
         </div>
       </section>
 

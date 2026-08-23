@@ -96,7 +96,11 @@ body { margin: 0; overflow-x: hidden; background: transparent; color: var(--ink)
 @keyframes scene-card-rise { 0% { opacity: 0; transform: translateY(14px); } 18% { opacity: 1; transform: translateY(0); } 100% { opacity: 1; } }
 @keyframes scene-stop-light { 0%,100% { filter: drop-shadow(0 0 0 rgba(23,105,213,0)); } 50% { filter: drop-shadow(0 0 14px rgba(23,105,213,.55)); } }
 @keyframes scene-flow-march { to { stroke-dashoffset: -96; } }
-@keyframes scene-grid-pulse { 0% { fill-opacity: 0; } 50% { fill-opacity: .16; } 100% { fill-opacity: 0; } }
+/* Animates `opacity`, not `fill-opacity`. Both classes are applied to bare <circle>s that
+   have a fill and no stroke and no children, so element opacity is visually identical to
+   fill-opacity here — but opacity is compositable, while fill-opacity repaints on the main
+   thread every frame for the whole ~460px circle. */
+@keyframes scene-grid-pulse { 0% { opacity: 0; } 50% { opacity: .16; } 100% { opacity: 0; } }
 @keyframes scene-token-bob { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
 @keyframes scene-tick { 0% { opacity: 0; transform: translateY(-3px); } 60% { opacity: 1; transform: translateY(0); } 100% { opacity: 1; } }
 @keyframes scene-token-shimmer { to { transform: translateX(120%); } }

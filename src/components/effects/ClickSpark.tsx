@@ -19,6 +19,12 @@ export function ClickSpark({
 }: ClickSparkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sparksRef = useRef<Spark[]>([]);
+  // Canvas CSS size, kept up to date by the ResizeObserver. Reading it from a ref means the draw
+  // loop never has to measure layout.
+  const sizeRef = useRef({ width: 0, height: 0 });
+  // 0 means "loop is parked". requestAnimationFrame never returns 0, so this is a safe sentinel.
+  const frameRef = useRef(0);
+  const drawRef = useRef<((time: number) => void) | null>(null);
 
   const ease = useCallback((t: number) => {
     if (easing === "linear") return t;
@@ -36,19 +42,29 @@ export function ClickSpark({
     const resize = () => {
       const rect = parent.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      sizeRef.current = { width: rect.width, height: rect.height };
       canvas.width = Math.max(1, Math.round(rect.width * dpr));
       canvas.height = Math.max(1, Math.round(rect.height * dpr));
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
+    // ResizeObserver callbacks run after layout, so measuring here cannot thrash.
     const observer = new ResizeObserver(resize);
     observer.observe(parent);
     resize();
-    let frame = 0;
+
+    /**
+     * This loop used to run unconditionally for the lifetime of the app, and it measured the
+     * wrapper — which contains the whole page — with getBoundingClientRect() on every frame. That
+     * is a forced synchronous layout of the entire document ~60 times a second, plus a
+     * full-viewport clearRect, all to draw nothing at all unless the visitor had just clicked.
+     * It now runs only while sparks are alive and parks itself as soon as the last one expires,
+     * so the effect is visually identical but costs nothing while the page is loading.
+     */
     const draw = (time: number) => {
-      const rect = parent.getBoundingClientRect();
-      context.clearRect(0, 0, rect.width, rect.height);
+      const { width, height } = sizeRef.current;
+      context.clearRect(0, 0, width, height);
       sparksRef.current = sparksRef.current.filter((spark) => {
         const progress = Math.min(1, (time - spark.start) / duration);
         if (progress >= 1) return false;
@@ -66,11 +82,26 @@ export function ClickSpark({
         return true;
       });
       context.globalAlpha = 1;
-      frame = requestAnimationFrame(draw);
+
+      // The canvas was cleared above, so parking here leaves nothing half-drawn.
+      if (sparksRef.current.length === 0) {
+        frameRef.current = 0;
+        return;
+      }
+      frameRef.current = requestAnimationFrame(draw);
     };
-    frame = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(frame); observer.disconnect(); };
-  }, [duration, ease, extraScale, sparkColor, sparkCount, sparkRadius, sparkSize]);
+
+    drawRef.current = draw;
+    // Pick the loop back up if sparks were queued before this effect (re)ran.
+    if (sparksRef.current.length > 0) frameRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+      frameRef.current = 0;
+      drawRef.current = null;
+      observer.disconnect();
+    };
+  }, [duration, ease, extraScale, sparkColor, sparkRadius, sparkSize]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -82,6 +113,9 @@ export function ClickSpark({
     sparksRef.current.push(...Array.from({ length: sparkCount }, (_, index) => ({
       x, y, start: now, angle: (Math.PI * 2 * index) / sparkCount,
     })));
+    if (!frameRef.current && drawRef.current) {
+      frameRef.current = requestAnimationFrame(drawRef.current);
+    }
   };
 
   return <div className={className} style={{ position: "relative", ...style }} onClick={handleClick}>

@@ -15,11 +15,18 @@ import { SectionHeading } from "../components/SectionHeading";
 
 type CardVariant = "tall" | "wide" | "square";
 
+/**
+ * `width`/`height` are the intrinsic pixel sizes of the WebP files. The card CSS constrains
+ * both axes, so these do not change layout — they give the browser the aspect ratio up front
+ * so nothing reflows as the images stream in.
+ */
 const services: Array<{
   title: string;
   description: string;
   href: string;
   image: string;
+  width: number;
+  height: number;
   Icon: LucideIcon;
   variant: CardVariant;
   className: string;
@@ -30,7 +37,9 @@ const services: Array<{
     description:
       "We build fast, responsive and SEO-friendly websites that help your business stand out online.",
     href: "/services/web-engineering",
-    image: "/service-website.svg",
+    image: "/service-website.webp",
+    width: 800,
+    height: 534,
     Icon: LayoutPanelTop,
     variant: "tall",
     className: "lg:col-start-1 lg:row-start-1 lg:row-end-3",
@@ -41,7 +50,9 @@ const services: Array<{
     description:
       "Powerful mobile applications for Android & iOS that deliver seamless user experiences.",
     href: "/services/mobile-apps",
-    image: "/service-mobile-app.svg",
+    image: "/service-mobile-app.webp",
+    width: 800,
+    height: 1201,
     Icon: Smartphone,
     variant: "square",
     className: "lg:col-start-2 lg:row-start-1",
@@ -51,7 +62,9 @@ const services: Array<{
     description:
       "Tailored software solutions designed to solve your unique business challenges.",
     href: "/services/custom-software-development",
-    image: "/service-custom-software.svg",
+    image: "/service-custom-software.webp",
+    width: 800,
+    height: 532,
     Icon: Code2,
     variant: "square",
     className: "lg:col-start-3 lg:row-start-1",
@@ -62,7 +75,9 @@ const services: Array<{
     description:
       "Automate conversations, reduce manual work, and improve customer support with AI.",
     href: "/services/ai-chatbots",
-    image: "/service-ai-chatbot.svg",
+    image: "/service-ai-chatbot.webp",
+    width: 800,
+    height: 518,
     Icon: Bot,
     variant: "wide",
     className: "lg:col-start-2 lg:col-end-4 lg:row-start-2",
@@ -72,7 +87,9 @@ const services: Array<{
     description:
       "We design intuitive and engaging interfaces that enhance user satisfaction and drive results.",
     href: "/services/ui-ux-design",
-    image: "/service-ui-ux.svg",
+    image: "/service-ui-ux.webp",
+    width: 800,
+    height: 534,
     Icon: MonitorSmartphone,
     variant: "wide",
     className: "lg:col-start-1 lg:col-end-3 lg:row-start-3",
@@ -82,7 +99,9 @@ const services: Array<{
     description:
       "Scalable cloud solutions and DevOps practices to ensure performance, reliability, and security.",
     href: "/services/cloud-devops",
-    image: "/service-cloud-devops.svg",
+    image: "/service-cloud-devops.webp",
+    width: 800,
+    height: 533,
     Icon: CloudUpload,
     variant: "tall",
     className: "lg:col-start-3 lg:row-start-3 lg:row-end-5",
@@ -93,7 +112,9 @@ const services: Array<{
     description:
       "Protect your data and systems with our robust security solutions and best practices.",
     href: "/services/application-security",
-    image: "/service-cybersecurity.svg",
+    image: "/service-cybersecurity.webp",
+    width: 800,
+    height: 533,
     Icon: ShieldCheck,
     variant: "square",
     className: "lg:col-start-1 lg:row-start-4",
@@ -104,7 +125,9 @@ const services: Array<{
     description:
       "We keep your software running smoothly with continuous support and maintenance.",
     href: "/services/it-consulting",
-    image: "/service-maintenance.svg",
+    image: "/service-maintenance.webp",
+    width: 800,
+    height: 534,
     Icon: Headphones,
     variant: "square",
     className: "lg:col-start-2 lg:row-start-4",
@@ -123,6 +146,8 @@ function ServiceMosaicCard({
   description,
   href,
   image,
+  width,
+  height,
   Icon,
   variant,
   className,
@@ -174,6 +199,10 @@ function ServiceMosaicCard({
         <img
           src={image}
           alt=""
+          width={width}
+          height={height}
+          loading="lazy"
+          decoding="async"
           className={`pointer-events-none object-contain object-bottom transition-transform duration-500 group-hover:scale-[1.04] ${
             isTall
               ? "h-full w-[86%] max-w-[320px]"

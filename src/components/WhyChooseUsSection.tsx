@@ -139,6 +139,10 @@ export default function WhyChooseUsSection() {
               <img
                 src="/At the office-pana 1.svg"
                 alt="Team working together in an office"
+                width={750}
+                height={500}
+                loading="lazy"
+                decoding="async"
                 className="pointer-events-none relative sm:absolute sm:bottom-0 sm:right-[-10px] h-[160px] sm:h-[230px] w-full sm:w-[88%] max-w-[610px] object-contain object-bottom"
               />
             </div>

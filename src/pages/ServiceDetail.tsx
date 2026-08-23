@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ExternalLink, Accessibility, Bot, Code2, Database, Workflow } from "lucide-react";
-import * as Lucide from "lucide-react";
+import { getIcon } from "../components/icons/registry";
 import type { IconType } from "react-icons";
 import { FaAws } from "react-icons/fa";
 import { SiAnthropic, SiCrewai, SiDocker, SiExpo, SiFastapi, SiFirebase, SiGithubactions, SiGooglecloud, SiGrafana, SiGraphql, SiJest, SiK6, SiKotlin, SiKubernetes, SiLangchain, SiLanggraph, SiNodedotjs, SiNextdotjs, SiOllama, SiPostgresql, SiPrometheus, SiPython, SiReact, SiRedis, SiSonarqubecloud, SiSwift, SiTailwindcss, SiTerraform, SiTypescript, SiVitest } from "react-icons/si";
@@ -22,25 +22,25 @@ const techIcons: Record<string, IconType | typeof Accessibility> = {
 };
 
 const heroArtByCategory: Record<string, string> = {
-  "Full Stack Development & Design": "/AllFullStackServicePages.svg",
-  "Cloud DevOps & Infrastructure": "/AllCloud&DevopsPages.svg",
-  "Generative AI": "/AllGenerativeAIPages.svg",
-  "Cyber Security": "/AllCyberSecurityPages.svg",
-  Others: "/AllOtherPages.svg",
+  "Full Stack Development & Design": "/AllFullStackServicePages.webp",
+  "Cloud DevOps & Infrastructure": "/AllCloud&DevopsPages.webp",
+  "Generative AI": "/AllGenerativeAIPages.webp",
+  "Cyber Security": "/AllCyberSecurityPages.webp",
+  Others: "/AllOtherPages.webp",
 };
 
 const featureIcons = ["Code2", "ScanSearch", "BarChart3", "Zap", "Archive", "ShieldCheck", "Workflow", "Database"];
 
 const stackLogoByTech: Record<string, string> = {
-  Redis: "/tech-stack/stack-01.svg",
-  TypeScript: "/tech-stack/stack-02.svg",
-  React: "/tech-stack/stack-03.svg",
-  "React Native": "/tech-stack/stack-03.svg",
-  "Next.js": "/tech-stack/stack-04.svg",
-  "Node.js": "/tech-stack/stack-05.svg",
-  GraphQL: "/tech-stack/stack-06.svg",
-  "Tailwind CSS": "/tech-stack/stack-07.svg",
-  PostgreSQL: "/tech-stack/stack-08.svg",
+  Redis: "/tech-stack/stack-01.webp",
+  TypeScript: "/tech-stack/stack-02.webp",
+  React: "/tech-stack/stack-03.webp",
+  "React Native": "/tech-stack/stack-03.webp",
+  "Next.js": "/tech-stack/stack-04.webp",
+  "Node.js": "/tech-stack/stack-05.webp",
+  GraphQL: "/tech-stack/stack-06.webp",
+  "Tailwind CSS": "/tech-stack/stack-07.webp",
+  PostgreSQL: "/tech-stack/stack-08.webp",
 };
 
 export function ServiceDetail() {
@@ -98,7 +98,7 @@ export function ServiceDetail() {
               </Link>
             </div>
 
-            <img src={heroArt} alt="" className="mx-auto w-full max-w-[650px] object-contain" aria-hidden="true" />
+            <img src={heroArt} alt="" width={1300} height={866} fetchpriority="high" decoding="async" className="mx-auto w-full max-w-[650px] object-contain" aria-hidden="true" />
           </div>
         </div>
       </section>
@@ -113,7 +113,7 @@ export function ServiceDetail() {
 
           <div className="mt-14 grid gap-7 md:grid-cols-2">
             {service.keyFeatures.map((feature, index) => {
-              const Icon = (Lucide as any)[featureIcons[index % featureIcons.length]] ?? Code2;
+              const Icon = getIcon(featureIcons[index % featureIcons.length], Code2);
               return (
                 <motion.article
                   key={feature}
@@ -207,7 +207,7 @@ export function ServiceDetail() {
         <div className="mx-auto max-w-7xl px-6 md:px-8 lg:px-12">
           <div className="relative min-h-[230px] overflow-hidden rounded-[28px] border border-[#60A5FA]">
             <div className="absolute inset-0 bg-[linear-gradient(105deg,#1D4ED8_0%,#2563EB_42%,#38BDF8_78%,#7DD3FC_100%)]" />
-            <img src="/industry-cta-rocket.png" alt="" className="pointer-events-none absolute inset-y-2 right-0 hidden w-[58%] max-w-[560px] object-contain object-right pr-3 sm:block md:pr-8" />
+            <img src="/industry-cta-rocket.png" alt="" width={459} height={199} loading="lazy" decoding="async" className="pointer-events-none absolute inset-y-2 right-0 hidden w-[58%] max-w-[560px] object-contain object-right pr-3 sm:block md:pr-8" />
             <div className="relative z-[1] max-w-xl px-8 py-9 md:px-14 md:py-12">
               <h2 className="text-3xl font-extrabold text-white md:text-4xl">Have a project in mind?</h2>
               <p className="mt-3 text-lg text-white/90">Let's build something impactful together.</p>
@@ -224,7 +224,7 @@ export function ServiceDetail() {
 }
 
 function ServiceProjectCard({ project, index }: { project: CaseStudy; index: number }) {
-  const Icon = (Lucide as any)[project.icon] ?? Lucide.Box;
+  const Icon = getIcon(project.icon);
   const styles = [
     { shell: "border-[#E9D5FF] bg-[#FCF3FF]", tag: "text-[#9333EA] border-[#E9D5FF]", icon: "text-[#9333EA] bg-[#FAE8FF]", button: "text-[#9333EA] border-[#E9D5FF]", chip: "border-[#E9D5FF] bg-[#FAF5FF] text-[#7E22CE]", dot: "bg-[#A855F7]" },
     { shell: "border-[#B7D4FB] bg-[#EFF8FF]", tag: "text-[#047857] border-[#BBF7D0]", icon: "text-[#2563EB] bg-[#EFF6FF]", button: "text-[#2563EB] border-[#BFDBFE]", chip: "border-[#BFDBFE] bg-[#EFF6FF] text-[#1D4ED8]", dot: "bg-[#60A5FA]" },
@@ -243,6 +243,7 @@ function ServiceProjectCard({ project, index }: { project: CaseStudy; index: num
             alt={`${project.title} project preview`}
             className="h-full w-full object-cover"
             loading="lazy"
+            decoding="async"
           />
         </div>
       </div>
@@ -282,7 +283,7 @@ function TechStackLogo({ technology }: { technology: string }) {
   return (
     <div className="flex shrink-0 items-center gap-4 text-[#64748B] transition-all duration-300 hover:-translate-y-1 hover:text-[#2563EB]">
       {image ? (
-        <img src={image} alt={technology} className="h-10 w-10 object-contain md:h-12 md:w-12" loading="lazy" />
+        <img src={image} alt={technology} className="h-10 w-10 object-contain md:h-12 md:w-12" loading="lazy" decoding="async" />
       ) : (
         <span className="grid h-10 w-10 place-items-center rounded-xl bg-white text-[#2563EB] shadow-[0_12px_28px_-24px_rgba(20,35,60,.42)] md:h-12 md:w-12">
           <Icon size={28} aria-hidden="true" />
@@ -294,7 +295,7 @@ function TechStackLogo({ technology }: { technology: string }) {
 }
 
 function ServiceIndustryCard({ industry, index }: { industry: Industry; index: number }) {
-  const Icon = (Lucide as any)[industry.icon] ?? Lucide.Box;
+  const Icon = getIcon(industry.icon);
   return (
     <motion.article
       initial={{ opacity: 0, y: 18 }}

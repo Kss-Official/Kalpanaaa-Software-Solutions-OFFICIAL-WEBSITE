@@ -343,6 +343,7 @@ export function BlogDetail() {
               src={post.coverImage}
               alt={post.title}
               className="w-full h-full object-cover"
+              decoding="async"
               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
             />
           </div>

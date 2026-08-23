@@ -34,9 +34,17 @@ function ScrollToTop() {
   return null;
 }
 
+/**
+ * The fallback reserves a full viewport, not 45vh. Every route on this site is taller than one
+ * screen, so at 45vh the Footer painted *inside* the first viewport and was then shoved down by
+ * several screens the moment the route chunk resolved — a single 0.35 layout shift, which was the
+ * whole of the page's CLS. Reserving 100vh puts the Footer below the fold from the first paint, so
+ * the same growth happens off-screen and costs nothing. `min-h-screen` is viewport-relative, so it
+ * stays correct on every device instead of pinning an arbitrary pixel height.
+ */
 function LoadingRoute() {
   return (
-    <div className="min-h-[45vh] grid place-items-center text-xs font-mono uppercase tracking-widest text-brand">
+    <div className="min-h-screen grid place-items-center text-xs font-mono uppercase tracking-widest text-brand">
       Loading…
     </div>
   );

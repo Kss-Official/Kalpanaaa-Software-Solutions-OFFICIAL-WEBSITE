@@ -135,7 +135,12 @@
   <!-- ══════════════════════════════════════════════════════
        PRELOAD CRITICAL ASSETS
   ═══════════════════════════════════════════════════════ -->
+  <!-- Navbar logo: visible immediately on every route. -->
   <link rel="preload" as="image" href="/logo.webp" />
+  <!-- Home hero (LCP element). The Home route is code-split, so without this preload the
+       browser cannot discover the hero until the route chunk has parsed and rendered,
+       which was costing ~0.8s of pure LCP load delay. -->
+  <link rel="preload" as="image" href="/Hero.webp" fetchpriority="high" />
 
   <!-- ══════════════════════════════════════════════════════
        JSON-LD: Organization — PRIMARY BRAND ENTITY

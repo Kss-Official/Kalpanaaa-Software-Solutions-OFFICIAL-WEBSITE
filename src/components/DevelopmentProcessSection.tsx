@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Check, Search } from "lucide-react";
 
 const steps = [
@@ -13,7 +13,9 @@ const steps = [
     glow: "rgba(23,105,213,.8)",
     description:
       "We dive deep into your business, users, market, and goals to define a clear strategy and product roadmap.",
-    image: "/development-step-1.jpeg",
+    image: "/development-step-1.webp",
+    imageWidth: 1100,
+    imageHeight: 934,
     points: [
       "Business & requirement analysis",
       "Technical planning & roadmap",
@@ -32,7 +34,9 @@ const steps = [
     glow: "rgba(109,61,244,.68)",
     description:
       "We turn strategy into intuitive, engaging designs that deliver seamless user experiences and strong visual impact.",
-    image: "/Deve-1.svg",
+    image: "/Deve-1.webp",
+    imageWidth: 1100,
+    imageHeight: 733,
     points: [
       "User flows & information architecture",
       "Interactive prototypes",
@@ -53,7 +57,9 @@ const steps = [
     glow: "rgba(12,159,194,.68)",
     description:
       "We bring designs to life with clean, scalable code and rigorous testing to ensure performance, security, and reliability at every step.",
-    image: "/Deve-2.svg",
+    image: "/Deve-2.webp",
+    imageWidth: 680,
+    imageHeight: 465,
     points: [
       "Frontend development",
       "Database design & optimization",
@@ -75,6 +81,8 @@ const steps = [
     description:
       "We ensure a smooth launch to production with rigorous checks, monitoring, and ongoing support for long-term success.",
     image: "/Deve-3.svg",
+    imageWidth: 500,
+    imageHeight: 500,
     points: [
       "Production deployment",
       "Monitoring & analytics",
@@ -91,65 +99,121 @@ const SLIDE_MS = 5200;
 export default function DevelopmentProcessSection() {
   const [active, setActive] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [centers, setCenters] = useState<number[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const dotRef = useRef<HTMLSpanElement>(null);
+  const fillRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const centersRef = useRef<number[]>([]);
+  const activeRef = useRef(0);
   const current = steps[active];
+
+  /**
+   * Slide progress is not React state. It changes ~60x a second and feeds exactly two things:
+   * the marker's `left` and the active connector's `width`. Keeping it in state re-rendered
+   * this whole section (nav, copy, six bullets, image) on every frame; writing the two nodes
+   * directly costs a style recalc on two out-of-flow elements instead.
+   */
+  const applyProgress = useCallback((activeIndex: number, progress: number, hovering: boolean) => {
+    const centers = centersRef.current;
+    const from = centers[activeIndex] ?? 0;
+    const to = centers[(activeIndex + 1) % steps.length] ?? from;
+    const wrapping = activeIndex === steps.length - 1;
+
+    if (dotRef.current) {
+      const left = hovering || wrapping ? from : from + (to - from) * progress;
+      dotRef.current.style.left = `${left}px`;
+    }
+
+    fillRefs.current.forEach((fill, index) => {
+      if (!fill) return;
+      fill.style.width =
+        index < activeIndex
+          ? "100%"
+          : index === activeIndex && !hovering
+            ? `${progress * 100}%`
+            : "0%";
+    });
+  }, []);
 
   useLayoutEffect(() => {
     const measureCenters = () => {
       const nav = navRef.current;
       if (!nav) return;
 
+      // One batched read pass — every getBoundingClientRect() happens before any style write,
+      // so this cannot thrash layout.
       const navBox = nav.getBoundingClientRect();
-      setCenters(
-        stepRefs.current.map((step) => {
-          if (!step) return 0;
-          const box = step.getBoundingClientRect();
-          return box.left - navBox.left + box.width / 2;
-        }),
-      );
+      centersRef.current = stepRefs.current.map((step) => {
+        if (!step) return 0;
+        const box = step.getBoundingClientRect();
+        return box.left - navBox.left + box.width / 2;
+      });
+      applyProgress(activeRef.current, 0, false);
     };
 
     measureCenters();
     window.addEventListener("resize", measureCenters);
     return () => window.removeEventListener("resize", measureCenters);
-  }, []);
+  }, [applyProgress]);
+
+  // A step change swaps in fresh DOM for the connectors, so re-apply immediately rather than
+  // waiting for the next animation frame. `activeRef` mirrors `active` for the rAF loop, which
+  // must not be torn down and rebuilt on every step change.
+  useLayoutEffect(() => {
+    activeRef.current = active;
+    applyProgress(active, 0, isHovering);
+  }, [active, isHovering, applyProgress]);
 
   useEffect(() => {
-    if (isHovering) {
-      setProgress(0);
-      return;
-    }
+    if (isHovering) return;
 
+    const section = sectionRef.current;
     let start = performance.now();
     let frame = 0;
+    let visible = true;
+
+    // The section sits well below the fold. Ticking it while it is off-screen burned main
+    // thread time during page load for an animation nobody could see.
+    const observer = section
+      ? new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) visible = entry.isIntersecting;
+          },
+          { threshold: 0 },
+        )
+      : null;
+    if (section && observer) observer.observe(section);
 
     const tick = (now: number) => {
-      let nextProgress = (now - start) / SLIDE_MS;
-
-      if (nextProgress >= 1) {
-        setActive((step) => (step + 1) % steps.length);
+      if (!visible) {
+        // Freeze rather than fast-forward, so scrolling back does not cause a jump.
         start = now;
-        nextProgress = 0;
+        frame = window.requestAnimationFrame(tick);
+        return;
       }
 
-      setProgress(nextProgress);
+      let progress = (now - start) / SLIDE_MS;
+
+      if (progress >= 1) {
+        setActive((step) => (step + 1) % steps.length);
+        start = now;
+        progress = 0;
+      }
+
+      applyProgress(activeRef.current, progress, false);
       frame = window.requestAnimationFrame(tick);
     };
 
     frame = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frame);
-  }, [isHovering]);
-
-  const from = centers[active] ?? 0;
-  const to = centers[(active + 1) % steps.length] ?? from;
-  const wrapping = active === steps.length - 1;
-  const dotLeft = isHovering || wrapping ? from : from + (to - from) * progress;
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [isHovering, applyProgress]);
 
   return (
-    <section className="bg-white py-12 md:py-14">
+    <section ref={sectionRef} className="bg-white py-12 md:py-14">
       <div className="mx-auto max-w-7xl px-6 md:px-8 lg:px-10">
         <div className="mx-auto max-w-5xl text-center">
           <p className="eyebrow justify-center text-sm font-semibold text-brand tracking-widest before:w-14 after:h-px after:w-14 after:bg-current after:opacity-70">
@@ -170,9 +234,9 @@ export default function DevelopmentProcessSection() {
         <div className="relative mx-auto mt-8 max-w-6xl">
           <div ref={navRef} className="relative grid gap-3 md:grid-cols-4">
             <span
+              ref={dotRef}
               className="pointer-events-none absolute top-[25px] z-20 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-[3px] border-white bg-brand shadow-[0_0_0_7px_rgba(23,105,213,.14),0_10px_24px_-10px_rgba(23,105,213,.9)] md:block"
               style={{
-                left: dotLeft,
                 backgroundColor: current.color,
                 boxShadow: `0 0 0 7px ${current.light}, 0 10px 24px -10px ${current.glow}`,
               }}
@@ -190,15 +254,12 @@ export default function DevelopmentProcessSection() {
                   type="button"
                   onClick={() => {
                     setActive(index);
-                    setProgress(0);
                   }}
                   onFocus={() => {
                     setActive(index);
-                    setProgress(0);
                   }}
                   onMouseEnter={() => {
                     setActive(index);
-                    setProgress(0);
                     setIsHovering(true);
                   }}
                   onMouseLeave={() => setIsHovering(false)}
@@ -211,16 +272,11 @@ export default function DevelopmentProcessSection() {
                       aria-hidden="true"
                     >
                       <span
-                        className="absolute inset-y-0 left-0 rounded-full"
-                        style={{
-                          width:
-                            index < active
-                              ? "100%"
-                              : index === active && !isHovering
-                                ? `${progress * 100}%`
-                                : "0%",
-                          backgroundColor: step.color,
+                        ref={(node) => {
+                          fillRefs.current[index] = node;
                         }}
+                        className="absolute inset-y-0 left-0 rounded-full"
+                        style={{ backgroundColor: step.color }}
                       />
                     </span>
                   )}
@@ -307,6 +363,10 @@ export default function DevelopmentProcessSection() {
               <img
                 src={current.image}
                 alt={`${current.title} illustration`}
+                width={current.imageWidth}
+                height={current.imageHeight}
+                loading="lazy"
+                decoding="async"
                 className="h-full max-h-[350px] w-full object-contain transition-transform duration-700 group-hover:scale-[1.02]"
               />
             </div>

@@ -1,7 +1,6 @@
 import { type ReactNode, useEffect, useId, useRef } from "react";
 import { Code2, Smartphone, Server, ShieldCheck, Brain, Bot, LayoutTemplate } from "lucide-react";
 import { motion } from "framer-motion";
-import OrbitImages from "../effects/OrbitImages";
 
 type Props = { variant: string; labels?: string[]; title?: string; className?: string };
 const c = { ink: "#13213a", brand: "#1769d5", blue: "#6ea9ff", pale: "#eaf3ff", line: "#bdd5f7", muted: "#60708a" };
@@ -86,8 +85,13 @@ function ServiceConstellation({ labels, id }: { labels: string[]; id: string }) 
       <div className="relative z-10 flex items-center justify-center pointer-events-auto">
         <div className="absolute inset-0 rounded-full bg-brand/25 blur-3xl animate-pulse" />
         <img
-          src="/Hero.svg"
+          src="/Hero.webp"
           alt="Kalpanaaaa Engineering Core"
+          width={1080}
+          height={721}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
           style={{ width: '540px', maxWidth: '92%' }}
           className="relative h-auto object-contain drop-shadow-[0_28px_56px_rgba(23,105,213,0.4)] transition-transform duration-500 hover:scale-105"
         />
@@ -560,8 +564,14 @@ export function VisualScene({ variant, labels = [], title, className }: Props) {
     }, { threshold: 0.1 });
     io.observe(host);
     const tick = (now: number) => {
-      if (!active) { raf = requestAnimationFrame(tick); return; }
       const t = Math.min(1, (now - start) / duration);
+      if (!active) {
+        // Off-screen: skip the paint, but still let the loop finish. Without this the loop kept
+        // requesting frames forever whenever the scene scrolled out of view before completing.
+        if (t >= 1) { host.style.setProperty("--scene-progress", "1"); return; }
+        raf = requestAnimationFrame(tick);
+        return;
+      }
       if (Math.abs(t - lastSet) > 0.005) {
         host.style.setProperty("--scene-progress", t.toFixed(3));
         lastSet = t;

@@ -34,12 +34,18 @@ export default defineConfig(({ command }) => ({
         navigateFallback: "index.html",
       },
       workbox: {
+        // App shell only. This previously matched every image under `public/`, so the generated
+        // service worker precached ~200 entries / ~99 MB — including the original
+        // pre-optimisation SVG/PNG artwork that nothing references any more. The PWA is scoped to
+        // `/portal`, an internal tool that cannot do anything useful without the network, so
+        // precaching marketing artwork bought nothing while making the SW install enormous.
+        // Images are still served (and HTTP-cached) normally; only the speculative precache
+        // is gone.
         globPatterns:
           command === "build"
-            ? ["**/*.{js,css,html,ico,png,svg,jpeg,webp}"]
+            ? ["**/*.{js,css,html,ico}", "pwa-192x192.png", "pwa-512x512.png"]
             : [],
         maximumFileSizeToCacheInBytes: 15000000,
-        globIgnores: ["**/ImageOrbit.png"],
         skipWaiting: true,
         clientsClaim: true,
         importScripts: ["/firebase-messaging-sw.js"],

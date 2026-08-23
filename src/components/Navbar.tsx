@@ -103,6 +103,9 @@ export function Navbar() {
           <img
             src="/logo.webp"
             alt="Kalpanaaa Software Solutions Logo"
+            width={640}
+            height={427}
+            decoding="async"
             className="h-20 sm:h-24 lg:h-28 w-auto max-w-[220px] sm:max-w-[280px] md:max-w-[340px] lg:max-w-[400px] object-contain transition-all duration-300"
           />
         </Link>

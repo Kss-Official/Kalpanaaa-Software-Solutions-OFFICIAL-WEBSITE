@@ -8,7 +8,7 @@ const projects = [
     category: "Finance Platform",
     description:
       "A full-stack e-learning platform designed for students, instructors and administrators with dedicated dashboards and learning management capabilities.",
-    image: "./project-images/FinanceProjectImage.svg",
+    image: "/project-images/FinanceProjectImage.webp",
     href: "/projects/learnova",
     tags: ["React", "Node.js", "Express", "Prisma", "PostgreSQL"],
     position:
@@ -19,7 +19,7 @@ const projects = [
     category: "Government Platform",
     description:
       "A role-based job scraping and recruitment platform that connects students with job opportunities and provides hiring managers with recruitment tools.",
-    image: "./project-images/GovernmentProjectImage.svg",
+    image: "/project-images/GovernmentProjectImage.webp",
     href: "/projects/hirebridge",
     tags: ["React", "Vite", "Node.js", "Express", "Prisma", "PostgreSQL"],
     position:
@@ -30,7 +30,7 @@ const projects = [
     category: "Education Platform",
     description:
       "A travel discovery platform that helps users discover, explore, post stories, chat with people and connect with travel destinations and experiences.",
-    image: "/./project-images/EducationProjectImage.svg",
+    image: "/project-images/EducationProjectImage.webp",
     href: "/projects/bondly",
     tags: ["React", "Node.js", "Hono", "PostgreSQL", "Redis"],
     position:
@@ -97,6 +97,10 @@ export default function ProjectSection() {
                   <img
                     src={project.image}
                     alt={`${project.title} project screenshot`}
+                    width={900}
+                    height={600}
+                    loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

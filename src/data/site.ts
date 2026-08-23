@@ -196,7 +196,7 @@ export const FOUNDERS: Founder[] = [
       "AI engineering",
       "Architecture review",
     ],
-    image: "/cto-profile.png",
+    image: "/cto-profile.webp",
   },
   {
     name: "Akshit Ujjain",
@@ -208,7 +208,7 @@ export const FOUNDERS: Founder[] = [
       "Delivery leadership",
       "Partner ecosystem",
     ],
-    image: "/ceo-profile.png",
+    image: "/ceo-profile.webp",
   },
   {
     name: "Rahul Kr Pathak",
@@ -699,7 +699,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     industry: "Government Infrastructure",
     description:
       "Digital e-governance platform enabling citizens to submit civic requests, upload photo evidence, track live resolution progress, and access essential municipal services and public information online.",
-    image: "/project-images/GovernmentProjectImage.svg",
+    image: "/project-images/GovernmentProjectImage.webp",
     metrics: [
       { label: "Permit Processing Time Reduced", value: "40%" },
       { label: "Assets Tracked in Real-time", value: "200+" },
@@ -724,7 +724,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     industry: "Healthcare Data Platform",
     description:
       "Full-stack healthcare platform with multi-role appointments, e-prescriptions, diagnostic tracking, secure lifetime EHRs, passwordless OTP login, and real-time bed and emergency capacity monitoring.",
-    image: "/project-images/HealthcareProjectImage.svg",
+    image: "/project-images/HealthcareProjectImage.webp",
     metrics: [
       { label: "Uptime over 8 months", value: "99.97%" },
       { label: "Patient records managed", value: "50,000+" },
@@ -749,7 +749,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     industry: "Finance Operations",
     description:
       "An end-to-end enterprise financial platform powering digital wallet transactions, automated loan EMI approvals, fixed-return investment portfolios, live expert consultation booking, and real-time administrative KYC audit workflows.",
-    image: "/project-images/FinanceProjectImage.svg",
+    image: "/project-images/FinanceProjectImage.webp",
     metrics: [
       { label: "Reconciliation Accuracy", value: "99.9%" },
       { label: "Transactions Monitored", value: "1M+" },
@@ -774,7 +774,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     industry: "Education",
     description:
       "Full-stack institutional portal featuring real-time SSE updates, dynamic course rosters, automated attendance, examinations, fee processing, and bcrypt-hashed security.",
-    image: "/project-images/EducationProjectImage.svg",
+    image: "/project-images/EducationProjectImage.webp",
     metrics: [
       { label: "Orders Processed", value: "12,000+" },
       { label: "Average Order Time", value: "90s" },

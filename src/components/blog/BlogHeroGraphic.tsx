@@ -30,24 +30,34 @@ export function BlogHeroGraphic() {
           <line x1="20%" y1="82%" x2="43%" y2="57%" stroke="#1769d5" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.45" />
           <line x1="80%" y1="82%" x2="57%" y2="57%" stroke="#1769d5" strokeWidth="1.5" strokeDasharray="3 3" opacity="0.45" />
 
-          {/* Traveling Data Packet Circles (Animated along rays) */}
+          {/*
+            Traveling Data Packet Circles (Animated along rays).
+
+            The static cx/cy/opacity attributes duplicate the first frame of each `animate`
+            keyframe array. Without them the circles mount with no geometry at all, and
+            framer-motion's first write lands as the literal string "undefined" — which the browser
+            rejects with `<circle> attribute cx: Expected length, "undefined"`. Eight of those
+            console errors per visit to this page counted against Lighthouse's Best Practices
+            audit. Because each value equals the keyframe the animation starts from, the motion is
+            byte-for-byte the same; only the pre-animation frame is now valid instead of invalid.
+          */}
           <motion.circle
-            r="3" fill="#1769d5"
+            r="3" fill="#1769d5" cx="20%" cy="18%" opacity="0"
             animate={{ cx: ["20%", "43%"], cy: ["18%", "43%"], opacity: [0, 1, 0] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "linear" }}
           />
           <motion.circle
-            r="3" fill="#7c3aed"
+            r="3" fill="#7c3aed" cx="80%" cy="18%" opacity="0"
             animate={{ cx: ["80%", "57%"], cy: ["18%", "43%"], opacity: [0, 1, 0] }}
             transition={{ duration: 2.6, repeat: Infinity, ease: "linear", delay: 0.5 }}
           />
           <motion.circle
-            r="3" fill="#059669"
+            r="3" fill="#059669" cx="20%" cy="82%" opacity="0"
             animate={{ cx: ["20%", "43%"], cy: ["82%", "57%"], opacity: [0, 1, 0] }}
             transition={{ duration: 2.4, repeat: Infinity, ease: "linear", delay: 0.8 }}
           />
           <motion.circle
-            r="3" fill="#ea580c"
+            r="3" fill="#ea580c" cx="80%" cy="82%" opacity="0"
             animate={{ cx: ["80%", "57%"], cy: ["82%", "57%"], opacity: [0, 1, 0] }}
             transition={{ duration: 2.1, repeat: Infinity, ease: "linear", delay: 0.3 }}
           />

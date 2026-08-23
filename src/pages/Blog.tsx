@@ -64,6 +64,7 @@ const FeaturedCard = memo(function FeaturedCard({ blog }: { blog: BlogPost }) {
               alt={blog.title}
               className="w-full h-full object-cover absolute inset-0"
               loading="eager"
+              decoding="async"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -144,6 +145,7 @@ const ArticleCard = memo(function ArticleCard({ blog, index }: { blog: BlogPost;
             alt={blog.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
+            decoding="async"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

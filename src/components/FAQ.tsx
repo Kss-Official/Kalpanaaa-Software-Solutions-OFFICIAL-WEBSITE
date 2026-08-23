@@ -286,7 +286,7 @@ export default function FAQ() {
             BOTTOM CONTACT CTA
         ===================================================== */}
 
-        <div className="flex justify-center mt-10 md:mt-11">
+        {/* <div className="flex justify-center mt-10 md:mt-11">
 
           <div
             className="
@@ -309,7 +309,6 @@ export default function FAQ() {
             "
           >
 
-            {/* Question icon */}
             <div className="flex items-center gap-3">
 
               <div
@@ -359,7 +358,6 @@ export default function FAQ() {
             </div>
 
 
-            {/* Vertical divider */}
             <div
               className="
                 hidden
@@ -371,7 +369,6 @@ export default function FAQ() {
             />
 
 
-            {/* Contact button */}
             <Link
               to="/contact"
               className="
@@ -404,7 +401,7 @@ export default function FAQ() {
 
           </div>
 
-        </div>
+        </div> */}
 
       </div>
     </section>

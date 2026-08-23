@@ -12,7 +12,7 @@ import {
   Rocket,
   UsersRound,
 } from "lucide-react";
-import * as Lucide from "lucide-react";
+import { getIcon, Sparkles } from "../components/icons/registry";
 import { SEO } from "../components/SEO";
 import { INDUSTRIES, CASE_STUDIES } from "../data/site";
 import type { CaseStudy } from "../data/site";
@@ -158,7 +158,7 @@ export function IndustryDetail() {
           <div className="mx-auto mt-2 h-px w-14 bg-[#22D3EE]" />
           <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {industry.keyFeatureCards.map((feature, index) => {
-              const Icon = (Lucide as any)[feature.icon] ?? Lucide.Sparkles;
+              const Icon = getIcon(feature.icon, Sparkles);
               const color = featureIconColors[index % featureIconColors.length];
               return (
                 <motion.article
@@ -281,7 +281,7 @@ export function IndustryDetail() {
 }
 
 function RelatedProjectCard({ project, index }: { project: CaseStudy; index: number }) {
-  const Icon = (Lucide as any)[project.icon] ?? Lucide.Box;
+  const Icon = getIcon(project.icon);
   const previewBg = index === 1 ? "bg-[#FFF4EB]" : "bg-[#EEF4FF]";
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[#B7D4FB] bg-white shadow-[0_18px_44px_-30px_rgba(15,42,95,.4)] transition-all duration-300 hover:-translate-y-1 hover:border-[#1D4ED8]">
