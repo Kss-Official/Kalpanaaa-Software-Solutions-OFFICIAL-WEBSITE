@@ -11,24 +11,67 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+// Vercel rejects serverless request bodies over 4.5 MB at the edge, so a limit
+// above that can never actually be reached in production. Cover images are
+// downscaled client-side (see BlogSubmissionModal.compressImage).
+app.use(express.json({ limit: '4mb' }));
 
-// PostgreSQL Connection Pool
-const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
-const poolConfig = connectionString
-  ? {
-      connectionString,
-      ssl: { rejectUnauthorized: false },
-    }
-  : {
-      user: process.env.PGUSER || 'postgres',
-      host: process.env.PGHOST || 'localhost',
-      database: process.env.PGDATABASE || 'kalpana_cms',
-      password: process.env.PGPASSWORD || 'postgres',
-      port: parseInt(process.env.PGPORT || '5432', 10),
-    };
+// ── PostgreSQL / Neon Connection ─────────────────────────────────────────────
+// Resolve the connection string from every name Vercel + Neon integrations use.
+// Vercel's Neon integration injects DATABASE_URL / POSTGRES_URL / POSTGRES_PRISMA_URL
+// depending on which template created it, so accept all of them instead of
+// silently falling back to localhost (which is unreachable inside a lambda and
+// was the reason every write failed in production).
+const CONNECTION_ENV_KEYS = [
+  'DATABASE_URL',
+  'POSTGRES_URL',
+  'POSTGRES_PRISMA_URL',
+  'NEON_DATABASE_URL',
+  'POSTGRES_URL_NON_POOLING',
+  'DATABASE_URL_UNPOOLED',
+];
 
-const pool = new Pool(poolConfig);
+const resolvedKey = CONNECTION_ENV_KEYS.find((k) => (process.env[k] || '').trim());
+const connectionString = resolvedKey ? process.env[resolvedKey].trim() : null;
+
+const IS_SERVERLESS = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+if (!connectionString) {
+  // Loud, actionable failure. Previously this fell through to localhost:5432 and
+  // produced ECONNREFUSED on every query, which the frontend swallowed.
+  console.error(
+    '❌ FATAL: No Postgres connection string found. Set DATABASE_URL (or POSTGRES_URL) ' +
+    `to your Neon connection string. Checked: ${CONNECTION_ENV_KEYS.join(', ')}`
+  );
+} else {
+  console.log(`🔌 Postgres connection string loaded from ${resolvedKey}`);
+  if (IS_SERVERLESS && !/-pooler\./.test(connectionString)) {
+    console.warn(
+      '⚠️  Neon direct (non-pooled) endpoint detected in a serverless runtime. ' +
+      'Use the "-pooler" host from the Neon dashboard to avoid exhausting connections.'
+    );
+  }
+}
+
+const pool = new Pool({
+  connectionString: connectionString || undefined,
+  // Neon terminates TLS with a cert chain Node doesn't bundle.
+  ssl: { rejectUnauthorized: false },
+  // Each serverless invocation gets its own isolated process. Holding more than
+  // one socket per instance is what exhausts Neon's connection limit under load.
+  max: IS_SERVERLESS ? 1 : 10,
+  // Fail fast instead of hanging until the function timeout, so the client gets
+  // a real error response rather than a dead request.
+  connectionTimeoutMillis: 10_000,
+  idleTimeoutMillis: IS_SERVERLESS ? 10_000 : 30_000,
+  keepAlive: true,
+  allowExitOnIdle: IS_SERVERLESS,
+});
+
+// A pool-level error must never take down the process.
+pool.on('error', (err) => {
+  console.error('Postgres pool error (idle client):', err.message);
+});
 
 
 // Whitelisted Authorized Accounts
@@ -346,77 +389,144 @@ Enforce strict \`ResourceQuota\` rules per team Kubernetes namespace. Tools like
   },
 ];
 
+// Bump this whenever the migration block below changes so deployed instances
+// re-run it once. Stored in schema_meta so the warm path costs one cheap query.
+const SCHEMA_VERSION = '2026-08-24.1';
+
 // Initialize Database Tables and Initial Data
-// NOTE: Does NOT catch internally — errors propagate to dbReady so routes
-// that await dbReady receive the rejection instead of querying a broken DB.
+// NOTE: Does NOT catch internally — errors propagate to the caller so routes
+// receive the rejection instead of querying a broken DB.
 async function initDb() {
-  // 1. Enums & Tables
+  if (!connectionString) {
+    throw new Error(
+      'No Postgres connection string configured. Set DATABASE_URL in your Vercel ' +
+      'project environment variables to the Neon connection string, then redeploy.'
+    );
+  }
+
+  // Fast path: one query. Skips all DDL, bcrypt hashing and seeding once the
+  // schema is at the current version. Previously every Vercel cold start re-ran
+  // the full DDL + 2 bcrypt hashes at cost 12 + ~14 sequential Neon round-trips,
+  // which routinely blew the function timeout.
+  try {
+    const { rows } = await pool.query(`SELECT value FROM schema_meta WHERE key = 'version'`);
+    if (rows[0]?.value === SCHEMA_VERSION) return;
+  } catch {
+    /* schema_meta does not exist yet — fall through to the full migration */
+  }
+
+  console.log('Running schema migration…');
+
+  // 1. Enums, tables and the version marker.
   await pool.query(`
     DO $$ BEGIN CREATE TYPE user_role AS ENUM ('EMPLOYEE', 'ADMIN'); EXCEPTION WHEN duplicate_object THEN null; END $$;
     DO $$ BEGIN CREATE TYPE blog_status AS ENUM ('DRAFT', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED'); EXCEPTION WHEN duplicate_object THEN null; END $$;
 
+    CREATE TABLE IF NOT EXISTS schema_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+
     CREATE TABLE IF NOT EXISTS users (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
       email VARCHAR(255) UNIQUE NOT NULL,
-      password_hash VARCHAR(255) NOT NULL,
+      password_hash VARCHAR(255),
       name VARCHAR(255) NOT NULL,
-      role user_role NOT NULL DEFAULT 'EMPLOYEE',
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      role VARCHAR(50) NOT NULL DEFAULT 'EMPLOYEE',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
     CREATE TABLE IF NOT EXISTS blogs (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
       slug VARCHAR(255) UNIQUE NOT NULL,
       title VARCHAR(255) NOT NULL,
-      summary TEXT NOT NULL,
+      summary TEXT,
       content TEXT NOT NULL,
       category VARCHAR(100) NOT NULL,
       tags TEXT[] DEFAULT '{}',
-      author_id UUID REFERENCES users(id) ON DELETE SET NULL,
       author_name VARCHAR(255) NOT NULL,
-      author_email VARCHAR(255) NOT NULL,
-      status blog_status NOT NULL DEFAULT 'PENDING_APPROVAL',
+      author_email VARCHAR(255),
+      status VARCHAR(50) NOT NULL DEFAULT 'PENDING_APPROVAL',
       rejection_reason TEXT,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      published_at TIMESTAMP WITH TIME ZONE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      published_at TIMESTAMP,
       read_time VARCHAR(50),
       cover_image TEXT
     );
+  `);
 
+  // 2. Reconcile a pre-existing schema.
+  //
+  // The live Neon database was seeded by an earlier, different schema
+  // (seed_production_data.sql): blogs.id and users.id are VARCHAR with NO
+  // DEFAULT, there is no rejection_reason, and users store a plaintext
+  // `password` rather than `password_hash`. CREATE TABLE IF NOT EXISTS never
+  // alters an existing table, so that drift was permanent and silent — every
+  // INSERT died on "null value in column id violates not-null constraint".
+  // These statements are individually idempotent and safe on a fresh database.
+  await pool.query(`
     ALTER TABLE blogs ADD COLUMN IF NOT EXISTS read_time VARCHAR(50);
     ALTER TABLE blogs ADD COLUMN IF NOT EXISTS cover_image TEXT;
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS rejection_reason TEXT;
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS author_email VARCHAR(255);
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS published_at TIMESTAMP;
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS tags TEXT[] DEFAULT '{}';
+
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 
     CREATE INDEX IF NOT EXISTS idx_blogs_status ON blogs(status);
     CREATE INDEX IF NOT EXISTS idx_blogs_slug ON blogs(slug);
     CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
   `);
 
-  // 2. Seed Employees & Admins with BCRYPT-HASHED passwords
-  // ON CONFLICT: insert if new, or upgrade plaintext passwords to bcrypt hash
-  const empHash = await bcrypt.hash('emp123', 12);
-  for (const [email, name] of Object.entries(AUTHORIZED_EMPLOYEES)) {
-    await pool.query(
-      `INSERT INTO users (email, password_hash, name, role)
-       VALUES ($1, $2, $3, 'EMPLOYEE')
-       ON CONFLICT (email) DO UPDATE
-         SET password_hash = EXCLUDED.password_hash
-         WHERE users.password_hash NOT LIKE '$2b$%'`,
-      [email, empHash, name]
+  // Give the id columns a server-side default so INSERTs can omit them. Done
+  // separately because it must not fail if the column type is already uuid.
+  for (const table of ['blogs', 'users']) {
+    const { rows } = await pool.query(
+      `SELECT data_type FROM information_schema.columns
+        WHERE table_name = $1 AND column_name = 'id'`,
+      [table]
     );
-  }
-  const adminHash = await bcrypt.hash('admin123', 12);
-  for (const [email, name] of Object.entries(AUTHORIZED_ADMINS)) {
-    await pool.query(
-      `INSERT INTO users (email, password_hash, name, role)
-       VALUES ($1, $2, $3, 'ADMIN')
-       ON CONFLICT (email) DO UPDATE
-         SET password_hash = EXCLUDED.password_hash
-         WHERE users.password_hash NOT LIKE '$2b$%'`,
-      [email, adminHash, name]
-    );
+    const type = rows[0]?.data_type;
+    if (!type) continue;
+    const expr = type === 'uuid' ? 'gen_random_uuid()' : 'gen_random_uuid()::text';
+    await pool.query(`ALTER TABLE ${table} ALTER COLUMN id SET DEFAULT ${expr}`);
   }
 
-  // 3. Seed Initial Articles ONLY if table is empty
+  // Ensure the email uniqueness the upserts below depend on.
+  await pool.query(`
+    DO $$ BEGIN
+      ALTER TABLE users ADD CONSTRAINT users_email_key UNIQUE (email);
+    EXCEPTION WHEN duplicate_table OR duplicate_object OR unique_violation THEN null; END $$;
+  `);
+
+  // 3. Seed / upgrade credentials.
+  //
+  // The live rows hold plaintext passwords ('emp123', 'admin123') in a legacy
+  // `password` column while admin-login verifies against `password_hash`, so
+  // admin sign-in could never succeed against this database. Write real bcrypt
+  // hashes into password_hash for every known account.
+  const empHash = await bcrypt.hash('emp123', 12);
+  const adminHash = await bcrypt.hash('admin123', 12);
+
+  for (const [group, hash, role] of [
+    [AUTHORIZED_EMPLOYEES, empHash, 'EMPLOYEE'],
+    [AUTHORIZED_ADMINS, adminHash, 'ADMIN'],
+  ]) {
+    for (const [email, name] of Object.entries(group)) {
+      await pool.query(
+        `INSERT INTO users (email, password_hash, name, role)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (email) DO UPDATE
+           SET password_hash = EXCLUDED.password_hash,
+               name = COALESCE(users.name, EXCLUDED.name),
+               role = EXCLUDED.role
+           WHERE users.password_hash IS NULL
+              OR users.password_hash NOT LIKE '$2%'`,
+        [email, hash, name, role]
+      );
+    }
+  }
+
+  // 4. Seed Initial Articles ONLY if the table is empty.
   const blogCountRes = await pool.query(`SELECT COUNT(*) FROM blogs`);
   const blogCount = parseInt(blogCountRes.rows[0]?.count || '0', 10);
 
@@ -425,7 +535,7 @@ async function initDb() {
     for (const blog of INITIAL_SEED_BLOGS) {
       await pool.query(
         `INSERT INTO blogs (slug, title, summary, content, category, tags, author_name, author_email, status, read_time, cover_image, published_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::blog_status, $10, $11, CURRENT_TIMESTAMP)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP)
          ON CONFLICT (slug) DO NOTHING`,
         [
           blog.slug, blog.title, blog.summary, blog.content, blog.category,
@@ -437,17 +547,106 @@ async function initDb() {
   } else {
     console.log(`✅ PostgreSQL Database connected with ${blogCount} live blog records.`);
   }
+
+  await pool.query(
+    `INSERT INTO schema_meta (key, value) VALUES ('version', $1)
+     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value`,
+    [SCHEMA_VERSION]
+  );
+  console.log(`✅ Schema migration complete (version ${SCHEMA_VERSION}).`);
 }
 
-// Run initDb at module load. dbReady rejects if initDb() throws,
-// so routes that `await dbReady` receive the rejection and return 503.
-// The .catch() here is for logging only — it does NOT suppress the rejection.
-const dbReady = initDb();
-dbReady.catch((err) => {
-  console.error('❌ DB initialization failed — all API routes will reject:', err.message);
-});
+// Lazy, retryable schema initialization.
+//
+// Previously this was `const dbReady = initDb()` at module load: a single shared
+// promise. If the very first cold-start attempt failed (Neon still waking from
+// suspend, a transient TLS blip, a cold-start timeout) that rejection was cached
+// for the entire life of the warm instance, so EVERY later request kept failing
+// even after the database came back. Now a failed attempt is discarded and the
+// next request retries.
+let initPromise = null;
+
+function ensureDb() {
+  if (!initPromise) {
+    initPromise = initDb().catch((err) => {
+      console.error('❌ DB initialization failed:', err.message);
+      initPromise = null; // allow the next request to retry
+      throw err;
+    });
+  }
+  return initPromise;
+}
+
+// Backwards-compatible alias for any route still awaiting the old name.
+const dbReady = { then: (onOk, onErr) => ensureDb().then(onOk, onErr) };
+
+// Warm the schema check at boot without poisoning anything on failure.
+ensureDb().catch(() => {});
+
+// Centralised error responder: distinguishes "database is unreachable /
+// misconfigured" (503) from a genuine application bug (500), and never returns
+// a silent success that the client could mistake for a saved record.
+function failRequest(res, err, context) {
+  const msg = err?.message || 'Unknown error';
+  const isInfra =
+    !connectionString ||
+    /ECONNREFUSED|ENOTFOUND|ETIMEDOUT|connection string|terminating connection|timeout expired|too many connections|password authentication/i.test(msg);
+
+  console.error(`[${context}] ${isInfra ? 'DB UNAVAILABLE' : 'ERROR'}: ${msg}`);
+
+  return res.status(isInfra ? 503 : 500).json({
+    error: isInfra
+      ? 'Database unavailable. The server could not reach Postgres, so nothing was saved.'
+      : msg,
+    context,
+    detail: msg,
+    dbConfigured: Boolean(connectionString),
+  });
+}
 
 // ── REST API ROUTES ──────────────────────────────────────────────────────────
+
+// GET /api/health — Diagnostic endpoint. Hit this first when debugging a
+// deployment: it proves in one request whether Vercel can actually reach Neon.
+app.get('/api/health', async (req, res) => {
+  const report = {
+    ok: false,
+    dbConfigured: Boolean(connectionString),
+    connectionSource: resolvedKey || null,
+    serverless: IS_SERVERLESS,
+    pooledEndpoint: connectionString ? /-pooler\./.test(connectionString) : null,
+  };
+
+  if (!connectionString) {
+    report.error =
+      'No connection string. Set DATABASE_URL in Vercel → Settings → Environment ' +
+      'Variables to your Neon connection string, then redeploy.';
+    return res.status(503).json(report);
+  }
+
+  try {
+    const started = Date.now();
+    await ensureDb();
+    const { rows } = await pool.query(
+      `SELECT current_database() AS db,
+              (SELECT COUNT(*) FROM blogs) AS blog_count,
+              (SELECT COUNT(*) FROM blogs WHERE status = 'PUBLISHED') AS published_count,
+              (SELECT COUNT(*) FROM blogs WHERE status = 'PENDING_APPROVAL') AS pending_count,
+              (SELECT COUNT(*) FROM users) AS user_count`
+    );
+    report.ok = true;
+    report.latencyMs = Date.now() - started;
+    report.database = rows[0].db;
+    report.blogCount = Number(rows[0].blog_count);
+    report.publishedCount = Number(rows[0].published_count);
+    report.pendingCount = Number(rows[0].pending_count);
+    report.userCount = Number(rows[0].user_count);
+    return res.json(report);
+  } catch (err) {
+    report.error = err.message;
+    return res.status(503).json(report);
+  }
+});
 
 // GET /api/blogs — Fetch blogs (filtered by status or category)
 app.get('/api/blogs', async (req, res) => {
@@ -460,7 +659,11 @@ app.get('/api/blogs', async (req, res) => {
 
     if (status && status !== 'ALL') {
       params.push(status);
-      conditions.push(`status = $${params.length}::blog_status`);
+      // Compare as text, not as ::blog_status. The live table's status column is
+      // VARCHAR (created by an older schema), so casting the parameter to the
+      // enum made every filtered read fail with an operator-mismatch error.
+      // status::text works for both the VARCHAR and enum column types.
+      conditions.push(`status::text = $${params.length}`);
     }
     if (category && category !== 'All') {
       params.push(category);
@@ -494,13 +697,14 @@ app.get('/api/blogs', async (req, res) => {
 
     res.json(formatted);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    failRequest(res, err, 'GET /api/blogs');
   }
 });
 
 // GET /api/blogs/:slug — Fetch single blog by slug
 app.get('/api/blogs/:slug', async (req, res) => {
   try {
+    await ensureDb();
     const rawSlug = req.params.slug;
     const decodedSlug = decodeURIComponent(rawSlug).trim();
     const result = await pool.query(
@@ -531,7 +735,7 @@ app.get('/api/blogs/:slug', async (req, res) => {
       coverImage: row.cover_image,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    failRequest(res, err, 'GET /api/blogs/:slug');
   }
 });
 
@@ -557,17 +761,34 @@ app.post('/api/blogs', async (req, res) => {
     const safeSummary = sanitizeHtml(summary.trim());
     const safeContent = sanitizeHtml(content.trim());
 
-    const baseSlug = safeTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-    const slug = `${baseSlug}-${Math.floor(Math.random() * 1000)}`;
+    await ensureDb(); // schema must exist before the INSERT on a cold start
+
+    const baseSlug =
+      safeTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || 'post';
     const wordCount = safeContent.split(/\s+/).length;
     const readTime = `${Math.max(3, Math.ceil(wordCount / 200))} min read`;
 
-    const result = await pool.query(
-      `INSERT INTO blogs (slug, title, summary, content, category, tags, author_name, author_email, status, read_time, cover_image)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'PENDING_APPROVAL', $9, $10)
-       RETURNING *`,
-      [slug, safeTitle, safeSummary, safeContent, category || 'Web Development', tags || [], authorName || 'SB Akash', authorEmail, readTime, coverImage || null]
-    );
+    // Deterministic, collision-free slug. `slug` is UNIQUE, and the previous
+    // `-${random(1000)}` suffix threw a duplicate-key 500 once a number repeated.
+    // Let Postgres resolve contention by retrying with an incrementing suffix.
+    let result;
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const slug = attempt === 0 ? baseSlug : `${baseSlug}-${attempt + 1}`;
+      try {
+        result = await pool.query(
+          `INSERT INTO blogs (slug, title, summary, content, category, tags, author_name, author_email, status, read_time, cover_image)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'PENDING_APPROVAL', $9, $10)
+           RETURNING *`,
+          [slug, safeTitle, safeSummary, safeContent, category || 'Web Development', tags || [], authorName || 'SB Akash', authorEmail, readTime, coverImage || null]
+        );
+        break;
+      } catch (e) {
+        if (e.code !== '23505') throw e; // 23505 = unique_violation
+      }
+    }
+    if (!result) {
+      return res.status(409).json({ error: 'A post with this title already exists. Please adjust the title.' });
+    }
 
     const row = result.rows[0];
     res.status(201).json({
@@ -586,22 +807,32 @@ app.post('/api/blogs', async (req, res) => {
       coverImage: row.cover_image,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    failRequest(res, err, 'POST /api/blogs');
   }
 });
+
+// Blog ids are VARCHAR, not UUID — the live table contains legacy ids such as
+// `ai-1` and `app-1` alongside the generated UUIDs. This guard only rejects
+// obviously malformed input so a bad id returns 400 rather than a raw Postgres
+// 500; it must NOT require UUID shape or the seeded posts become unmanageable.
+const BLOG_ID_RE = /^[A-Za-z0-9_-]{1,255}$/;
 
 // PUT /api/blogs/:id/approve — Approve blog (publish live)
 app.put('/api/blogs/:id/approve', async (req, res) => {
   try {
     const { id } = req.params;
+    if (!BLOG_ID_RE.test(id)) {
+      return res.status(400).json({ error: `Invalid blog id "${id}".` });
+    }
+    await ensureDb();
     const result = await pool.query(
-      `UPDATE blogs SET status = 'PUBLISHED', published_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING *`,
+      `UPDATE blogs SET status = 'PUBLISHED', published_at = CURRENT_TIMESTAMP WHERE id::text = $1 RETURNING *`,
       [id]
     );
     if (result.rows.length === 0) return res.status(404).json({ error: 'Blog not found' });
     res.json({ message: 'Blog approved and published successfully', blog: result.rows[0] });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    failRequest(res, err, 'PUT /api/blogs/:id/approve');
   }
 });
 
@@ -610,14 +841,18 @@ app.put('/api/blogs/:id/reject', async (req, res) => {
   try {
     const { id } = req.params;
     const { reason } = req.body;
+    if (!BLOG_ID_RE.test(id)) {
+      return res.status(400).json({ error: `Invalid blog id "${id}".` });
+    }
+    await ensureDb();
     const result = await pool.query(
-      `UPDATE blogs SET status = 'REJECTED', rejection_reason = $1 WHERE id = $2 RETURNING *`,
+      `UPDATE blogs SET status = 'REJECTED', rejection_reason = $1 WHERE id::text = $2 RETURNING *`,
       [reason || 'Does not meet current submission guidelines.', id]
     );
     if (result.rows.length === 0) return res.status(404).json({ error: 'Blog not found' });
     res.json({ message: 'Blog rejected', blog: result.rows[0] });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    failRequest(res, err, 'PUT /api/blogs/:id/reject');
   }
 });
 
@@ -625,11 +860,15 @@ app.put('/api/blogs/:id/reject', async (req, res) => {
 app.delete('/api/blogs/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(`DELETE FROM blogs WHERE id = $1 RETURNING id`, [id]);
+    if (!BLOG_ID_RE.test(id)) {
+      return res.status(400).json({ error: `Invalid blog id "${id}".` });
+    }
+    await ensureDb();
+    const result = await pool.query(`DELETE FROM blogs WHERE id::text = $1 RETURNING id`, [id]);
     if (result.rows.length === 0) return res.status(404).json({ error: 'Blog not found' });
     res.json({ message: 'Blog deleted successfully' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    failRequest(res, err, 'DELETE /api/blogs/:id');
   }
 });
 
@@ -643,29 +882,24 @@ app.post('/api/auth/verify-email', async (req, res) => {
       return res.status(400).json({ error: 'Email address is required.' });
     }
 
-    // 1. Query PostgreSQL users table FIRST for exact full email match
-    try {
-      const dbUser = await pool.query(`SELECT * FROM users WHERE LOWER(email) = $1`, [trimmed]);
-      if (dbUser.rows.length > 0) {
-        const u = dbUser.rows[0];
-        return res.json({
-          user: { id: u.id, email: u.email, name: u.name, role: u.role || 'EMPLOYEE' }
-        });
-      }
-    } catch (dbErr) {
-      console.warn('DB query error on verify-email:', dbErr.message);
-    }
+    await ensureDb();
 
-    // 2. Check strict authorized employee whitelist (exact match)
-    if (AUTHORIZED_EMPLOYEES[trimmed]) {
+    // Query the users table for an exact full-email match. Database errors are
+    // NOT swallowed here any more: the previous version caught them and fell
+    // through to the in-process whitelist, so employee sign-in kept "working"
+    // while the database was unreachable — which is exactly what made the
+    // broken blog pipeline invisible.
+    const dbUser = await pool.query(`SELECT * FROM users WHERE LOWER(email) = $1`, [trimmed]);
+    if (dbUser.rows.length > 0) {
+      const u = dbUser.rows[0];
       return res.json({
-        user: { id: `emp-${trimmed.split('@')[0]}`, email: trimmed, name: AUTHORIZED_EMPLOYEES[trimmed], role: 'EMPLOYEE' }
+        user: { id: u.id, email: u.email, name: u.name, role: u.role || 'EMPLOYEE' }
       });
     }
 
     return res.status(401).json({ error: 'Unauthorized Email: This email address is not registered in the employee database.' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    failRequest(res, err, 'POST /api/auth/verify-email');
   }
 });
 
@@ -679,7 +913,7 @@ app.post('/api/auth/admin-login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
 
-    await dbReady;
+    await ensureDb();
 
     // 1. Fetch user by email only (never compare plaintext in SQL)
     const dbResult = await pool.query(
@@ -694,14 +928,21 @@ app.post('/api/auth/admin-login', async (req, res) => {
 
     const u = dbResult.rows[0];
 
-    // 2. Verify submitted password against bcrypt hash
+    // 2. Verify submitted password against the bcrypt hash.
+    // password_hash can be NULL on rows created by the legacy schema (which
+    // stored a plaintext `password` column). initDb backfills the hash, but
+    // guard anyway so bcrypt.compare never gets null and throws a 500 that
+    // would read as a server fault rather than a credential rejection.
+    if (!u.password_hash) {
+      return res.status(401).json({ error: 'Invalid admin email or password.' });
+    }
     const passwordValid = await bcrypt.compare(password, u.password_hash);
     if (!passwordValid) {
       return res.status(401).json({ error: 'Invalid admin email or password.' });
     }
 
     // 3. Ensure only ADMIN role users can log in through this endpoint
-    if (u.role !== 'ADMIN') {
+    if (String(u.role).toUpperCase() !== 'ADMIN') {
       return res.status(403).json({ error: 'Access denied: admin privileges required.' });
     }
 
@@ -709,7 +950,7 @@ app.post('/api/auth/admin-login', async (req, res) => {
       user: { id: u.id, email: u.email, name: u.name, role: u.role }
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    failRequest(res, err, 'POST /api/auth/admin-login');
   }
 });
 

@@ -135,7 +135,12 @@
   <!-- ══════════════════════════════════════════════════════
        PRELOAD CRITICAL ASSETS
   ═══════════════════════════════════════════════════════ -->
+  <!-- Navbar logo: visible immediately on every route. -->
   <link rel="preload" as="image" href="/logo.webp" />
+  <!-- Home hero (LCP element). The Home route is code-split, so without this preload the
+       browser cannot discover the hero until the route chunk has parsed and rendered,
+       which was costing ~0.8s of pure LCP load delay. -->
+  <link rel="preload" as="image" href="/Hero.webp" fetchpriority="high" />
 
   <!-- ══════════════════════════════════════════════════════
        JSON-LD: Organization — PRIMARY BRAND ENTITY
@@ -317,13 +322,10 @@
   }
   </script>
 
-<<<<<<< HEAD
-  <script type="module" crossorigin src="/assets/index-B4NBX_R5.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-CknrPRSn.css">
-=======
-  <script type="module" crossorigin src="/assets/index-BGMN3VjR.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-Hvc3lFQs.css">
->>>>>>> 1df18deca795a172845c77fdf0f7054d59f0d705
+  <script type="module" crossorigin src="/assets/index-CH4z86jR.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/vendor-react-CZ-_hpWR.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-motion-gvKpCpoQ.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-DFvS5mKh.css">
 <link rel="manifest" href="/manifest.webmanifest"></head>
 
 <body>

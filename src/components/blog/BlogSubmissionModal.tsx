@@ -55,21 +55,62 @@ export function BlogSubmissionModal({ isOpen, onClose, onSubmittedSuccess }: Blo
 
   const handleClose = () => { resetForm(); onClose(); };
 
+  /**
+   * Downscale + re-encode the cover image before it is sent as a base64 data URL.
+   *
+   * Vercel rejects serverless request bodies larger than 4.5 MB at the platform
+   * edge — before the request ever reaches server.js. Base64 inflates a file by
+   * ~33%, so the old 5 MB limit produced ~6.7 MB payloads that failed in
+   * production with an opaque 413 while working fine against the local Express
+   * server (which allows 10 MB). Capping the longest edge at 1600px and encoding
+   * to JPEG keeps a cover image well under 1 MB.
+   */
+  const compressImage = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Could not read that image file.'));
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('That file is not a readable image.'));
+        img.onload = () => {
+          const MAX_EDGE = 1600;
+          const scale = Math.min(1, MAX_EDGE / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return reject(new Error('Image processing is unavailable in this browser.'));
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Step the quality down until the encoded string is comfortably small.
+          let quality = 0.82;
+          let out = canvas.toDataURL('image/jpeg', quality);
+          while (out.length > 1_200_000 && quality > 0.4) {
+            quality -= 0.12;
+            out = canvas.toDataURL('image/jpeg', quality);
+          }
+          resolve(out);
+        };
+        img.src = ev.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+
   // Handle image file selection
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Image must be under 5 MB.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image must be under 10 MB.');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const result = ev.target?.result as string;
-      setCoverPreview(result);
-      setCoverDataUrl(result);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressImage(file);
+      setCoverPreview(compressed);
+      setCoverDataUrl(compressed);
+    } catch (err) {
+      alert((err as Error).message);
+    }
   };
 
   const handleFormNext = (e: React.FormEvent) => {
@@ -94,8 +135,10 @@ export function BlogSubmissionModal({ isOpen, onClose, onSubmittedSuccess }: Blo
         return;
       }
       await submitBlog(user);
-    } catch {
-      setAuthError('An error occurred. Please try again.');
+    } catch (err) {
+      // Surface the real reason (DB unreachable, API misrouted, network down)
+      // instead of a generic message — the previous version hid the cause.
+      setAuthError((err as Error).message || 'An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -115,10 +158,9 @@ export function BlogSubmissionModal({ isOpen, onClose, onSubmittedSuccess }: Blo
         authorEmail: user.email,
         coverImage: coverDataUrl ?? undefined,
       });
+      // Only reached when the server confirmed the row was written.
       setStep('SUCCESS');
       onSubmittedSuccess();
-    } catch {
-      alert('Failed to submit. Please try again.');
     } finally {
       setIsLoading(false);
     }

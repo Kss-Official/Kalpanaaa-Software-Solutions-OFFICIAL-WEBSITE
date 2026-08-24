@@ -408,13 +408,19 @@ function CreateBlogSection({ onCreated }: { onCreated: () => void }) {
     setIsSubmitting(true);
     const user = postgresBlogService.getCurrentUser();
     if (!user) { alert('Please log in first.'); setIsSubmitting(false); return; }
-    await postgresBlogService.submitBlog({
-      title, category, summary, content, tags: tagChips,
-      authorName: user.name, authorEmail: user.email, coverImage: coverDataUrl ?? undefined,
-    });
-    alert('Saved as draft (pending review).');
-    setIsSubmitting(false);
-    onCreated();
+    try {
+      await postgresBlogService.submitBlog({
+        title, category, summary, content, tags: tagChips,
+        authorName: user.name, authorEmail: user.email, coverImage: coverDataUrl ?? undefined,
+      });
+      // Only claim success once the server confirmed the write.
+      alert('Saved as draft (pending review).');
+      onCreated();
+    } catch (err) {
+      alert(`Not saved — ${(err as Error).message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handlePublishDirect = async () => {
@@ -424,16 +430,21 @@ function CreateBlogSection({ onCreated }: { onCreated: () => void }) {
     setIsSubmitting(true);
     const user = postgresBlogService.getCurrentUser();
     if (!user) { alert('Not authenticated.'); setIsSubmitting(false); return; }
-    const blog = await postgresBlogService.submitBlog({
-      title, category, summary, content, tags: tagChips,
-      authorName: user.name, authorEmail: user.email, coverImage: coverDataUrl ?? undefined,
-    });
-    await postgresBlogService.approveBlog(blog.id);
-    alert('Blog published successfully!');
-    setIsSubmitting(false);
-    onCreated();
-    // Reset
-    setTitle(''); setSummary(''); setContent(''); setTagChips(['AI']); setCoverPreview(null); setStep(1);
+    try {
+      const blog = await postgresBlogService.submitBlog({
+        title, category, summary, content, tags: tagChips,
+        authorName: user.name, authorEmail: user.email, coverImage: coverDataUrl ?? undefined,
+      });
+      await postgresBlogService.approveBlog(blog.id);
+      alert('Blog published successfully!');
+      onCreated();
+      // Reset
+      setTitle(''); setSummary(''); setContent(''); setTagChips(['AI']); setCoverPreview(null); setStep(1);
+    } catch (err) {
+      alert(`Not published — ${(err as Error).message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const STEPS = ['Blog Details', 'Content', 'Preview', 'Submit'];
@@ -662,6 +673,7 @@ function AdminDashboardContent() {
   const [allBlogs, setAllBlogs] = useState<BlogPost[]>([]);
   const [previewBlog, setPreviewBlog] = useState<BlogPost | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [actionError, setActionError] = useState('');
 
   const navigateToSection = (sec: Section) => {
     setSection(sec);
@@ -670,9 +682,15 @@ function AdminDashboardContent() {
 
   const fetchAll = async () => {
     setIsLoading(true);
-    const data = await postgresBlogService.getBlogsByStatus('ALL');
-    setAllBlogs(data);
-    setIsLoading(false);
+    try {
+      const data = await postgresBlogService.getBlogsByStatus('ALL');
+      setAllBlogs(data);
+      setActionError('');
+    } catch (err) {
+      setActionError((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -682,12 +700,17 @@ function AdminDashboardContent() {
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
-    const user = await postgresBlogService.authenticateUser(loginEmail, loginPassword);
-    if (!user || user.role !== 'ADMIN') {
-      setLoginError('Invalid admin credentials. Please try again.');
-      return;
+    try {
+      const user = await postgresBlogService.authenticateUser(loginEmail, loginPassword);
+      if (!user || user.role !== 'ADMIN') {
+        setLoginError('Invalid admin credentials. Please try again.');
+        return;
+      }
+      setCurrentUser(user);
+    } catch (err) {
+      // Surface DB/API outages instead of showing "invalid credentials".
+      setLoginError((err as Error).message);
     }
-    setCurrentUser(user);
   };
 
   const handleLogout = () => {
@@ -699,20 +722,33 @@ function AdminDashboardContent() {
     setCurrentUser(null);
   };
 
+  // Every admin mutation now hits the database for real, so a failure must be
+  // reported rather than swallowed into an unhandled promise rejection.
+  const runAction = async (label: string, fn: () => Promise<unknown>) => {
+    try {
+      await fn();
+      setActionError('');
+      return true;
+    } catch (err) {
+      setActionError(`${label}: ${(err as Error).message}`);
+      return false;
+    }
+  };
+
   const approve = async (id: string) => {
-    await postgresBlogService.approveBlog(id);
+    if (!(await runAction('Approve failed', () => postgresBlogService.approveBlog(id)))) return;
     if (previewBlog?.id === id) setPreviewBlog(null);
     fetchAll();
   };
   const reject = async (id: string) => {
     const reason = prompt('Reason for rejection (optional):') ?? undefined;
-    await postgresBlogService.rejectBlog(id, reason);
+    if (!(await runAction('Reject failed', () => postgresBlogService.rejectBlog(id, reason)))) return;
     if (previewBlog?.id === id) setPreviewBlog(null);
     fetchAll();
   };
   const del = async (id: string) => {
     if (!confirm('Delete this blog post?')) return;
-    await postgresBlogService.deleteBlog(id);
+    if (!(await runAction('Delete failed', () => postgresBlogService.deleteBlog(id)))) return;
     if (previewBlog?.id === id) setPreviewBlog(null);
     fetchAll();
   };
@@ -833,6 +869,24 @@ function AdminDashboardContent() {
       {/* ── Main Content ── */}
       <main className="flex-1 min-w-0 overflow-y-auto">
         <div className="p-8 space-y-6">
+
+          {/* Database / API failure banner — replaces the old silent local fallback */}
+          {actionError && (
+            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 flex items-start gap-3">
+              <XCircle size={18} className="text-red-500 shrink-0 mt-0.5" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-red-800">Action did not reach the database</p>
+                <p className="text-xs text-red-700 mt-0.5 break-words">{actionError}</p>
+              </div>
+              <button
+                onClick={() => setActionError('')}
+                className="text-red-500 hover:text-red-700 shrink-0"
+                title="Dismiss"
+              >
+                <XCircle size={16} />
+              </button>
+            </div>
+          )}
 
           {/* Dashboard Overview */}
           {section === 'dashboard' && (

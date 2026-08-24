@@ -231,10 +231,12 @@ export function Blog() {
   const [activeCategory, setActiveCategory] = useState<Category>("ALL");
   const [searchQuery, setSearchQuery]       = useState("");
   const [isModalOpen, setIsModalOpen]       = useState(false);
+  const [loadError, setLoadError]           = useState("");
 
   const loadBlogs = useCallback(async () => {
     try {
       const blogs = await postgresBlogService.getPublishedBlogs();
+      setLoadError('');
       // Only update state if the data actually changed (prevents blink on identical API refresh)
       setAllBlogs((prev) => {
         const prevIds = prev.map((b) => b.id).join(',');
@@ -242,7 +244,10 @@ export function Blog() {
         return prevIds === newIds ? prev : blogs;
       });
     } catch (err) {
+      // Show the real reason rather than rendering an empty page that looks
+      // like "no articles yet".
       console.error("Failed to load blogs:", err);
+      setLoadError((err as Error).message || 'Could not load articles.');
     } finally {
       setLoading(false);
     }
@@ -389,6 +394,20 @@ export function Blog() {
       {/* ── Main Content ──────────────────────────────────────────────────── */}
       <section className="py-10 md:py-14">
         <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12">
+
+          {/* Backend/database failure — shown instead of a misleading empty page */}
+          {loadError && (
+            <div className="mb-8 rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
+              <p className="text-sm font-bold text-red-800">Unable to load articles</p>
+              <p className="mt-1 text-xs text-red-700 break-words">{loadError}</p>
+              <button
+                onClick={() => { setLoading(true); loadBlogs(); }}
+                className="mt-3 text-xs font-bold uppercase tracking-widest text-red-800 underline"
+              >
+                Retry
+              </button>
+            </div>
+          )}
 
           {/* Loading skeleton */}
           {loading && (
