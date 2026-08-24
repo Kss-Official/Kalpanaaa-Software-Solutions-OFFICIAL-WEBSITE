@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import pg from 'pg';
+import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,17 +14,22 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // PostgreSQL Connection Pool
-const pool = new Pool(
-  process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL }
-    : {
-        user: process.env.PGUSER || 'postgres',
-        host: process.env.PGHOST || 'localhost',
-        database: process.env.PGDATABASE || 'kalpana_cms',
-        password: process.env.PGPASSWORD || 'postgres',
-        port: parseInt(process.env.PGPORT || '5432', 10),
-      }
-);
+const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+const poolConfig = connectionString
+  ? {
+      connectionString,
+      ssl: { rejectUnauthorized: false },
+    }
+  : {
+      user: process.env.PGUSER || 'postgres',
+      host: process.env.PGHOST || 'localhost',
+      database: process.env.PGDATABASE || 'kalpana_cms',
+      password: process.env.PGPASSWORD || 'postgres',
+      port: parseInt(process.env.PGPORT || '5432', 10),
+    };
+
+const pool = new Pool(poolConfig);
+
 
 // Whitelisted Authorized Accounts
 const AUTHORIZED_EMPLOYEES = {
@@ -341,94 +347,112 @@ Enforce strict \`ResourceQuota\` rules per team Kubernetes namespace. Tools like
 ];
 
 // Initialize Database Tables and Initial Data
+// NOTE: Does NOT catch internally — errors propagate to dbReady so routes
+// that await dbReady receive the rejection instead of querying a broken DB.
 async function initDb() {
-  try {
-    // 1. Enums & Tables
-    await pool.query(`
-      DO $$ BEGIN CREATE TYPE user_role AS ENUM ('EMPLOYEE', 'ADMIN'); EXCEPTION WHEN duplicate_object THEN null; END $$;
-      DO $$ BEGIN CREATE TYPE blog_status AS ENUM ('DRAFT', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED'); EXCEPTION WHEN duplicate_object THEN null; END $$;
+  // 1. Enums & Tables
+  await pool.query(`
+    DO $$ BEGIN CREATE TYPE user_role AS ENUM ('EMPLOYEE', 'ADMIN'); EXCEPTION WHEN duplicate_object THEN null; END $$;
+    DO $$ BEGIN CREATE TYPE blog_status AS ENUM ('DRAFT', 'PENDING_APPROVAL', 'PUBLISHED', 'REJECTED'); EXCEPTION WHEN duplicate_object THEN null; END $$;
 
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        role user_role NOT NULL DEFAULT 'EMPLOYEE',
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
+    CREATE TABLE IF NOT EXISTS users (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      role user_role NOT NULL DEFAULT 'EMPLOYEE',
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
 
-      CREATE TABLE IF NOT EXISTS blogs (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        slug VARCHAR(255) UNIQUE NOT NULL,
-        title VARCHAR(255) NOT NULL,
-        summary TEXT NOT NULL,
-        content TEXT NOT NULL,
-        category VARCHAR(100) NOT NULL,
-        tags TEXT[] DEFAULT '{}',
-        author_id UUID REFERENCES users(id) ON DELETE SET NULL,
-        author_name VARCHAR(255) NOT NULL,
-        author_email VARCHAR(255) NOT NULL,
-        status blog_status NOT NULL DEFAULT 'PENDING_APPROVAL',
-        rejection_reason TEXT,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        published_at TIMESTAMP WITH TIME ZONE,
-        read_time VARCHAR(50),
-        cover_image TEXT
-      );
+    CREATE TABLE IF NOT EXISTS blogs (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      slug VARCHAR(255) UNIQUE NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      summary TEXT NOT NULL,
+      content TEXT NOT NULL,
+      category VARCHAR(100) NOT NULL,
+      tags TEXT[] DEFAULT '{}',
+      author_id UUID REFERENCES users(id) ON DELETE SET NULL,
+      author_name VARCHAR(255) NOT NULL,
+      author_email VARCHAR(255) NOT NULL,
+      status blog_status NOT NULL DEFAULT 'PENDING_APPROVAL',
+      rejection_reason TEXT,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      published_at TIMESTAMP WITH TIME ZONE,
+      read_time VARCHAR(50),
+      cover_image TEXT
+    );
 
-      ALTER TABLE blogs ADD COLUMN IF NOT EXISTS read_time VARCHAR(50);
-      ALTER TABLE blogs ADD COLUMN IF NOT EXISTS cover_image TEXT;
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS read_time VARCHAR(50);
+    ALTER TABLE blogs ADD COLUMN IF NOT EXISTS cover_image TEXT;
 
-      CREATE INDEX IF NOT EXISTS idx_blogs_status ON blogs(status);
-      CREATE INDEX IF NOT EXISTS idx_blogs_slug ON blogs(slug);
-      CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-    `);
+    CREATE INDEX IF NOT EXISTS idx_blogs_status ON blogs(status);
+    CREATE INDEX IF NOT EXISTS idx_blogs_slug ON blogs(slug);
+    CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+  `);
 
-    // 2. Seed Employees & Admins (Preserve custom passwords & names in pgAdmin)
-    for (const [email, name] of Object.entries(AUTHORIZED_EMPLOYEES)) {
+  // 2. Seed Employees & Admins with BCRYPT-HASHED passwords
+  // ON CONFLICT: insert if new, or upgrade plaintext passwords to bcrypt hash
+  const empHash = await bcrypt.hash('emp123', 12);
+  for (const [email, name] of Object.entries(AUTHORIZED_EMPLOYEES)) {
+    await pool.query(
+      `INSERT INTO users (email, password_hash, name, role)
+       VALUES ($1, $2, $3, 'EMPLOYEE')
+       ON CONFLICT (email) DO UPDATE
+         SET password_hash = EXCLUDED.password_hash
+         WHERE users.password_hash NOT LIKE '$2b$%'`,
+      [email, empHash, name]
+    );
+  }
+  const adminHash = await bcrypt.hash('admin123', 12);
+  for (const [email, name] of Object.entries(AUTHORIZED_ADMINS)) {
+    await pool.query(
+      `INSERT INTO users (email, password_hash, name, role)
+       VALUES ($1, $2, $3, 'ADMIN')
+       ON CONFLICT (email) DO UPDATE
+         SET password_hash = EXCLUDED.password_hash
+         WHERE users.password_hash NOT LIKE '$2b$%'`,
+      [email, adminHash, name]
+    );
+  }
+
+  // 3. Seed Initial Articles ONLY if table is empty
+  const blogCountRes = await pool.query(`SELECT COUNT(*) FROM blogs`);
+  const blogCount = parseInt(blogCountRes.rows[0]?.count || '0', 10);
+
+  if (blogCount === 0) {
+    console.log('Seeding initial blog articles into empty PostgreSQL table...');
+    for (const blog of INITIAL_SEED_BLOGS) {
       await pool.query(
-        `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'EMPLOYEE') ON CONFLICT (email) DO NOTHING`,
-        [email, 'emp123', name]
+        `INSERT INTO blogs (slug, title, summary, content, category, tags, author_name, author_email, status, read_time, cover_image, published_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::blog_status, $10, $11, CURRENT_TIMESTAMP)
+         ON CONFLICT (slug) DO NOTHING`,
+        [
+          blog.slug, blog.title, blog.summary, blog.content, blog.category,
+          blog.tags, blog.authorName, blog.authorEmail, blog.status,
+          blog.readTime, blog.coverImage
+        ]
       );
     }
-    for (const [email, name] of Object.entries(AUTHORIZED_ADMINS)) {
-      await pool.query(
-        `INSERT INTO users (email, password_hash, name, role) VALUES ($1, $2, $3, 'ADMIN') ON CONFLICT (email) DO NOTHING`,
-        [email, 'admin123', name]
-      );
-    }
-
-    // 3. Seed Initial Articles ONLY if table is empty (Preserve custom articles in pgAdmin)
-    const blogCountRes = await pool.query(`SELECT COUNT(*) FROM blogs`);
-    const blogCount = parseInt(blogCountRes.rows[0]?.count || '0', 10);
-
-    if (blogCount === 0) {
-      console.log('Seeding initial blog articles into empty PostgreSQL table...');
-      for (const blog of INITIAL_SEED_BLOGS) {
-        await pool.query(
-          `INSERT INTO blogs (slug, title, summary, content, category, tags, author_name, author_email, status, read_time, cover_image, published_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::blog_status, $10, $11, CURRENT_TIMESTAMP)
-           ON CONFLICT (slug) DO NOTHING`,
-          [
-            blog.slug, blog.title, blog.summary, blog.content, blog.category,
-            blog.tags, blog.authorName, blog.authorEmail, blog.status,
-            blog.readTime, blog.coverImage
-          ]
-        );
-      }
-    } else {
-      console.log(`✅ PostgreSQL Database connected with ${blogCount} live blog records.`);
-    }
-  } catch (err) {
-    console.error('❌ Error initializing database:', err.message);
+  } else {
+    console.log(`✅ PostgreSQL Database connected with ${blogCount} live blog records.`);
   }
 }
+
+// Run initDb at module load. dbReady rejects if initDb() throws,
+// so routes that `await dbReady` receive the rejection and return 503.
+// The .catch() here is for logging only — it does NOT suppress the rejection.
+const dbReady = initDb();
+dbReady.catch((err) => {
+  console.error('❌ DB initialization failed — all API routes will reject:', err.message);
+});
 
 // ── REST API ROUTES ──────────────────────────────────────────────────────────
 
 // GET /api/blogs — Fetch blogs (filtered by status or category)
 app.get('/api/blogs', async (req, res) => {
   try {
+    await dbReady; // Ensure DB is initialized on Vercel serverless cold start
     const { status, category } = req.query;
     let query = `SELECT * FROM blogs`;
     const params = [];
@@ -645,7 +669,7 @@ app.post('/api/auth/verify-email', async (req, res) => {
   }
 });
 
-// POST /api/auth/admin-login — Authenticate admin login
+// POST /api/auth/admin-login — Authenticate admin login with bcrypt verification
 app.post('/api/auth/admin-login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -655,37 +679,45 @@ app.post('/api/auth/admin-login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
 
-    // 1. Query PostgreSQL users table (checking password_hash column from database)
-    try {
-      const dbUser = await pool.query(
-        `SELECT * FROM users WHERE LOWER(email) = $1 AND (password_hash = $2 OR password = $2)`,
-        [trimmed, password]
-      );
-      if (dbUser.rows.length > 0) {
-        const u = dbUser.rows[0];
-        return res.json({
-          user: { id: u.id, email: u.email, name: u.name, role: u.role || 'ADMIN' }
-        });
-      }
-    } catch (dbErr) {
-      console.warn('DB query error on admin login:', dbErr.message);
+    await dbReady;
+
+    // 1. Fetch user by email only (never compare plaintext in SQL)
+    const dbResult = await pool.query(
+      `SELECT id, email, name, role, password_hash FROM users WHERE LOWER(email) = $1`,
+      [trimmed]
+    );
+
+    if (dbResult.rows.length === 0) {
+      // Use a generic message to prevent email enumeration
+      return res.status(401).json({ error: 'Invalid admin email or password.' });
     }
 
-    // 2. Fallback check for whitelisted admin accounts
-    if (AUTHORIZED_ADMINS[trimmed] && (password === 'admin123' || password === 'emp123')) {
-      return res.json({
-        user: { id: `admin-${trimmed.split('@')[0]}`, email: trimmed, name: AUTHORIZED_ADMINS[trimmed], role: 'ADMIN' }
-      });
+    const u = dbResult.rows[0];
+
+    // 2. Verify submitted password against bcrypt hash
+    const passwordValid = await bcrypt.compare(password, u.password_hash);
+    if (!passwordValid) {
+      return res.status(401).json({ error: 'Invalid admin email or password.' });
     }
 
-    return res.status(401).json({ error: 'Invalid admin email or password' });
+    // 3. Ensure only ADMIN role users can log in through this endpoint
+    if (u.role !== 'ADMIN') {
+      return res.status(403).json({ error: 'Access denied: admin privileges required.' });
+    }
+
+    return res.json({
+      user: { id: u.id, email: u.email, name: u.name, role: u.role }
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Start Server
-app.listen(PORT, async () => {
-  console.log(`🚀 Express API Backend running on http://localhost:${PORT}`);
-  await initDb();
-});
+// Start Server (local dev only — Vercel uses module export below)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Express API Backend running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
