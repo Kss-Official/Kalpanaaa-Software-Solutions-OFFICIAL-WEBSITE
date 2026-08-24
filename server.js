@@ -391,7 +391,7 @@ Enforce strict \`ResourceQuota\` rules per team Kubernetes namespace. Tools like
 
 // Bump this whenever the migration block below changes so deployed instances
 // re-run it once. Stored in schema_meta so the warm path costs one cheap query.
-const SCHEMA_VERSION = '2026-08-24.1';
+const SCHEMA_VERSION = '2026-08-24.2';
 
 // Initialize Database Tables and Initial Data
 // NOTE: Does NOT catch internally — errors propagate to the caller so routes
@@ -471,6 +471,13 @@ async function initDb() {
 
     ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
     ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+    -- The legacy schema had a NOT NULL "password" column (plaintext). Every
+    -- INSERT that only supplies password_hash was rejected with:
+    --   "null value in column 'password' violates not-null constraint"
+    -- Make it optional so password_hash-only inserts succeed.
+    ALTER TABLE users ALTER COLUMN password DROP NOT NULL;
+    ALTER TABLE users ALTER COLUMN password SET DEFAULT '';
 
     CREATE INDEX IF NOT EXISTS idx_blogs_status ON blogs(status);
     CREATE INDEX IF NOT EXISTS idx_blogs_slug ON blogs(slug);
