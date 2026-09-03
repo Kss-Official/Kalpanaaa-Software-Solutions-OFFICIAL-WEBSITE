@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Drawing
 
-$sourcePath = Join-Path $PSScriptRoot "public\pwa-512x512.png"
+$sourcePath = Join-Path $PSScriptRoot "public\butterfly_standalone.png"
 if (-not (Test-Path $sourcePath)) {
     Write-Error "Source image not found: $sourcePath"
     exit 1

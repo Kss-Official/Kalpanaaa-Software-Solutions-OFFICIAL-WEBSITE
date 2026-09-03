@@ -14,6 +14,10 @@ const IndustryDetail = lazy(() => import("./pages/IndustryDetail").then((m) => (
 const Work         = lazy(() => import("./pages/Work").then((m) => ({ default: m.Work })));
 const CaseStudyDetail = lazy(() => import("./pages/CaseStudyDetail").then((m) => ({ default: m.CaseStudyDetail })));
 const About        = lazy(() => import("./pages/About").then((m) => ({ default: m.About })));
+const DiscoverUs   = lazy(() => import("./pages/about/DiscoverUs").then((m) => ({ default: m.DiscoverUs })));
+const WhyKalpanaaa = lazy(() => import("./pages/about/WhyKalpanaaa").then((m) => ({ default: m.WhyKalpanaaa })));
+const Leadership   = lazy(() => import("./pages/about/Leadership").then((m) => ({ default: m.Leadership })));
+const WhatClientSays = lazy(() => import("./pages/about/WhatClientSays").then((m) => ({ default: m.WhatClientSays })));
 const Contact      = lazy(() => import("./pages/Contact").then((m) => ({ default: m.Contact })));
 const Privacy      = lazy(() => import("./pages/Privacy").then((m) => ({ default: m.Privacy })));
 const Terms        = lazy(() => import("./pages/Terms").then((m) => ({ default: m.Terms })));
@@ -73,6 +77,10 @@ function AnimatedMarketingRoutes() {
             <Route path="/blog"             element={<Blog />} />
             <Route path="/blog/:slug"       element={<BlogDetail />} />
             <Route path="/about"            element={<About />} />
+            <Route path="/about/discover-us" element={<DiscoverUs />} />
+            <Route path="/about/why-kalpanaaa" element={<WhyKalpanaaa />} />
+            <Route path="/about/leadership" element={<Leadership />} />
+            <Route path="/about/what-client-says" element={<WhatClientSays />} />
             <Route path="/contact"          element={<Contact />} />
             <Route path="/privacy"          element={<Privacy />} />
             <Route path="/terms"            element={<Terms />} />

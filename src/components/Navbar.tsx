@@ -15,16 +15,24 @@ const navLinks = [
   },
 ];
 
+const ABOUT_MENU = [
+  { label: "Discover us", to: "/about/discover-us" },
+  { label: "Why Kalpanaaa", to: "/about/why-kalpanaaa" },
+  { label: "Leadership", to: "/about/leadership" },
+  { label: "What client says", to: "/about/what-client-says" },
+];
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [desktopMenu, setDesktopMenu] = useState<"services" | "industries" | null>(null);
+  const [desktopMenu, setDesktopMenu] = useState<"about" | "services" | "industries" | null>(null);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [mobileIndustriesOpen, setMobileIndustriesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
   const isHomeActive = location.pathname === "/";
-  const isAboutActive = location.pathname === "/about";
+  const isAboutActive = location.pathname.startsWith("/about");
   const isServicesActive = location.pathname.startsWith("/services");
   const isIndustriesActive = location.pathname.startsWith("/industries");
   const isBlogActive = location.pathname.startsWith("/blog");
@@ -44,6 +52,7 @@ export function Navbar() {
   useEffect(() => {
     setOpen(false);
     setDesktopMenu(null);
+    setMobileAboutOpen(false);
     setMobileServicesOpen(false);
     setMobileIndustriesOpen(false);
   }, [location.pathname]);
@@ -62,14 +71,29 @@ export function Navbar() {
   const closeMenus = () => {
     setOpen(false);
     setDesktopMenu(null);
+    setMobileAboutOpen(false);
     setMobileServicesOpen(false);
     setMobileIndustriesOpen(false);
+  };
+
+  const toggleMobileAbout = () => {
+    setMobileAboutOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        setMobileServicesOpen(false);
+        setMobileIndustriesOpen(false);
+      }
+      return next;
+    });
   };
 
   const toggleMobileServices = () => {
     setMobileServicesOpen((prev) => {
       const next = !prev;
-      if (next) setMobileIndustriesOpen(false);
+      if (next) {
+        setMobileAboutOpen(false);
+        setMobileIndustriesOpen(false);
+      }
       return next;
     });
   };
@@ -77,18 +101,20 @@ export function Navbar() {
   const toggleMobileIndustries = () => {
     setMobileIndustriesOpen((prev) => {
       const next = !prev;
-      if (next) setMobileServicesOpen(false);
+      if (next) {
+        setMobileAboutOpen(false);
+        setMobileServicesOpen(false);
+      }
       return next;
     });
   };
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
-        scrolled
-          ? "bg-white/95 backdrop-blur-md border-line shadow-[0_10px_28px_-26px_rgba(20,35,60,.5)]"
-          : "bg-white/80 backdrop-blur border-transparent"
-      }`}
+      className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${scrolled
+        ? "bg-white/95 backdrop-blur-md border-line shadow-[0_10px_28px_-26px_rgba(20,35,60,.5)]"
+        : "bg-white/80 backdrop-blur border-transparent"
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 h-20 lg:h-13 flex items-center justify-between gap-4">
         {/* =====================================================
@@ -101,7 +127,7 @@ export function Navbar() {
           className="flex-shrink-0 flex items-center"
         >
           <img
-            src="/logo.webp"
+            src="/MainLogo.svg"
             alt="Kalpanaaa Software Solutions Logo"
             width={640}
             height={427}
@@ -132,13 +158,58 @@ export function Navbar() {
             Home
           </Link>
 
-          <Link
-            to="/about"
-            onClick={closeMenus}
-            className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
+          {/* =================================================
+              ABOUT DROPDOWN
+              ================================================= */}
+
+          <div
+            className="relative"
+            onMouseEnter={() => setDesktopMenu("about")}
+            onMouseLeave={() => setDesktopMenu(null)}
           >
-            About
-          </Link>
+            <Link
+              to="/about"
+              onClick={closeMenus}
+              className={`flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest transition-colors rounded-md ${isAboutActive ? "text-brand" : "text-muted hover:text-brand"
+                }`}
+            >
+              <span>Our Company</span>
+              <ChevronDown
+                size={12}
+                className={`transition-transform ${desktopMenu === "about" ? "rotate-180" : ""}`}
+              />
+            </Link>
+
+            {/* About Dropdown Menu */}
+            <div
+              className={`
+                absolute
+                top-full
+                left-1/2
+                -translate-x-1/2
+                pt-2
+                w-56
+                transition-all
+                duration-200
+                ${desktopMenu === "about" ? "opacity-100 visible" : "opacity-0 invisible"}
+              `}
+              role="menu"
+            >
+              <div className="bg-white border border-line rounded-xl shadow-xl p-2 space-y-1">
+                {ABOUT_MENU.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    onClick={closeMenus}
+                    className="block px-3 py-2 text-sm text-muted hover:text-brand hover:bg-surface rounded-md transition-colors"
+                    role="menuitem"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
 
           <div
             className="relative"
@@ -333,7 +404,7 @@ export function Navbar() {
             onClick={closeMenus}
             className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
           >
-            Blog
+            Blogs
           </Link>
         </nav>
 
@@ -347,7 +418,7 @@ export function Navbar() {
             onClick={closeMenus}
             className="button-primary px-5 py-2.5 text-xs font-bold uppercase tracking-widest"
           >
-            Contact us
+            Let's Connect{/* Contact us */}
           </Link>
         </div>
 
@@ -390,15 +461,47 @@ export function Navbar() {
                 </Link>
               </div>
 
-              {/* About Link */}
+              {/* About Accordion */}
               <div className="border-t border-[#e5e7eb] pt-3">
-                <Link
-                  to="/about"
-                  onClick={closeMenus}
-                  className="block py-2 px-2.5 rounded-lg text-sm font-bold uppercase tracking-widest text-ink hover:bg-[#e5e7eb] hover:text-brand transition-all duration-200"
+                <button
+                  type="button"
+                  aria-expanded={mobileAboutOpen}
+                  aria-controls="mobile-about-menu"
+                  aria-label="Toggle About sub-menu"
+                  onClick={toggleMobileAbout}
+                  className="w-full flex items-center justify-between py-2 px-2.5 rounded-lg hover:bg-[#e5e7eb] transition-all duration-200 text-left group"
                 >
-                  About
-                </Link>
+                  <span className="text-sm font-bold uppercase tracking-widest text-ink group-hover:text-brand transition-colors duration-200">
+                    About
+                  </span>
+                  <span className="p-1.5 rounded-lg text-brand bg-brand/10 group-hover:bg-brand/20 transition-colors">
+                    {mobileAboutOpen ? <Minus size={18} /> : <Plus size={18} />}
+                  </span>
+                </button>
+
+                <AnimatePresence>
+                  {mobileAboutOpen && (
+                    <motion.div
+                      id="mobile-about-menu"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden space-y-1 pt-3 pl-3 border-l-2 border-brand/20 ml-3"
+                    >
+                      {ABOUT_MENU.map((item) => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={closeMenus}
+                          className="block py-1.5 px-2 rounded-md text-xs font-semibold text-muted hover:bg-[#e5e7eb] hover:text-brand transition-colors duration-200"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Services Accordion */}
