@@ -20,15 +20,15 @@ export function Footer() {
           MAIN FOOTER
       ========================================================= */}
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-8 lg:px-12 py-12 sm:py-14 md:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-6 xl:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-10 sm:py-12 lg:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-0">
           {/* =====================================================
               COLUMN 1 — LOGO + DESCRIPTION
           ===================================================== */}
 
-          <div className="space-y-4 lg:col-span-4 xl:col-span-4">
+          <div className="flex flex-col space-y-4 lg:pr-6 xl:pr-8">
             {/* Logo */}
-            <Link to="/" className="inline-flex items-center">
+            <Link to="/" className="inline-flex items-center -mt-3 sm:-mt-4 lg:-mt-9">
               <img
                 src="/MainLogo.svg"
                 alt="Kalpanaaa Software Solutions Logo"
@@ -36,12 +36,12 @@ export function Footer() {
                 height={427}
                 loading="lazy"
                 decoding="async"
-                className="h-16 sm:h-20 lg:h-24 w-auto max-w-[200px] sm:max-w-[240px] lg:max-w-[280px] object-contain transition-all duration-300"
+                className="h-20 sm:h-24 lg:h-28 w-auto max-w-[240px] sm:max-w-[300px] md:max-w-[340px] lg:max-w-[380px] object-contain transition-all duration-300"
               />
             </Link>
 
             {/* Description */}
-            <p className="text-xs sm:text-sm text-muted leading-relaxed max-w-sm">
+            <p className="text-sm text-muted leading-relaxed max-w-sm">
               Bespoke engineering partner providing full-lifecycle IT
               automation, RAG systems, multi-agent automation, and software
               solutions for government, healthcare, finance, and education.
@@ -52,20 +52,21 @@ export function Footer() {
               COLUMN 2 — QUICK LINKS
           ======================================================= */}
 
-          <div className="flex flex-col lg:col-span-2 xl:col-span-2">
+          <div className="flex flex-col pt-8 sm:pt-0 sm:pl-6 md:pl-8 lg:pl-8 xl:pl-10">
+            {/* Column Header */}
             <div className="flex items-center gap-3 mb-5">
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-50 border border-blue-100/80 text-brand">
-                <Link2 className="h-4.5 w-4.5 stroke-[2.2]" />
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.08)] text-brand">
+                <Link2 size={18} className="stroke-[2.2]" />
               </div>
               <div>
-                <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-ink">
+                <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-ink">
                   Quick Links
                 </h3>
-                <div className="mt-1 h-0.5 w-7 rounded-full bg-brand"></div>
+                <div className="h-[2px] w-6 bg-brand mt-1 rounded-full" />
               </div>
             </div>
 
-            <ul className="space-y-2.5 text-xs sm:text-sm text-muted">
+            <ul className="space-y-3 text-sm text-muted">
               <li>
                 <Link
                   to="/"
@@ -123,60 +124,57 @@ export function Footer() {
           </div>
 
           {/* =======================================================
-              COLUMN 3 — CONNECT WITH US + SOCIAL MEDIA
+              COLUMN 3 — CONNECT WITH US
           ======================================================= */}
 
-          <div className="flex flex-col lg:col-span-3 xl:col-span-3">
+          <div className="flex flex-col pt-8 sm:pt-8 lg:pt-0 sm:pl-0 lg:pl-8 xl:pl-0">
+            {/* Column Header */}
             <div className="flex items-center gap-3 mb-5">
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-50 border border-blue-100/80 text-brand">
-                <Users className="h-4.5 w-4.5 stroke-[2.2]" />
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.08)] text-brand">
+                <Users size={18} className="stroke-[2.2]" />
               </div>
               <div>
-                <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-ink">
+                <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-ink">
                   Connect With Us
                 </h3>
-                <div className="mt-1 h-0.5 w-7 rounded-full bg-brand"></div>
+                <div className="h-[2px] w-6 bg-brand mt-1 rounded-full" />
               </div>
             </div>
 
-            {/* EMAIL + PHONE */}
-            <div className="space-y-3.5">
-              {/* Email - Arranged in single line */}
+            {/* Email + Phone */}
+            <div className="space-y-4">
+              {/* Email */}
               <a
                 href={`mailto:${NAP.email}`}
-                className="flex items-center gap-3 text-xs sm:text-[13px] xl:text-sm text-muted hover:text-brand transition-colors duration-200 group"
+                className="flex items-center gap-3 text-sm text-muted hover:text-brand transition-colors duration-200"
               >
-                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.06)] text-brand group-hover:bg-brand group-hover:text-white transition-colors duration-200">
-                  <Mail size={14} />
+                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.06)] text-brand">
+                  <Mail size={15} />
                 </span>
 
-                <span className="whitespace-nowrap font-medium text-ink/90 group-hover:text-brand transition-colors">
-                  {NAP.email}
-                </span>
+                <span className="break-all">{NAP.email}</span>
               </a>
 
               {/* Phone */}
               <a
                 href={`tel:+91${NAP.whatsapp}`}
-                className="flex items-center gap-3 text-xs sm:text-[13px] xl:text-sm text-muted hover:text-brand transition-colors duration-200 group"
+                className="flex items-center gap-3 text-sm text-muted hover:text-brand transition-colors duration-200"
               >
-                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.06)] text-brand group-hover:bg-brand group-hover:text-white transition-colors duration-200">
-                  <Phone size={14} />
+                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.06)] text-brand">
+                  <Phone size={15} />
                 </span>
 
-                <span className="whitespace-nowrap font-medium text-ink/90 group-hover:text-brand transition-colors">
-                  +91 {NAP.whatsapp}
-                </span>
+                <span>+91 {NAP.whatsapp}</span>
               </a>
             </div>
 
-            {/* SOCIAL MEDIA */}
+            {/* Social Media */}
             <div className="mt-6">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-2.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted mb-3">
                 Follow Us
               </p>
 
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3 flex-wrap">
                 {/* LinkedIn */}
                 <a
                   href="https://www.linkedin.com/company/kalpanaaa-software-solution-pvt-ltd/posts/?feedView=all"
@@ -220,21 +218,22 @@ export function Footer() {
               COLUMN 4 — OPERATIONS BASE
           ======================================================= */}
 
-          <div className="flex flex-col lg:col-span-3 xl:col-span-3">
+          <div className="flex flex-col pt-8 sm:pt-8 lg:pt-0 sm:pl-6 md:pl-8 lg:pl-8 xl:pl-10">
+            {/* Column Header */}
             <div className="flex items-center gap-3 mb-5">
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-50 border border-blue-100/80 text-brand">
-                <Building2 className="h-4.5 w-4.5 stroke-[2.2]" />
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.08)] text-brand">
+                <Building2 size={18} className="stroke-[2.2]" />
               </div>
               <div>
-                <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-ink">
-                  Operations base
+                <h3 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-ink">
+                  Operations Base
                 </h3>
-                <div className="mt-1 h-0.5 w-7 rounded-full bg-brand"></div>
+                <div className="h-[2px] w-6 bg-brand mt-1 rounded-full" />
               </div>
             </div>
 
             {/* Location Image */}
-            <div className="w-full h-[145px] overflow-hidden rounded-xl border border-line bg-white shadow-xs">
+            <div className="w-full h-[145px] overflow-hidden rounded-xl border border-line bg-white shadow-sm">
               <img
                 src="/FooterImg.webp"
                 alt="Kalpanaaa Software Solutions location"
@@ -246,15 +245,15 @@ export function Footer() {
               />
             </div>
 
-            {/* Location */}
-            <div className="mt-4">
+            {/* Location Address */}
+            <div className="mt-5">
               <div className="flex items-start gap-3">
                 <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.06)] text-brand">
-                  <MapPin size={14} />
+                  <MapPin size={15} />
                 </span>
 
                 <div>
-                  <p className="text-xs sm:text-sm font-semibold text-ink">{NAP.name}</p>
+                  <p className="text-sm font-semibold text-ink">{NAP.name}</p>
 
                   <p className="mt-1 text-xs leading-relaxed text-muted">
                     {NAP.addressLine}
@@ -271,24 +270,7 @@ export function Footer() {
       ========================================================= */}
 
       <div className="border-t border-line bg-white">
-        <div
-          className="
-            max-w-7xl
-            mx-auto
-            px-6
-            md:px-8
-            lg:px-12
-            py-5
-            flex
-            flex-col
-            md:flex-row
-            justify-between
-            items-center
-            gap-3
-            text-xs
-            text-muted
-          "
-        >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-5 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-muted">
           {/* Copyright */}
           <div>
             © {NAP.founded} {NAP.name}. All rights reserved.

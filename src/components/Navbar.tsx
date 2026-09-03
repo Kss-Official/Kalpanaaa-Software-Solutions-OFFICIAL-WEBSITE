@@ -16,10 +16,10 @@ const navLinks = [
 ];
 
 const ABOUT_MENU = [
-  { label: "Discover us", to: "/about/discover-us" },
-  { label: "Why Kalpanaaa", to: "/about/why-kalpanaaa" },
-  { label: "Leadership", to: "/about/leadership" },
-  { label: "What client says", to: "/about/what-client-says" },
+  { label: "Discover us", to: "/our-company/discover-us" },
+  { label: "Why Kalpanaaa", to: "/our-company/why-kalpanaaa" },
+  { label: "Leadership", to: "/our-company/leadership" },
+  { label: "What client says", to: "/our-company/what-client-says" },
 ];
 
 export function Navbar() {
@@ -32,7 +32,7 @@ export function Navbar() {
   const location = useLocation();
 
   const isHomeActive = location.pathname === "/";
-  const isAboutActive = location.pathname.startsWith("/about");
+  const isAboutActive = location.pathname.startsWith("/our-company") || location.pathname.startsWith("/about");
   const isServicesActive = location.pathname.startsWith("/services");
   const isIndustriesActive = location.pathname.startsWith("/industries");
   const isBlogActive = location.pathname.startsWith("/blog");
@@ -147,7 +147,7 @@ export function Navbar() {
           className="hidden lg:flex items-center gap-1 flex-1 justify-center"
         >
           {/* =================================================
-              SERVICES
+              HOME
               ================================================= */}
 
           <Link
@@ -159,7 +159,7 @@ export function Navbar() {
           </Link>
 
           {/* =================================================
-              ABOUT DROPDOWN
+              OUR COMPANY DROPDOWN
               ================================================= */}
 
           <div
@@ -167,9 +167,9 @@ export function Navbar() {
             onMouseEnter={() => setDesktopMenu("about")}
             onMouseLeave={() => setDesktopMenu(null)}
           >
-            <Link
-              to="/about"
-              onClick={closeMenus}
+            <button
+              type="button"
+              onClick={() => setDesktopMenu((prev) => (prev === "about" ? null : "about"))}
               className={`flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest transition-colors rounded-md ${isAboutActive ? "text-brand" : "text-muted hover:text-brand"
                 }`}
             >
@@ -178,7 +178,7 @@ export function Navbar() {
                 size={12}
                 className={`transition-transform ${desktopMenu === "about" ? "rotate-180" : ""}`}
               />
-            </Link>
+            </button>
 
             {/* About Dropdown Menu */}
             <div
@@ -211,24 +211,27 @@ export function Navbar() {
             </div>
           </div>
 
+          {/* =================================================
+              SERVICES DROPDOWN
+              ================================================= */}
+
           <div
             className="relative"
             onMouseEnter={() => setDesktopMenu("services")}
             onMouseLeave={() => setDesktopMenu(null)}
           >
-            <Link
-              itemProp="url"
-              to="/services"
-              onClick={closeMenus}
-              className="flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
+            <button
+              type="button"
+              onClick={() => setDesktopMenu((prev) => (prev === "services" ? null : "services"))}
+              className={`flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest transition-colors rounded-md ${isServicesActive ? "text-brand" : "text-muted hover:text-brand"
+                }`}
             >
-              <span itemProp="name">Services</span>
-
+              <span>Services</span>
               <ChevronDown
                 size={12}
                 className={`transition-transform ${desktopMenu === "services" ? "rotate-180" : ""}`}
               />
-            </Link>
+            </button>
 
             {/* Services Mega Dropdown */}
             <div
@@ -247,13 +250,6 @@ export function Navbar() {
               role="menu"
             >
               <div className="bg-white border border-line rounded-xl shadow-xl overflow-hidden">
-                <Link
-                  to="/services"
-                  onClick={closeMenus}
-                  className="hidden"
-                >
-                  View all services →
-                </Link>
                 {/* =================================================
                     FIVE SERVICE CATEGORIES
                     ================================================= */}
@@ -329,7 +325,7 @@ export function Navbar() {
           </div>
 
           {/* =================================================
-              INDUSTRIES
+              INDUSTRIES DROPDOWN
               ================================================= */}
 
           {navLinks.map((item) => (
@@ -339,19 +335,18 @@ export function Navbar() {
               onMouseEnter={() => setDesktopMenu("industries")}
               onMouseLeave={() => setDesktopMenu(null)}
             >
-              <Link
-                itemProp="url"
-                to={item.to}
-                onClick={closeMenus}
-                className="flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted hover:text-brand transition-colors rounded-md"
+              <button
+                type="button"
+                onClick={() => setDesktopMenu((prev) => (prev === "industries" ? null : "industries"))}
+                className={`flex items-center gap-1 px-3 py-2 text-xs font-semibold uppercase tracking-widest transition-colors rounded-md ${isIndustriesActive ? "text-brand" : "text-muted hover:text-brand"
+                  }`}
               >
-                <span itemProp="name">{item.label}</span>
-
+                <span>{item.label}</span>
                 <ChevronDown
                   size={12}
                   className={`transition-transform ${desktopMenu === "industries" ? "rotate-180" : ""}`}
                 />
-              </Link>
+              </button>
 
               {/* Industries Dropdown */}
               <div

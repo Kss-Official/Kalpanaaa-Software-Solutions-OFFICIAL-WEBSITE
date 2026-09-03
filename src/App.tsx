@@ -77,6 +77,11 @@ function AnimatedMarketingRoutes() {
             <Route path="/blog"             element={<Blog />} />
             <Route path="/blog/:slug"       element={<BlogDetail />} />
             <Route path="/about"            element={<About />} />
+            <Route path="/our-company"      element={<About />} />
+            <Route path="/our-company/discover-us" element={<DiscoverUs />} />
+            <Route path="/our-company/why-kalpanaaa" element={<WhyKalpanaaa />} />
+            <Route path="/our-company/leadership" element={<Leadership />} />
+            <Route path="/our-company/what-client-says" element={<WhatClientSays />} />
             <Route path="/about/discover-us" element={<DiscoverUs />} />
             <Route path="/about/why-kalpanaaa" element={<WhyKalpanaaa />} />
             <Route path="/about/leadership" element={<Leadership />} />
