@@ -19,10 +19,7 @@ export function ClickSpark({
 }: ClickSparkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sparksRef = useRef<Spark[]>([]);
-  // Canvas CSS size, kept up to date by the ResizeObserver. Reading it from a ref means the draw
-  // loop never has to measure layout.
   const sizeRef = useRef({ width: 0, height: 0 });
-  // 0 means "loop is parked". requestAnimationFrame never returns 0, so this is a safe sentinel.
   const frameRef = useRef(0);
   const drawRef = useRef<((time: number) => void) | null>(null);
 
@@ -35,33 +32,23 @@ export function ClickSpark({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const parent = canvas?.parentElement;
-    if (!canvas || !parent) return;
+    if (!canvas) return;
     const context = canvas.getContext("2d");
     if (!context) return;
     const resize = () => {
-      const rect = parent.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      sizeRef.current = { width: rect.width, height: rect.height };
-      canvas.width = Math.max(1, Math.round(rect.width * dpr));
-      canvas.height = Math.max(1, Math.round(rect.height * dpr));
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      sizeRef.current = { width: w, height: h };
+      canvas.width = Math.max(1, Math.round(w * dpr));
+      canvas.height = Math.max(1, Math.round(h * dpr));
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
-    // ResizeObserver callbacks run after layout, so measuring here cannot thrash.
-    const observer = new ResizeObserver(resize);
-    observer.observe(parent);
+    window.addEventListener("resize", resize);
     resize();
 
-    /**
-     * This loop used to run unconditionally for the lifetime of the app, and it measured the
-     * wrapper — which contains the whole page — with getBoundingClientRect() on every frame. That
-     * is a forced synchronous layout of the entire document ~60 times a second, plus a
-     * full-viewport clearRect, all to draw nothing at all unless the visitor had just clicked.
-     * It now runs only while sparks are alive and parks itself as soon as the last one expires,
-     * so the effect is visually identical but costs nothing while the page is loading.
-     */
     const draw = (time: number) => {
       const { width, height } = sizeRef.current;
       context.clearRect(0, 0, width, height);
@@ -83,7 +70,6 @@ export function ClickSpark({
       });
       context.globalAlpha = 1;
 
-      // The canvas was cleared above, so parking here leaves nothing half-drawn.
       if (sparksRef.current.length === 0) {
         frameRef.current = 0;
         return;
@@ -92,24 +78,21 @@ export function ClickSpark({
     };
 
     drawRef.current = draw;
-    // Pick the loop back up if sparks were queued before this effect (re)ran.
     if (sparksRef.current.length > 0) frameRef.current = requestAnimationFrame(draw);
 
     return () => {
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
       frameRef.current = 0;
       drawRef.current = null;
-      observer.disconnect();
+      window.removeEventListener("resize", resize);
     };
   }, [duration, ease, extraScale, sparkColor, sparkRadius, sparkSize]);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (!rect) return;
     const now = performance.now();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const x = event.clientX;
+    const y = event.clientY;
     sparksRef.current.push(...Array.from({ length: sparkCount }, (_, index) => ({
       x, y, start: now, angle: (Math.PI * 2 * index) / sparkCount,
     })));
@@ -119,7 +102,7 @@ export function ClickSpark({
   };
 
   return <div className={className} style={{ position: "relative", ...style }} onClick={handleClick}>
-    <canvas ref={canvasRef} aria-hidden="true" className="click-spark-canvas" />
+    <canvas ref={canvasRef} aria-hidden="true" style={{ position: "fixed", top: 0, left: 0, pointerEvents: "none", zIndex: 9999 }} />
     {children}
   </div>;
 }
