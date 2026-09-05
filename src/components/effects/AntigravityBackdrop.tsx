@@ -7,7 +7,7 @@ export function AntigravityBackdrop() {
     <div aria-hidden="true" className="antigravity-backdrop">
       <Suspense fallback={null}>
         <Antigravity
-          count={600}
+          count={280}
           color="#000000"
           autoAnimate
           ringRadius={9}
