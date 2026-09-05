@@ -3,7 +3,6 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
-import { ClickSpark } from "./components/effects/ClickSpark";
 
 // ── Marketing site pages ──
 const Home         = lazy(() => import("./pages/Home").then((m) => ({ default: m.Home })));
@@ -120,11 +119,9 @@ export default function App() {
         // ── Marketing website (Navbar + content + Footer) ──
         <div className="site-shell flex flex-col flex-1">
           <Navbar />
-          <ClickSpark sparkColor="#1769d5" sparkSize={8} sparkRadius={20} sparkCount={7} duration={360} className="flex-1">
-            <main className="min-h-full">
-              <AnimatedMarketingRoutes />
-            </main>
-          </ClickSpark>
+          <main className="min-h-full">
+            <AnimatedMarketingRoutes />
+          </main>
           <Footer />
         </div>
       )}

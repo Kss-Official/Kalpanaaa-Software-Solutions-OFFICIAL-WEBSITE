@@ -188,7 +188,7 @@ export function WhyKalpanaaa() {
             >
               <div className="rounded-3xl overflow-hidden shadow-xl border border-slate-200/80 bg-white">
                 <img
-                  src="/about/why-banner-team.svg"
+                  src="/about/why-banner-team.webp"
                   alt="Kalpanaaa software engineering team working at workstations"
                   className="w-full h-auto max-h-[380px] object-cover rounded-3xl"
                 />

@@ -9,28 +9,28 @@ const JOURNEY_MILESTONES = [
     title: "The Beginning",
     description:
       "Our journey began in 2026 with a simple idea and a clear vision. We took our first step toward turning that vision into something meaningful.",
-    image: "/about/journey-beginning.svg",
+    image: "/about/journey-beginning.webp",
   },
   {
     year: "2026",
     title: "Building the Foundation",
     description:
       "With a strong vision in place, we started building the foundation for our company, bringing ideas, people, and possibilities together.",
-    image: "/about/journey-foundation.svg",
+    image: "/about/journey-foundation.webp",
   },
   {
     year: "2026",
     title: "First Milestone",
     description:
       "Our first milestone was a reminder that small steps can create meaningful progress. It gave us the confidence to dream bigger and move forward.",
-    image: "/about/journey-milestone.svg",
+    image: "/about/journey-milestone.webp",
   },
   {
     year: "2026",
     title: "Growing Forward",
     description:
       "We're only getting started. With every new challenge, achievement, and experience, we continue to grow and shape what comes next.",
-    image: "/about/journey-growing.svg",
+    image: "/about/journey-growing.webp",
   },
 ];
 
@@ -104,7 +104,7 @@ export function DiscoverUs() {
               className="lg:col-span-6 flex justify-center"
             >
               <img
-                src="/about/discover-hero-laptop.svg"
+                src="/about/discover-hero-laptop.webp"
                 alt="Discover Kalpanaaa - Solutions that drive growth"
                 className="w-full max-w-[620px] h-auto object-contain drop-shadow-sm"
               />
@@ -158,7 +158,7 @@ export function DiscoverUs() {
             >
               <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-200/80 bg-white">
                 <img
-                  src="/about/who-we-are-team.svg"
+                  src="/about/who-we-are-team.webp"
                   alt="Kalpanaaa Team - We turn ideas into digital experiences"
                   className="w-full h-auto object-cover rounded-3xl"
                 />
@@ -364,7 +364,7 @@ export function DiscoverUs() {
               className="lg:col-span-6 flex justify-center"
             >
               <img
-                src="/about/our-vision-skyline.svg"
+                src="/about/our-vision-skyline.webp"
                 alt="Building technology for what comes next"
                 className="w-full max-w-[620px] h-auto object-contain"
               />
