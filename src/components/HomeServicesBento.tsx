@@ -36,8 +36,10 @@ export function HomeServicesBento() {
         <div className="relative mt-6 pt-4 flex items-end justify-center">
           <div className="absolute inset-0 bg-gradient-to-t from-brand/10 to-transparent rounded-full blur-2xl opacity-60 pointer-events-none" />
           <img
-            src="/Service-Section-Images/WebsiteDevelopment.png"
+            src="/Service-Section-Images/WebsiteDevelopment.webp"
             alt="Website Development"
+            loading="lazy"
+            decoding="async"
             className="relative w-full max-w-[340px] h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105 drop-shadow-[0_12px_24px_rgba(23,105,213,0.15)]"
           />
         </div>
@@ -66,8 +68,10 @@ export function HomeServicesBento() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-brand/10 rounded-full blur-xl opacity-50 pointer-events-none" />
             <img
-              src="/Service-Section-Images/MobileAppDev.png"
+              src="/Service-Section-Images/MobileAppDev.webp"
               alt="Mobile App Development"
+              loading="lazy"
+              decoding="async"
               className="relative w-full max-w-[160px] h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105 drop-shadow-[0_10px_20px_rgba(23,105,213,0.15)]"
             />
           </div>
@@ -97,8 +101,10 @@ export function HomeServicesBento() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-brand/10 rounded-full blur-xl opacity-50 pointer-events-none" />
             <img
-              src="/Service-Section-Images/customer-software-dev.png"
+              src="/Service-Section-Images/customer-software-dev.webp"
               alt="Custom Software Development"
+              loading="lazy"
+              decoding="async"
               className="relative w-full max-w-[150px] h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105 drop-shadow-[0_10px_20px_rgba(23,105,213,0.15)]"
             />
           </div>
@@ -128,8 +134,10 @@ export function HomeServicesBento() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-brand/15 rounded-full blur-2xl opacity-60 pointer-events-none" />
             <img
-              src="/Service-Section-Images/UIUXDesign.png"
+              src="/Service-Section-Images/UIUXDesign.webp"
               alt="UI/UX Design"
+              loading="lazy"
+              decoding="async"
               className="relative w-full max-w-[320px] h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105 drop-shadow-[0_12px_24px_rgba(23,105,213,0.18)]"
             />
           </div>
@@ -159,8 +167,10 @@ export function HomeServicesBento() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-brand/15 rounded-full blur-2xl opacity-60 pointer-events-none" />
             <img
-              src="/Service-Section-Images/AIChatBotAndAutomation.png"
+              src="/Service-Section-Images/AIChatBotAndAutomation.webp"
               alt="AI Chatbot & Automation"
+              loading="lazy"
+              decoding="async"
               className="relative w-full max-w-[260px] h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105 drop-shadow-[0_12px_24px_rgba(23,105,213,0.18)]"
             />
           </div>
@@ -189,8 +199,10 @@ export function HomeServicesBento() {
         <div className="relative mt-6 pt-4 flex items-end justify-center">
           <div className="absolute inset-0 bg-gradient-to-t from-brand/10 to-transparent rounded-full blur-2xl opacity-60 pointer-events-none" />
           <img
-            src="/Service-Section-Images/CloudAndDevops.png"
+            src="/Service-Section-Images/CloudAndDevops.webp"
             alt="Cloud & DevOps"
+            loading="lazy"
+            decoding="async"
             className="relative w-full max-w-[280px] h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105 drop-shadow-[0_12px_24px_rgba(23,105,213,0.15)]"
           />
         </div>
@@ -219,8 +231,10 @@ export function HomeServicesBento() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-brand/10 rounded-full blur-xl opacity-50 pointer-events-none" />
             <img
-              src="/Service-Section-Images/Cybersecurity.png"
+              src="/Service-Section-Images/Cybersecurity.webp"
               alt="Cybersecurity"
+              loading="lazy"
+              decoding="async"
               className="relative w-full max-w-[150px] h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105 drop-shadow-[0_10px_20px_rgba(23,105,213,0.15)]"
             />
           </div>
@@ -250,8 +264,10 @@ export function HomeServicesBento() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-brand/10 rounded-full blur-xl opacity-50 pointer-events-none" />
             <img
-              src="/Service-Section-Images/SoftwareMaintananceAndSupport.png"
+              src="/Service-Section-Images/SoftwareMaintananceAndSupport.webp"
               alt="Software Maintenance & Support"
+              loading="lazy"
+              decoding="async"
               className="relative w-full max-w-[150px] h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-105 drop-shadow-[0_10px_20px_rgba(23,105,213,0.15)]"
             />
           </div>
