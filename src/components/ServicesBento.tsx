@@ -32,7 +32,7 @@ const CARDS: CardDef[][] = [
       title: "Website Development",
       desc: "We build fast, responsive and SEO-friendly websites that help your business stand out online.",
       href: "/services/web-engineering",
-      img: "/Service-Section-Images/WebsiteDevelopment.png",
+      img: "/Service-Section-Images/WebsiteDevelopment.webp",
       imgCls: "w-[180px] right-0 bottom-0",
     },
     {
@@ -40,7 +40,7 @@ const CARDS: CardDef[][] = [
       title: "Mobile App Development",
       desc: "Powerful mobile apps for Android & iOS that deliver seamless user experiences.",
       href: "/services/mobile-apps",
-      img: "/Service-Section-Images/MobileAppDev.png",
+      img: "/Service-Section-Images/MobileAppDev.webp",
       imgCls: "w-[140px] right-2 bottom-0",
     },
     {
@@ -48,7 +48,7 @@ const CARDS: CardDef[][] = [
       title: "Custom Software Development",
       desc: "Tailored software solutions designed to solve your unique business challenges.",
       href: "/services",
-      img: "/Service-Section-Images/customer-software-dev.png",
+      img: "/Service-Section-Images/customer-software-dev.webp",
       imgCls: "w-[140px] right-2 bottom-0",
     },
   ],
@@ -60,7 +60,7 @@ const CARDS: CardDef[][] = [
       title: "UI/UX Design",
       desc: "We design intuitive and engaging interfaces that enhance user satisfaction and drive results.",
       href: "/services",
-      img: "/Service-Section-Images/UIUXDesign.png",
+      img: "/Service-Section-Images/UIUXDesign.webp",
       imgCls: "w-[240px] right-0 bottom-0",
       span: "col-span-1 md:col-span-2",
     },
@@ -69,7 +69,7 @@ const CARDS: CardDef[][] = [
       title: "Cloud & DevOps",
       desc: "Scalable cloud solutions and DevOps practices to ensure performance, reliability, and security.",
       href: "/services/cloud-devops",
-      img: "/Service-Section-Images/CloudAndDevops.png",
+      img: "/Service-Section-Images/CloudAndDevops.webp",
       imgCls: "w-[160px] right-0 bottom-0",
       span: "col-span-1",
     },
@@ -82,7 +82,7 @@ const CARDS: CardDef[][] = [
       title: "AI Chatbot & Automation",
       desc: "Automate conversations, reduce manual work, and improve customer support with AI.",
       href: "/services/multi-agent-automation",
-      img: "/Service-Section-Images/AIChatBotAndAutomation.png",
+      img: "/Service-Section-Images/AIChatBotAndAutomation.webp",
       imgCls: "w-[220px] right-0 bottom-0",
       span: "col-span-1 md:col-span-2",
     },
@@ -91,7 +91,7 @@ const CARDS: CardDef[][] = [
       title: "Cybersecurity",
       desc: "Protect your data and systems with robust security solutions and best practices.",
       href: "/services/qa-testing",
-      img: "/Service-Section-Images/Cybersecurity.png",
+      img: "/Service-Section-Images/Cybersecurity.webp",
       imgCls: "w-[150px] right-2 bottom-0",
       span: "col-span-1",
     },
@@ -104,7 +104,7 @@ const CARDS: CardDef[][] = [
       title: "Software Maintenance & Support",
       desc: "We keep your software running smoothly with continuous support and maintenance.",
       href: "/services",
-      img: "/Service-Section-Images/SoftwareMaintananceAndSupport.png",
+      img: "/Service-Section-Images/SoftwareMaintananceAndSupport.webp",
       imgCls: "w-[200px] right-4 bottom-0",
       span: "col-span-1 md:col-span-3",
     },
@@ -182,6 +182,8 @@ function Card({
         <img
           src={card.img}
           alt=""
+          loading="lazy"
+          decoding="async"
           className="w-full h-auto object-contain
             transition-transform duration-500 ease-out group-hover:scale-105
             drop-shadow-[0_10px_24px_rgba(23,105,213,0.25)]"
