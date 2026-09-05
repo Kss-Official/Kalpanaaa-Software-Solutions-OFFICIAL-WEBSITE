@@ -9,13 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@google/genai": "^2.17.1",
-    "@react-three/fiber": "^8.18.0",
     "@types/leaflet": "^1.9.22",
     "@types/qrcode": "^1.5.6",
     "@vladmandic/face-api": "^1.7.15",
     "bcryptjs": "^2.4.3",
-    "clsx": "^2.1.1",
     "cors": "^2.8.6",
     "dotenv": "^16.6.1",
     "express": "^4.22.2",
@@ -26,7 +23,6 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^0.408.0",
     "motion": "^13.1.0",
-    "ogl": "^1.0.11",
     "pg": "^8.23.0",
     "qrcode": "^1.5.4",
     "react": "^18.3.1",
@@ -35,18 +31,14 @@
     "react-icons": "^5.7.0",
     "react-router-dom": "^6.26.0",
     "recharts": "^3.10.1",
-    "tailwind-merge": "^2.4.0",
-    "three": "^0.185.1",
     "vite-plugin-pwa": "^1.3.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@types/three": "^0.185.1",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.40",
-    "sharp": "^0.35.4",
     "tailwindcss": "^3.4.7",
     "typescript": "^5.5.3",
     "vite": "^5.4.0"
