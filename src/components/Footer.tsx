@@ -30,7 +30,7 @@ export function Footer() {
             {/* Logo */}
             <Link to="/" className="inline-flex items-center -mt-3 sm:-mt-4 lg:-mt-9">
               <img
-                src="/MainLogo.svg"
+                src="/MainLogo.webp"
                 alt="Kalpanaaa Software Solutions Logo"
                 width={640}
                 height={427}

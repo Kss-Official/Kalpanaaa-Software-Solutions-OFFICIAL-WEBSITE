@@ -42,7 +42,7 @@ export function Navbar() {
 
     onScroll();
 
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", onScroll);
@@ -127,7 +127,7 @@ export function Navbar() {
           className="flex-shrink-0 flex items-center"
         >
           <img
-            src="/MainLogo.svg"
+            src="/MainLogo.webp"
             alt="Kalpanaaa Software Solutions Logo"
             width={640}
             height={427}
