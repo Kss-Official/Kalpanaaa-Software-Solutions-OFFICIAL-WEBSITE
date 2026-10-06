@@ -188,9 +188,9 @@ export interface DocumentTemplate {
 }
 
 // PM & Project Models
-export type ProjectStatus = 'Not Started' | 'In Progress' | 'In Review' | 'Completed' | 'On Track' | 'At Risk' | 'Delayed';
+export type ProjectStatus = 'Not Started' | 'In Progress' | 'In Review' | 'On Hold/Blocked' | 'Completed' | 'On Track' | 'At Risk' | 'Delayed';
 export type TaskPriority = 'Low' | 'Medium' | 'High' | 'Urgent';
-export type TaskStatus = 'Backlog' | 'To Do' | 'In Progress' | 'In Review' | 'Done';
+export type TaskStatus = 'Backlog' | 'To Do' | 'In Progress' | 'In Review' | 'On Hold/Blocked' | 'Done';
 
 export interface Project {
   id: string;

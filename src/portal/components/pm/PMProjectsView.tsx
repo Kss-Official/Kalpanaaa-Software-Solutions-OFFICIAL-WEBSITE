@@ -43,7 +43,7 @@ export const PMProjectsView: React.FC = () => {
       description: 'Draw green facial mesh over video stream.',
       assigneeId: employees[1]?.id || 'emp-2',
       assigneeName: employees[1]?.fullName || 'Developer 2',
-      status: 'In Review',
+      status: 'On Hold/Blocked',
       priority: 'Urgent',
       dueDate: '2026-08-12',
       createdAt: '2026-08-02',
@@ -79,7 +79,7 @@ export const PMProjectsView: React.FC = () => {
     }
   ]);
 
-  const columns: TaskStatus[] = ['Backlog', 'To Do', 'In Progress', 'In Review', 'Done'];
+  const columns: TaskStatus[] = ['Backlog', 'To Do', 'In Progress', 'On Hold/Blocked', 'Done'];
 
   const moveTaskStatus = (taskId: string, newStatus: TaskStatus) => {
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
@@ -142,6 +142,67 @@ export const PMProjectsView: React.FC = () => {
             <Plus className="w-4 h-4" />
             <span>Create Task</span>
           </button>
+        </div>
+      </div>
+
+      {/* Summary KPI Box Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* In Progress Card */}
+        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-blue-400 tracking-tight">In Progress</span>
+            <div className="w-8 h-8 bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center">
+              <Clock className="w-4 h-4 text-blue-400" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-white font-mono">{tasks.filter(t => t.status === 'In Progress').length}</span>
+            <span className="text-xs text-slate-400">Active tasks</span>
+          </div>
+        </div>
+
+        {/* On Hold/Blocked Card — Replaces In Review Card */}
+        <div className="bg-[#fff8f0] border border-amber-200/80 rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-amber-600 tracking-tight">On Hold/Blocked</span>
+            <div className="w-9 h-9 bg-white rounded-xl shadow-xs border border-amber-100 flex items-center justify-center">
+              <AlertCircle className="w-4.5 h-4.5 text-amber-600 stroke-[2]" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-slate-900 font-serif leading-none">
+              {tasks.filter(t => t.status === 'On Hold/Blocked').length}
+            </span>
+            <span className="text-sm text-slate-600 font-medium">Awaiting verification</span>
+          </div>
+        </div>
+
+        {/* To Do Card */}
+        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-300 tracking-tight">To Do</span>
+            <div className="w-8 h-8 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-center">
+              <Kanban className="w-4 h-4 text-slate-400" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-white font-mono">{tasks.filter(t => t.status === 'To Do').length}</span>
+            <span className="text-xs text-slate-400">Pending start</span>
+          </div>
+        </div>
+
+        {/* Done Card */}
+        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-emerald-400 tracking-tight">Done & Completed</span>
+            <div className="w-8 h-8 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-extrabold text-white font-mono">{tasks.filter(t => t.status === 'Done').length}</span>
+            <span className="text-xs text-slate-400">Completed sprint</span>
+          </div>
         </div>
       </div>
 
