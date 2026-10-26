@@ -91,6 +91,7 @@ export type CaseStudy = {
 
 export const NAP = {
   name: "Kalpanaaa Software Solutions Pvt. Ltd.",
+  cin: "U62013KA2026PTC225183",
   email: "info@kalpanaaasoftwaresolutions.in",
   phone: "+918050483560",
   whatsapp: "8050483560",

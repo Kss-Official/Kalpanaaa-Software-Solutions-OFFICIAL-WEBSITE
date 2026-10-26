@@ -77,7 +77,7 @@ export function Terms() {
               <a href={`mailto:${NAP.email}`} className="text-brand hover:underline">{NAP.email}</a>
             </div>
             <p className="mt-4 text-sm text-slate-500">
-              {NAP.name} · {NAP.addressLine} · {NAP.city}, {NAP.region}, {NAP.country}
+              {NAP.name} · CIN: {NAP.cin} · {NAP.addressLine} · {NAP.city}, {NAP.region}, {NAP.country}
             </p>
           </section>
         </div>

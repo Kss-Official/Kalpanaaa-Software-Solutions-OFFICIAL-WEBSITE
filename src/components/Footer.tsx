@@ -10,6 +10,7 @@ import {
   Link2,
   Users,
   Building2,
+  FileText,
 } from "lucide-react";
 import { NAP } from "../data/site";
 
@@ -245,10 +246,10 @@ export function Footer() {
               />
             </div>
 
-            {/* Location Address */}
-            <div className="mt-5">
+            {/* Location & Corporate Information */}
+            <div className="mt-5 space-y-3">
               <div className="flex items-start gap-3">
-                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.06)] text-brand">
+                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.06)] text-brand mt-0.5">
                   <MapPin size={15} />
                 </span>
 
@@ -258,6 +259,20 @@ export function Footer() {
                   <p className="mt-1 text-xs leading-relaxed text-muted">
                     {NAP.addressLine}
                   </p>
+                </div>
+              </div>
+
+              {/* CIN */}
+              <div className="flex items-center gap-3">
+                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(29,78,216,0.06)] text-brand">
+                  <FileText size={15} />
+                </span>
+
+                <div className="text-xs">
+                  <span className="font-semibold text-ink">CIN: </span>
+                  <span className="font-mono text-muted tracking-wide font-medium select-all">
+                    {NAP.cin}
+                  </span>
                 </div>
               </div>
             </div>
@@ -273,7 +288,7 @@ export function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-5 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-muted">
           {/* Copyright */}
           <div>
-            © {NAP.founded} {NAP.name}. All rights reserved.
+            © {NAP.founded} {NAP.name} · CIN: {NAP.cin}. All rights reserved.
           </div>
 
           {/* Bottom Links */}
